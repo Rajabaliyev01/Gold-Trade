@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Foydalanuvchi Admin ekanligini tekshirish
+    function isAdmin() {
+      return request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Omborga faqat adminlar va menejerlar o'zgartirish kirita oladi
+    match /inventory/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+    
+    // Usta faqat o'ziga tegishli buyurtmalarni yangilashi mumkin
+    match /production_orders/{docId} {
+      allow read: if request.auth != null;
+      allow update: if request.auth != null && (request.auth.uid == resource.data.craftsman_id || isAdmin()); 
+      allow create, delete: if isAdmin();
+    }
+
+    // Tranzaksiyalar (Kassa va sotuvlar)
+    match /transactions/{txId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update, delete: if isAdmin();
+    }
+
+    // Foydalanuvchilar ro'yxati (RBAC)
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+
+    // Tizim sozlamalari (Oltin narxlari, Telegram bot konfiguratsiyasi)
+    match /settings/{docId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+  }
+}
