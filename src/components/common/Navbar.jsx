@@ -11,13 +11,15 @@ import {
   FileText, 
   CheckCircle2, 
   AlertTriangle,
-  UserCheck, 
   ChevronDown,
-  Coins
+  LogOut,
+  User,
+  ShieldCheck,
+  Building2
 } from 'lucide-react';
 
 export const Navbar = () => {
-  const { currentUser, users, setCurrentUser } = useAuthStore();
+  const { currentUser, factory, signOut } = useAuthStore();
   const { settings } = useSettingsStore();
   const transactions = usePosStore((state) => state.transactions);
   const getVaultSummary = useInventoryStore((state) => state.getVaultSummary);
@@ -25,7 +27,7 @@ export const Navbar = () => {
 
   const [isSendingReport, setIsSendingReport] = useState(false);
   const [reportFeedback, setReportFeedback] = useState(null);
-  const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   // Send Daily Z-Report to Telegram
   const handleSendDailyReport = async () => {
@@ -87,10 +89,15 @@ export const Navbar = () => {
   };
 
   const roleLabels = {
-    admin: { label: 'Bosh Administrator', color: 'bg-gold-500/20 text-gold-400 border-gold-500/40' },
+    admin: { label: 'Zavod Egasi (Admin)', color: 'bg-gold-500/20 text-gold-400 border-gold-500/40' },
     manager: { label: 'Ishlab Chiqarish Menejeri', color: 'bg-blue-500/20 text-blue-400 border-blue-500/40' },
     craftsman: { label: 'Zargar Usta', color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' },
     cashier: { label: 'Kassir / POS Operator', color: 'bg-purple-500/20 text-purple-400 border-purple-500/40' },
+  };
+
+  const handleLogout = async () => {
+    setIsProfileOpen(false);
+    await signOut();
   };
 
   return (
@@ -110,19 +117,18 @@ export const Navbar = () => {
                 ERP 2.0
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 hidden sm:block">Zargarlik Ishlab Chiqarish & Kassa Tizimi</p>
+            <p className="text-[11px] text-slate-400 hidden sm:block">Zargarlik Ishlab Chiqarish &amp; Kassa Tizimi</p>
           </div>
         </div>
 
-        {/* Live Gold Rate mini pill */}
-        <div className="hidden md:flex items-center space-x-3 px-3 py-1.5 rounded-lg bg-[#141824] border border-luxury-border text-xs">
-          <Coins className="w-4 h-4 text-gold-400" />
-          <div className="flex items-center space-x-3 font-mono">
-            <span><span className="text-slate-400">999:</span> <b className="text-gold-300">${settings.gold_rate_999}/g</b></span>
+        {/* Live Gold Ticker widget in Header */}
+        <div className="hidden xl:flex items-center space-x-4 px-3 py-1.5 rounded-xl bg-[#141824] border border-luxury-border text-xs font-mono">
+          <div className="flex items-center space-x-2 text-slate-300">
+            <span><span className="text-slate-400">999:</span> <b className="text-gold-300">${settings.gold_rate_999 || '—'}/g</b></span>
             <span className="text-slate-600">|</span>
-            <span><span className="text-slate-400">585:</span> <b className="text-amber-400">${settings.gold_rate_585}/g</b></span>
+            <span><span className="text-slate-400">585:</span> <b className="text-amber-400">${settings.gold_rate_585 || '—'}/g</b></span>
             <span className="text-slate-600">|</span>
-            <span><span className="text-slate-400">1$ =</span> <b className="text-slate-300">{Number(settings.usd_to_uzs).toLocaleString()}</b></span>
+            <span><span className="text-slate-400">1$ =</span> <b className="text-slate-300">{settings.usd_to_uzs ? Number(settings.usd_to_uzs).toLocaleString() : '—'}</b></span>
           </div>
         </div>
       </div>
@@ -154,14 +160,14 @@ export const Navbar = () => {
           </div>
         )}
 
-        {/* Role Switcher Dropdown (Demo & Multi-Role Testing) */}
+        {/* User Profile Menu with Sign Out */}
         <div className="relative">
           <button
-            onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
+            onClick={() => setIsProfileOpen(!isProfileOpen)}
             className="flex items-center space-x-2.5 p-1.5 pr-2.5 rounded-xl bg-[#141824] hover:bg-[#1a2030] border border-luxury-border transition-colors text-left"
           >
             <img
-              src={currentUser?.avatar}
+              src={currentUser?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser?.name || 'User')}&background=d4af37&color=000`}
               alt={currentUser?.name}
               className="w-8 h-8 rounded-lg object-cover border border-gold-500/30"
             />
@@ -172,40 +178,38 @@ export const Navbar = () => {
             <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
           </button>
 
-          {isRoleDropdownOpen && (
+          {isProfileOpen && (
             <div 
-              className="absolute right-0 mt-2 w-72 rounded-xl bg-[#141824] border border-luxury-border shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150"
-              onMouseLeave={() => setIsRoleDropdownOpen(false)}
+              className="absolute right-0 mt-2 w-64 rounded-xl bg-[#141824] border border-luxury-border shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150"
+              onMouseLeave={() => setIsProfileOpen(false)}
             >
-              <div className="px-3 py-2 border-b border-luxury-border mb-1">
-                <p className="text-xs font-semibold text-slate-200">Foydalanuvchini almashtirish</p>
-                <p className="text-[10px] text-slate-400">Turli rollarni (Admin, Usta, Kassir) test qilish</p>
+              {/* Profile Details */}
+              <div className="px-3 py-2.5 border-b border-luxury-border mb-1">
+                <p className="text-xs font-bold text-slate-100 truncate">{currentUser?.name}</p>
+                <p className="text-[11px] text-gold-400 mt-0.5">
+                  {roleLabels[currentUser?.role]?.label || currentUser?.role}
+                </p>
+                {factory?.name && (
+                  <p className="text-[10px] text-slate-400 mt-1 flex items-center space-x-1 truncate">
+                    <Building2 className="w-3 h-3 text-gold-400 shrink-0" />
+                    <span>{factory.name}</span>
+                  </p>
+                )}
+                {currentUser?.username && (
+                  <p className="text-[10px] text-slate-400 font-mono mt-0.5">
+                    @{currentUser.username}
+                  </p>
+                )}
               </div>
 
-              <div className="space-y-1">
-                {users.map((user) => {
-                  const isSelected = user.uid === currentUser?.uid;
-                  return (
-                    <button
-                      key={user.uid}
-                      onClick={() => {
-                        setCurrentUser(user);
-                        setIsRoleDropdownOpen(false);
-                      }}
-                      className={`w-full flex items-center space-x-3 p-2 rounded-lg text-left text-xs transition-colors ${
-                        isSelected ? 'bg-gold-500/10 border border-gold-500/30 text-gold-300' : 'hover:bg-[#1f2638] text-slate-300'
-                      }`}
-                    >
-                      <img src={user.avatar} alt={user.name} className="w-7 h-7 rounded-md object-cover" />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium truncate">{user.name}</p>
-                        <span className="text-[10px] text-slate-400 capitalize">{roleLabels[user.role]?.label || user.role}</span>
-                      </div>
-                      {isSelected && <UserCheck className="w-4 h-4 text-gold-400" />}
-                    </button>
-                  );
-                })}
-              </div>
+              {/* Sign out button */}
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center space-x-2.5 p-2 rounded-lg text-left text-xs text-rose-300 hover:bg-rose-950/30 hover:text-rose-200 transition-colors"
+              >
+                <LogOut className="w-4 h-4 text-rose-400" />
+                <span className="font-semibold">Tizimdan chiqish</span>
+              </button>
             </div>
           )}
         </div>

@@ -1,0 +1,206 @@
+import React, { useState } from 'react';
+import { useAuthStore } from '../store/useAuthStore';
+import { Sparkles, User, Lock, LogIn, Loader2, AlertCircle } from 'lucide-react';
+
+// Google "G" icon SVG
+const GoogleIcon = () => (
+  <svg viewBox="0 0 48 48" className="w-5 h-5" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#EA4335" d="M24 9.5c3.4 0 6.4 1.2 8.8 3.2l6.5-6.5C35.2 2.5 29.9 0 24 0 14.6 0 6.6 5.6 2.7 13.7l7.6 5.9C12.1 13 17.6 9.5 24 9.5z"/>
+    <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.4 5.7c4.3-4 6.8-9.9 6.8-16.9z"/>
+    <path fill="#FBBC05" d="M10.3 28.4A14.9 14.9 0 0 1 9.5 24c0-1.5.3-3 .8-4.4l-7.6-5.9A24 24 0 0 0 0 24c0 3.9.9 7.5 2.7 10.7l7.6-6.3z"/>
+    <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.4-5.7c-2.1 1.4-4.8 2.3-8.5 2.3-6.4 0-11.9-3.5-13.7-8.6l-7.6 6.3C6.6 42.4 14.6 48 24 48z"/>
+  </svg>
+);
+
+export default function LoginPage() {
+  const { signInWithGoogle, signInAsEmployee, loading, error } = useAuthStore();
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [empLoading, setEmpLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [empError, setEmpError] = useState('');
+  const [googleError, setGoogleError] = useState('');
+
+  const handleGoogleSignIn = async () => {
+    setGoogleError('');
+    setGoogleLoading(true);
+    try {
+      await signInWithGoogle();
+    } catch (err) {
+      setGoogleError(err.message || 'Google bilan kirish muvaffaqiyatsiz');
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  const handleEmployeeSignIn = async (e) => {
+    e.preventDefault();
+    setEmpError('');
+    if (!username.trim() || !password.trim()) {
+      setEmpError('Foydalanuvchi nomi va parolni kiriting');
+      return;
+    }
+    setEmpLoading(true);
+    try {
+      await signInAsEmployee(username.trim(), password);
+    } catch (err) {
+      setEmpError(err.message || 'Kirish muvaffaqiyatsiz');
+    } finally {
+      setEmpLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0b0e14] flex items-center justify-center">
+        <Loader2 className="w-10 h-10 text-gold-400 animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#0b0e14] flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-gold-500/5 blur-3xl" />
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-amber-600/5 blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gold-500/3 blur-3xl" />
+      </div>
+
+      {/* Logo */}
+      <div className="relative mb-10 flex flex-col items-center">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-600 via-gold-500 to-yellow-300 p-[2px] shadow-gold mb-4">
+          <div className="w-full h-full bg-[#0b0e14] rounded-2xl flex items-center justify-center">
+            <Sparkles className="w-8 h-8 text-gold-400" />
+          </div>
+        </div>
+        <h1 className="text-3xl font-extrabold tracking-widest gold-gradient-text uppercase">
+          Gold Trade
+        </h1>
+        <span className="text-xs font-semibold uppercase tracking-widest px-2 py-0.5 rounded bg-gold-500/10 text-gold-400 border border-gold-500/30 mt-1">
+          ERP 2.0
+        </span>
+        <p className="text-sm text-slate-400 mt-2">Zargarlik Ishlab Chiqarish &amp; Kassa Tizimi</p>
+      </div>
+
+      {/* Login cards */}
+      <div className="relative w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* ── Left: Factory owner Google sign-in ── */}
+        <div className="bg-[#0f131d] border border-luxury-border rounded-2xl p-8 flex flex-col items-center space-y-6 shadow-2xl">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gold-500/10 border border-gold-500/30 mb-3">
+              <Sparkles className="w-6 h-6 text-gold-400" />
+            </div>
+            <h2 className="text-lg font-bold text-slate-100">Zavod Egasi</h2>
+            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+              Zavod egasi sifatida Google bilan kirish
+            </p>
+          </div>
+
+          <div className="w-full border-t border-luxury-border" />
+
+          {googleError && (
+            <div className="w-full flex items-start space-x-2 p-3 rounded-lg bg-rose-900/20 border border-rose-500/30 text-rose-300 text-xs">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <span>{googleError}</span>
+            </div>
+          )}
+
+          <button
+            onClick={handleGoogleSignIn}
+            disabled={googleLoading}
+            className="w-full flex items-center justify-center space-x-3 py-3 px-5 rounded-xl bg-white hover:bg-gray-100 text-gray-800 font-semibold text-sm transition-all duration-200 disabled:opacity-60 shadow-lg"
+          >
+            {googleLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin text-gray-600" />
+            ) : (
+              <GoogleIcon />
+            )}
+            <span>Google bilan kirish</span>
+          </button>
+
+          <p className="text-[11px] text-slate-500 text-center leading-relaxed">
+            Birinchi kirishda zavod avtomatik yaratiladi
+          </p>
+        </div>
+
+        {/* ── Right: Employee username/password login ── */}
+        <div className="bg-[#0f131d] border border-luxury-border rounded-2xl p-8 flex flex-col space-y-6 shadow-2xl">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 mb-3">
+              <User className="w-6 h-6 text-blue-400" />
+            </div>
+            <h2 className="text-lg font-bold text-slate-100">Hodim Kirishi</h2>
+            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+              Foydalanuvchi nomi va parol bilan kirish
+            </p>
+          </div>
+
+          <div className="w-full border-t border-luxury-border" />
+
+          <form onSubmit={handleEmployeeSignIn} className="flex flex-col space-y-4">
+            {empError && (
+              <div className="flex items-start space-x-2 p-3 rounded-lg bg-rose-900/20 border border-rose-500/30 text-rose-300 text-xs">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <span>{empError}</span>
+              </div>
+            )}
+
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-300">Foydalanuvchi nomi</label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="username"
+                  autoComplete="username"
+                  className="w-full pl-9 pr-3 py-2.5 rounded-lg bg-[#141824] border border-luxury-border text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30 transition-all"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-300">Parol</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                  className="w-full pl-9 pr-3 py-2.5 rounded-lg bg-[#141824] border border-luxury-border text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30 transition-all"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={empLoading}
+              className="w-full flex items-center justify-center space-x-2 py-2.5 px-5 rounded-xl bg-gradient-to-r from-gold-600 to-amber-500 hover:from-gold-500 hover:to-amber-400 text-black font-bold text-sm transition-all duration-200 disabled:opacity-60 shadow-gold-sm"
+            >
+              {empLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <LogIn className="w-4 h-4" />
+              )}
+              <span>Kirish</span>
+            </button>
+          </form>
+
+          <p className="text-[11px] text-slate-500 text-center leading-relaxed">
+            Hisobingiz yo'qmi? Zavod egasiga murojaat qiling
+          </p>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <p className="relative mt-10 text-xs text-slate-600">
+        © 2026 Gold Trade ERP — Barcha huquqlar himoyalangan
+      </p>
+    </div>
+  );
+}

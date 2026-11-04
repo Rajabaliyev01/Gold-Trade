@@ -2,42 +2,54 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Foydalanuvchi Admin ekanligini tekshirish
-    function isAdmin() {
-      return request.auth != null && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    // Foydalanuvchi Admin yoki Zavod egasi ekanligini tekshirish
+    function isAuthenticated() {
+      return request.auth != null;
     }
-    
-    // Omborga faqat adminlar va menejerlar o'zgartirish kirita oladi
+
+    // Hodimlar login indeksi (Hodim login va parolini tekshirib kirishi uchun ochiq o'qish ruxsati)
+    match /employees_index/{username} {
+      allow read: true;
+      allow write: if isAuthenticated();
+    }
+
+    // UID orqali zavodni topish indeksi
+    match /employees_uid_index/{uid} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // Zavodlar va ularning hodimlari
+    match /factories/{factoryId} {
+      allow read, write: if isAuthenticated();
+      
+      match /employees/{employeeId} {
+        allow read, write: if isAuthenticated();
+      }
+    }
+
+    // Ombor (xomashyo va tayyor mahsulotlar)
     match /inventory/{document=**} {
-      allow read: if request.auth != null;
-      allow write: if isAdmin();
+      allow read, write: if isAuthenticated();
     }
     
-    // Usta faqat o'ziga tegishli buyurtmalarni yangilashi mumkin
+    // Ishlab chiqarish buyurtmalari (Ugar nazorati)
     match /production_orders/{docId} {
-      allow read: if request.auth != null;
-      allow update: if request.auth != null && (request.auth.uid == resource.data.craftsman_id || isAdmin()); 
-      allow create, delete: if isAdmin();
+      allow read, write: if isAuthenticated();
     }
 
     // Tranzaksiyalar (Kassa va sotuvlar)
     match /transactions/{txId} {
-      allow read: if request.auth != null;
-      allow create: if request.auth != null;
-      allow update, delete: if isAdmin();
+      allow read, write: if isAuthenticated();
     }
 
-    // Foydalanuvchilar ro'yxati (RBAC)
+    // Foydalanuvchilar (RBAC)
     match /users/{userId} {
-      allow read: if request.auth != null;
-      allow write: if isAdmin();
+      allow read, write: if isAuthenticated();
     }
 
     // Tizim sozlamalari (Oltin narxlari, Telegram bot konfiguratsiyasi)
     match /settings/{docId} {
-      allow read: if request.auth != null;
-      allow write: if isAdmin();
+      allow read, write: if isAuthenticated();
     }
   }
 }

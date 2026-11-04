@@ -54,8 +54,8 @@ export const Sidebar = () => {
       roles: ['admin', 'cashier', 'manager'],
     },
     {
-      title: 'Ustalar va Balans',
-      path: '/craftsmen',
+      title: 'Hodimlar',
+      path: '/employees',
       icon: Users,
       roles: ['admin', 'manager'],
     },
