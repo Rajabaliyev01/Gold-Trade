@@ -16,10 +16,13 @@ import {
   CheckCircle2,
   FileText,
   Calculator,
-  Send
+  Send,
+  X,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 
-export const JewelryPipelineHub = ({ onOpenNewOrder }) => {
+export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) => {
   const { addRawMaterialInward, addGemstoneOrFittingInward, recordMeltingSheet } = useInventoryStore();
   const { currentUser } = useAuthStore();
 
@@ -135,23 +138,45 @@ export const JewelryPipelineHub = ({ onOpenNewOrder }) => {
   };
 
   return (
-    <div className="space-y-4">
+    <div id="jewelry-pipeline-hub" className="space-y-4">
       {/* 5-Stage Process Pipeline Bar */}
-      <div className="bg-[#10141f] border border-luxury-border rounded-2xl p-4 sm:p-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-luxury-border">
-          <div>
-            <h2 className="text-sm font-bold text-white flex items-center space-x-2">
-              <Sparkles className="w-4 h-4 text-gold-400" />
-              <span>5 Bosqichli Zargarlik Ishlab Chiqarish Tizimi</span>
-            </h2>
-            <p className="text-[11px] text-slate-400">
-              Xomashyo kirimidan tortib tayyor zargarlik birkasigacha bo'lgan to'liq sanoat zanjiri
-            </p>
+      <div className="bg-[#10141f] border border-luxury-border rounded-2xl p-4 sm:p-5 transition-all">
+        <div 
+          onClick={onToggle}
+          className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer group select-none"
+        >
+          <div className="flex items-center space-x-3">
+            <div className="w-9 h-9 rounded-xl bg-gold-500/10 border border-gold-500/30 flex items-center justify-center text-gold-400 group-hover:scale-105 transition-transform shrink-0">
+              <Sparkles className="w-5 h-5 text-gold-400" />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2 flex-wrap">
+                <h2 className="text-sm font-bold text-white group-hover:text-gold-300 transition-colors">
+                  5 Bosqichli Zargarlik Ishlab Chiqarish Tizimi
+                </h2>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-gold-500/10 text-gold-400 border border-gold-500/30 font-semibold">
+                  Sanoat Zanjiri
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                Xomashyo kirimidan tortib tayyor zargarlik birkasigacha bo'lgan to'liq sanoat zanjiri
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2 self-end sm:self-center">
+            <span className="text-xs text-gold-400 font-semibold">
+              {isOpen ? "Yopish" : "Ochish"}
+            </span>
+            <div className="w-7 h-7 rounded-lg bg-[#141824] border border-luxury-border flex items-center justify-center text-slate-400 group-hover:text-white transition-colors">
+              {isOpen ? <ChevronUp className="w-4 h-4 text-gold-400" /> : <ChevronDown className="w-4 h-4" />}
+            </div>
           </div>
         </div>
 
-        {/* Stages Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-4">
+        {/* Stages Cards Grid (Shown when isOpen is true) */}
+        {isOpen && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-4 border-t border-luxury-border mt-4 animate-in fade-in duration-200">
           
           {/* Stage 1: Raw Material */}
           <div className="p-3.5 rounded-xl bg-[#141926] border border-luxury-border flex flex-col justify-between hover:border-gold-500/40 transition-all space-y-3">
@@ -291,7 +316,8 @@ export const JewelryPipelineHub = ({ onOpenNewOrder }) => {
             </div>
           </div>
 
-        </div>
+          </div>
+        )}
       </div>
 
       {/* ── MODAL 1: RAW MATERIAL INWARD (Xomashyo Kirimi) ── */}
