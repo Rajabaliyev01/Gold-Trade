@@ -46,6 +46,12 @@ export const Sidebar = () => {
       roles: ['admin', 'manager', 'craftsman'],
     },
     {
+      title: '5 Bosqichli Tizim',
+      path: '/pipeline',
+      icon: Sparkles,
+      roles: ['admin', 'manager'],
+    },
+    {
       title: 'Ombor (Inventar)',
       path: '/inventory',
       icon: Boxes,

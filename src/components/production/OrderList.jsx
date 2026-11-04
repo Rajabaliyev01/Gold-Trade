@@ -7,7 +7,6 @@ import { CraftsmanFinishModal } from './CraftsmanFinishModal';
 import { ManagerQCReviewModal } from './ManagerQCReviewModal';
 import { OrderTimelineModal } from './OrderTimelineModal';
 import { JewelryTagModal } from './JewelryTagModal';
-import { JewelryPipelineHub } from './JewelryPipelineHub';
 import { 
   Hammer, 
   Plus, 
@@ -23,9 +22,7 @@ import {
   Play,
   RotateCcw,
   Sparkles,
-  Info,
-  ChevronDown,
-  ChevronUp
+  Info
 } from 'lucide-react';
 
 export const OrderList = () => {
@@ -34,7 +31,6 @@ export const OrderList = () => {
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [isPipelineOpen, setIsPipelineOpen] = useState(false);
   
   // Modals state
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
@@ -96,41 +92,13 @@ export const OrderList = () => {
         </div>
 
         {isManagerOrAdmin && (
-          <div className="flex items-center space-x-2.5 flex-wrap gap-y-2 shrink-0">
-            {/* Toggle 5-Stage Pipeline Button */}
-            <button
-              type="button"
-              onClick={() => {
-                setIsPipelineOpen((prev) => !prev);
-                setTimeout(() => {
-                  const el = document.getElementById('jewelry-pipeline-hub');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
-              }}
-              className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
-                isPipelineOpen
-                  ? 'bg-gold-500/20 text-gold-300 border-gold-500/40 shadow-gold-sm'
-                  : 'bg-[#141824] hover:bg-[#1a2030] text-slate-300 border-luxury-border'
-              }`}
-            >
-              <Sparkles className="w-4 h-4 text-gold-400" />
-              <span>5 Bosqichli Tizim</span>
-              {isPipelineOpen ? (
-                <ChevronUp className="w-3.5 h-3.5 text-gold-400" />
-              ) : (
-                <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-              )}
-            </button>
-
-            {/* Create New Order Button */}
-            <button
-              onClick={() => setIsNewModalOpen(true)}
-              className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-gold-500 hover:from-amber-500 hover:to-gold-400 text-black font-bold text-xs transition-all shadow-gold-sm cursor-pointer"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Yangi Buyurtma Biriktirish</span>
-            </button>
-          </div>
+          <button
+            onClick={() => setIsNewModalOpen(true)}
+            className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-gold-500 hover:from-amber-500 hover:to-gold-400 text-black font-bold text-xs transition-all shadow-gold-sm cursor-pointer shrink-0"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Yangi Buyurtma Biriktirish</span>
+          </button>
         )}
       </div>
 
@@ -403,17 +371,6 @@ export const OrderList = () => {
           })
         )}
       </div>
-
-      {/* 5-Stage Jewelry Production Pipeline Hub (Ishlab chiqarishning tagida) */}
-      {isManagerOrAdmin && (
-        <div className="pt-4 border-t border-luxury-border/60">
-          <JewelryPipelineHub
-            onOpenNewOrder={() => setIsNewModalOpen(true)}
-            isOpen={isPipelineOpen}
-            onToggle={() => setIsPipelineOpen((prev) => !prev)}
-          />
-        </div>
-      )}
 
       {/* Modals */}
       <NewOrderModal isOpen={isNewModalOpen} onClose={() => setIsNewModalOpen(false)} />

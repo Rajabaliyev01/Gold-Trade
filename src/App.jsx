@@ -11,6 +11,7 @@ import { TransactionHistory } from './components/transactions/TransactionHistory
 import { TelegramSettings } from './components/settings/TelegramSettings';
 import { FactoryProfileModal } from './components/profile/FactoryProfileModal';
 import LoginPage from './pages/LoginPage';
+import JewelryPipelinePage from './pages/JewelryPipelinePage';
 import { useAuthStore } from './store/useAuthStore';
 import { Loader2 } from 'lucide-react';
 
@@ -72,6 +73,8 @@ export default function App() {
                 }
               />
               <Route path="/production" element={<OrderList />} />
+              <Route path="/pipeline" element={<JewelryPipelinePage />} />
+              <Route path="/production-pipeline" element={<Navigate to="/pipeline" replace />} />
               <Route path="/inventory" element={<InventoryList />} />
               <Route path="/pos" element={<POSTerminal />} />
               <Route path="/employees" element={<EmployeeList />} />
