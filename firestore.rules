@@ -2,7 +2,7 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Foydalanuvchi Admin yoki Zavod egasi ekanligini tekshirish
+    // Foydalanuvchi tizimga kirganligini tekshirish
     function isAuthenticated() {
       return request.auth != null;
     }
@@ -18,16 +18,16 @@ service cloud.firestore {
       allow read, write: if isAuthenticated();
     }
 
-    // Zavodlar va ularning hodimlari
+    // Zavodlar va ularning barcha ichki kolleksiyalari (ombor, hodimlar, buyurtmalar, kassa)
     match /factories/{factoryId} {
       allow read, write: if isAuthenticated();
       
-      match /employees/{employeeId} {
+      match /{allSubcollections=**} {
         allow read, write: if isAuthenticated();
       }
     }
 
-    // Ombor (xomashyo va tayyor mahsulotlar)
+    // Umumiy Ombor (eski moslik uchun)
     match /inventory/{document=**} {
       allow read, write: if isAuthenticated();
     }

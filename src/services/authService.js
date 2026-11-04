@@ -43,20 +43,15 @@ export async function signInWithGoogle() {
     }
     if (err.code === 'auth/operation-not-allowed') {
       throw new Error(
-        "Google bilan kirish Firebase Console'da yoqilmagan. Firebase Console -> Authentication -> Sign-in method bo'limidan Google ni yoqing."
+        "Google bilan kirish Firebase Console'da yoqilmagan. Firebase Console -> Authentication -> Sign-in method bo'limidan Google provayderini yoqing."
       );
     }
-    throw err;
+    throw new Error(err.message || "Google orqali kirishda xatolik yuz berdi.");
   }
 }
 
 /**
  * Create a new employee account for a given factory.
- * - Checks username uniqueness
- * - Creates Firebase Auth user using secondary Auth instance
- * - Stores employee in `factories/{factoryId}/employees/{uid}`
- * - Indexes by username in `employees_index/{username}`
- * - Indexes by uid in `employees_uid_index/{uid}`
  */
 export async function createEmployeeAccount(factoryId, { name, username, password, role, phone }) {
   const cleanUsername = username.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
@@ -137,8 +132,11 @@ export async function createEmployeeAccount(factoryId, { name, username, passwor
 export async function signInAsEmployee(username, password) {
   const cleanUsername = username.trim().toLowerCase();
 
-  if (!cleanUsername || !password) {
-    throw new Error("Foydalanuvchi nomi va parolni kiriting.");
+  if (!cleanUsername) {
+    throw new Error("Foydalanuvchi nomini (login) kiriting.");
+  }
+  if (!password) {
+    throw new Error("Parolni kiriting.");
   }
 
   // 1. Look up the employee index to find their authEmail
@@ -148,24 +146,43 @@ export async function signInAsEmployee(username, password) {
     indexSnap = await getDoc(indexRef);
   } catch (err) {
     console.error("Firestore lookup error:", err);
-    throw new Error("Tizim ma'lumotlar bazasiga ulanib bo'lmadi. Internetni tekshiring.");
+    throw new Error("Server bilan aloqa uzildi. Internet aloqasini tekshiring.");
   }
 
   if (!indexSnap.exists()) {
-    throw new Error(`"${username}" nomli hodim topilmadi. Foydalanuvchi nomini tekshiring.`);
+    throw new Error(`Bunday foydalanuvchi nomi (@${username}) topilmadi. Loginni tekshirib qayta kiriting.`);
   }
 
-  const { authEmail } = indexSnap.data();
+  const { authEmail, factoryId, uid } = indexSnap.data();
 
-  // 2. Sign in with Firebase Auth
+  // 2. Check employee status
+  try {
+    const empRef = doc(db, 'factories', factoryId, 'employees', uid);
+    const empSnap = await getDoc(empRef);
+    if (empSnap.exists() && empSnap.data().status === false) {
+      throw new Error("Sizning hisobingiz nofaol qilingan. Zavod ma'muriyatiga murojaat qiling.");
+    }
+  } catch (e) {
+    if (e.message && e.message.includes('nofaol')) throw e;
+  }
+
+  // 3. Sign in with Firebase Auth
   try {
     return await signInWithEmailAndPassword(auth, authEmail, password);
   } catch (err) {
-    if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
-      throw new Error("Kiritilgan parol noto'g'ri.");
+    console.warn("Firebase Auth signIn error:", err.code);
+    if (
+      err.code === 'auth/wrong-password' || 
+      err.code === 'auth/invalid-credential' ||
+      err.code === 'auth/invalid-login-credentials'
+    ) {
+      throw new Error("Kiritilgan parol noto'g'ri! Iltimos, parolni qaytadan tekshiring.");
     }
-    if (err.code === 'auth/user-disabled') {
-      throw new Error("Hisobingiz nofaol qilingan. Zavod ma'muriyatiga murojaat qiling.");
+    if (err.code === 'auth/user-not-found') {
+      throw new Error("Hodim hisobi topilmadi. Zavod egasiga murojaat qiling.");
+    }
+    if (err.code === 'auth/too-many-requests') {
+      throw new Error("Urinishlar soni ko'payib ketdi. Iltimos, birozdan keyin qayta urinib ko'ring.");
     }
     throw new Error(err.message || "Kirishda xatolik yuz berdi.");
   }

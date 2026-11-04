@@ -2,7 +2,7 @@
  * useAuthStore.js
  * Zustand store for authentication & employee management.
  * - Factory owners register/log in via Google (role: 'admin')
- * - Employees log in via username/password (role: 'craftsman' | 'cashier' | 'manager' | 'admin')
+ * - Employees log in via username/password (role: 'craftsman' | 'cashier' | 'seller' | 'manager' | 'admin')
  */
 
 import { create } from 'zustand';
@@ -23,14 +23,15 @@ import {
   createEmployeeAccount,
   signOutUser,
 } from '../services/authService';
+import { useInventoryStore } from './useInventoryStore';
 
 export const useAuthStore = create((set, get) => ({
   // ─── State ───────────────────────────────────────────────────────────────────
   currentUser: null,       // { uid, name, email, role, factoryId, username?, phone?, avatar? }
-  factory: null,           // { id, name, email, ownerUid } — only for factory owners
+  factory: null,           // { id, name, ownerName, email, phone, address, inn, ... }
   employees: [],           // list of factory employees (loaded for admin)
-  users: [],               // alias for employees (for backward compatibility with existing views)
-  loading: true,           // true until onAuthStateChanged fires
+  users: [],               // alias for employees (for backward compatibility)
+  loading: true,           // true ONLY during initial onAuthStateChanged boot
   isAuthenticated: false,
   error: null,
 
@@ -41,6 +42,7 @@ export const useAuthStore = create((set, get) => ({
   initAuth: () => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (!firebaseUser) {
+        useInventoryStore.getState().cleanupInventory();
         set({
           currentUser: null,
           factory: null,
@@ -62,11 +64,12 @@ export const useAuthStore = create((set, get) => ({
           const factoryData = factorySnap.data();
           const adminUser = {
             uid: firebaseUser.uid,
-            name: firebaseUser.displayName || factoryData.name || 'Zavod Egasi',
+            name: factoryData.ownerName || firebaseUser.displayName || factoryData.name || 'Zavod Egasi',
             email: firebaseUser.email,
             role: 'admin',
             factoryId: firebaseUser.uid,
             avatar: firebaseUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(firebaseUser.displayName || 'Zavod')}&background=d4af37&color=000`,
+            phone: factoryData.phone || '',
           };
 
           set({
@@ -79,6 +82,9 @@ export const useAuthStore = create((set, get) => ({
             isAuthenticated: true,
             error: null,
           });
+
+          // Sync isolated inventory for this factory
+          useInventoryStore.getState().initInventory(firebaseUser.uid);
 
           // Load employees list for factory owner
           get().loadEmployees();
@@ -111,21 +117,34 @@ export const useAuthStore = create((set, get) => ({
               avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(empData.name)}&background=141824&color=d4af37`,
             };
 
+            // Read factory data for branding
+            let factoryInfo = null;
+            try {
+              const fSnap = await getDoc(doc(db, 'factories', factoryId));
+              if (fSnap.exists()) {
+                factoryInfo = { id: factoryId, ...fSnap.data() };
+              }
+            } catch (e) {}
+
             set({
               currentUser: empUser,
-              factory: null,
+              factory: factoryInfo,
               employees: [],
               users: [empUser],
               loading: false,
               isAuthenticated: true,
               error: null,
             });
+
+            // Sync isolated inventory for this factory
+            useInventoryStore.getState().initInventory(factoryId);
             return;
           }
         }
 
         // Fallback: If not recognized, sign out
         await signOutUser();
+        useInventoryStore.getState().cleanupInventory();
         set({
           currentUser: null,
           factory: null,
@@ -148,28 +167,26 @@ export const useAuthStore = create((set, get) => ({
   },
 
   // ─── signInWithGoogle ────────────────────────────────────────────────────────
-  /**
-   * Factory owner registers or logs in with Google.
-   */
   signInWithGoogle: async () => {
-    set({ loading: true, error: null });
+    set({ error: null });
     try {
       const result = await _signInWithGoogle();
       const user = result.user;
 
-      // Check if factory document already exists
       const factoryRef = doc(db, 'factories', user.uid);
       const factorySnap = await getDoc(factoryRef);
 
       let factoryData;
       if (!factorySnap.exists()) {
-        // First-time registration: create the factory record
         factoryData = {
           name: user.displayName ? `${user.displayName} Zargarlik Zavodi` : 'Zargarlik Zavodi',
           ownerName: user.displayName || 'Zavod Egasi',
           email: user.email,
           ownerUid: user.uid,
           createdAt: new Date().toISOString(),
+          phone: '',
+          address: '',
+          allowedUgarRate: 2.0,
         };
         await setDoc(factoryRef, factoryData);
       } else {
@@ -178,43 +195,70 @@ export const useAuthStore = create((set, get) => ({
 
       const adminUser = {
         uid: user.uid,
-        name: user.displayName || factoryData.ownerName || 'Zavod Egasi',
+        name: factoryData.ownerName || user.displayName || 'Zavod Egasi',
         email: user.email,
         role: 'admin',
         factoryId: user.uid,
         avatar: user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || 'Zavod')}&background=d4af37&color=000`,
+        phone: factoryData.phone || '',
       };
 
       set({
         currentUser: adminUser,
         factory: { id: user.uid, ...factoryData },
-        loading: false,
         isAuthenticated: true,
         error: null,
       });
 
-      // Load employees list
+      useInventoryStore.getState().initInventory(user.uid);
       await get().loadEmployees();
+      return result;
     } catch (err) {
-      set({ loading: false, error: err.message });
+      set({ error: err.message });
       throw err;
     }
   },
 
   // ─── signInAsEmployee ────────────────────────────────────────────────────────
-  /**
-   * Employee logs in with username + password without registering.
-   */
   signInAsEmployee: async (username, password) => {
-    set({ loading: true, error: null });
+    set({ error: null });
     try {
       const result = await _signInAsEmployee(username, password);
-      // initAuth listener will automatically catch the auth state change and set currentUser.
       return result;
     } catch (err) {
-      set({ loading: false, error: err.message });
+      set({ error: err.message });
       throw err;
     }
+  },
+
+  // ─── updateFactoryProfile ────────────────────────────────────────────────────
+  updateFactoryProfile: async (profileData) => {
+    const { currentUser, factory } = get();
+    if (!currentUser || currentUser.role !== 'admin') {
+      throw new Error("Faqat zavod egasi o'z profilini o'zgartira oladi.");
+    }
+
+    const factoryId = currentUser.factoryId;
+    const factoryRef = doc(db, 'factories', factoryId);
+
+    const updatedDoc = {
+      ...factory,
+      ...profileData,
+      updatedAt: new Date().toISOString(),
+    };
+
+    await setDoc(factoryRef, updatedDoc, { merge: true });
+
+    set({
+      factory: updatedDoc,
+      currentUser: {
+        ...currentUser,
+        name: profileData.ownerName || currentUser.name,
+        phone: profileData.phone || currentUser.phone,
+      },
+    });
+
+    return updatedDoc;
   },
 
   // ─── signOut ─────────────────────────────────────────────────────────────────
@@ -222,6 +266,7 @@ export const useAuthStore = create((set, get) => ({
     try {
       await signOutUser();
     } finally {
+      useInventoryStore.getState().cleanupInventory();
       set({
         currentUser: null,
         factory: null,
@@ -315,9 +360,6 @@ export const useAuthStore = create((set, get) => ({
   },
 
   // ─── updateCraftsmanBalance ──────────────────────────────────────────────────
-  /**
-   * Update craftsman's gold balance in state and Firestore
-   */
   updateCraftsmanBalance: async (craftsmanId, weightDelta, orderCompleted = false, lossRate = null) => {
     const { currentUser, employees } = get();
 
@@ -348,7 +390,6 @@ export const useAuthStore = create((set, get) => ({
 
     set({ employees: updatedEmployees, users: updatedEmployees });
 
-    // Sync to Firestore if admin
     try {
       const factoryId = currentUser?.factoryId;
       if (factoryId) {

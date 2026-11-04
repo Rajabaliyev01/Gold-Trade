@@ -185,9 +185,10 @@ export const AddEmployeeModal = ({ isOpen, onClose }) => {
             <div className="grid grid-cols-2 gap-2.5">
               {[
                 { id: 'craftsman', label: 'Zargar Usta', desc: 'Ishlab chiqarish & ugar nazorati' },
+                { id: 'seller', label: 'Sotuvchi', desc: 'Tayyor mahsulotlar savdosi & xaridorlar' },
                 { id: 'cashier', label: 'Kassir / POS', desc: 'Savdo va kassa terminali' },
                 { id: 'manager', label: 'Menejer', desc: 'Ombor & buyurtmalar boshqaruvi' },
-                { id: 'admin', label: 'Administrator', desc: "To'liq huquqlar" },
+                { id: 'admin', label: 'Administrator', desc: "To'liq boshqaruv huquqlari" },
               ].map((r) => (
                 <label
                   key={r.id}

@@ -18,7 +18,8 @@ import {
   Sparkles,
   Phone,
   Lock,
-  UserCheck
+  UserCheck,
+  ShoppingBag
 } from 'lucide-react';
 
 export const EmployeeList = () => {
@@ -38,6 +39,11 @@ export const EmployeeList = () => {
       label: 'Zargar Usta',
       icon: Hammer,
       badgeColor: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+    },
+    seller: {
+      label: 'Sotuvchi',
+      icon: ShoppingBag,
+      badgeColor: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
     },
     cashier: {
       label: 'Kassir / POS',
@@ -60,6 +66,7 @@ export const EmployeeList = () => {
   const filteredEmployees = employees.filter((emp) => {
     if (activeTab === 'all') return true;
     if (activeTab === 'craftsman') return emp.role === 'craftsman';
+    if (activeTab === 'seller') return emp.role === 'seller';
     if (activeTab === 'cashier') return emp.role === 'cashier';
     if (activeTab === 'manager') return emp.role === 'manager' || emp.role === 'admin';
     return true;
@@ -167,6 +174,7 @@ export const EmployeeList = () => {
         {[
           { id: 'all', label: 'Barchasi', count: employees.length },
           { id: 'craftsman', label: 'Zargar Ustalar', count: craftsmen.length },
+          { id: 'seller', label: 'Sotuvchilar', count: employees.filter((e) => e.role === 'seller').length },
           { id: 'cashier', label: 'Kassirlar', count: employees.filter((e) => e.role === 'cashier').length },
           { id: 'manager', label: 'Boshqaruv & Menejerlar', count: employees.filter((e) => e.role === 'manager' || e.role === 'admin').length },
         ].map((tab) => (

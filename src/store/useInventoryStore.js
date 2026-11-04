@@ -1,49 +1,166 @@
 import { create } from 'zustand';
-import { INITIAL_INVENTORY } from '../services/mockData';
+import { db } from '../services/firebase';
+import { 
+  collection, 
+  doc, 
+  setDoc, 
+  updateDoc, 
+  deleteDoc, 
+  onSnapshot 
+} from 'firebase/firestore';
 
-const STORAGE_KEY = 'gold_erp_inventory';
+let unsubscribeInventory = null;
 
 export const useInventoryStore = create((set, get) => ({
-  items: JSON.parse(localStorage.getItem(STORAGE_KEY)) || INITIAL_INVENTORY,
+  items: [],
+  currentFactoryId: null,
+  loading: false,
 
+  // Initialize real-time inventory sync for a specific factory (Multi-tenant isolation)
+  initInventory: (factoryId) => {
+    if (!factoryId) return;
+
+    // If already subscribed to the same factory, keep it
+    if (get().currentFactoryId === factoryId && unsubscribeInventory) return;
+
+    // Unsubscribe previous factory listener if any
+    if (unsubscribeInventory) {
+      unsubscribeInventory();
+      unsubscribeInventory = null;
+    }
+
+    set({ currentFactoryId: factoryId, loading: true });
+
+    // Load from cached localStorage first for instant UI response
+    const cacheKey = `gold_erp_inventory_${factoryId}`;
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        set({ items: JSON.parse(cached) });
+      }
+    } catch (e) {}
+
+    // Subscribe to Firestore: factories/{factoryId}/inventory
+    try {
+      const colRef = collection(db, 'factories', factoryId, 'inventory');
+      unsubscribeInventory = onSnapshot(
+        colRef,
+        (snapshot) => {
+          const items = [];
+          snapshot.forEach((d) => {
+            items.push({ id: d.id, ...d.data() });
+          });
+
+          // Sort by newest first
+          items.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+
+          set({ items, loading: false });
+          try {
+            localStorage.setItem(cacheKey, JSON.stringify(items));
+          } catch (e) {}
+        },
+        (error) => {
+          console.warn("Firestore inventory sync warning:", error);
+          set({ loading: false });
+        }
+      );
+    } catch (err) {
+      console.warn("initInventory error:", err);
+      set({ loading: false });
+    }
+  },
+
+  cleanupInventory: () => {
+    if (unsubscribeInventory) {
+      unsubscribeInventory();
+      unsubscribeInventory = null;
+    }
+    set({ items: [], currentFactoryId: null, loading: false });
+  },
+
+  // Save items to local cache and state
   save: (newItems) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(newItems));
+    const factoryId = get().currentFactoryId;
+    if (factoryId) {
+      try {
+        localStorage.setItem(`gold_erp_inventory_${factoryId}`, JSON.stringify(newItems));
+      } catch (e) {}
+    }
     set({ items: newItems });
   },
 
-  // Add new inventory item (raw gold, gemstone, finished product)
-  addItem: (itemData) => {
+  // Add new inventory item to Firestore (factories/{factoryId}/inventory/{id})
+  addItem: async (itemData) => {
+    const factoryId = get().currentFactoryId;
     const newItem = {
       id: 'inv_' + Date.now(),
       created_at: new Date().toISOString(),
       status: 'in_stock',
+      factoryId: factoryId || null,
       ...itemData,
       weight: parseFloat(itemData.weight) || 0,
       purity: itemData.purity ? parseInt(itemData.purity, 10) : null,
+      price_per_gram: parseFloat(itemData.price_per_gram) || 0,
+      selling_price: parseFloat(itemData.selling_price) || 0,
     };
+
+    // Update local state immediately
     const updated = [newItem, ...get().items];
     get().save(updated);
+
+    // Sync to Firestore if factoryId is active
+    if (factoryId && db) {
+      try {
+        const docRef = doc(db, 'factories', factoryId, 'inventory', newItem.id);
+        await setDoc(docRef, newItem);
+      } catch (err) {
+        console.error("Firestore addItem error:", err);
+      }
+    }
+
     return newItem;
   },
 
-  // Update item
-  updateItem: (id, updates) => {
+  // Update item in Firestore
+  updateItem: async (id, updates) => {
+    const factoryId = get().currentFactoryId;
     const updated = get().items.map((item) =>
-      item.id === id ? { ...item, ...updates } : item
+      item.id === id ? { ...item, ...updates, updatedAt: new Date().toISOString() } : item
     );
     get().save(updated);
+
+    if (factoryId && db) {
+      try {
+        const docRef = doc(db, 'factories', factoryId, 'inventory', id);
+        await updateDoc(docRef, { ...updates, updatedAt: new Date().toISOString() });
+      } catch (err) {
+        console.error("Firestore updateItem error:", err);
+      }
+    }
   },
 
-  // Remove item
-  removeItem: (id) => {
+  // Remove item from Firestore
+  removeItem: async (id) => {
+    const factoryId = get().currentFactoryId;
     const updated = get().items.filter((item) => item.id !== id);
     get().save(updated);
+
+    if (factoryId && db) {
+      try {
+        const docRef = doc(db, 'factories', factoryId, 'inventory', id);
+        await deleteDoc(docRef);
+      } catch (err) {
+        console.error("Firestore removeItem error:", err);
+      }
+    }
   },
 
   // Deduct weight from raw gold inventory when assigning to craftsman
-  deductRawGold: (purity, weight) => {
+  deductRawGold: async (purity, weight) => {
     const deductWeight = parseFloat(weight);
     let remainingToDeduct = deductWeight;
+
+    const itemsToUpdate = [];
 
     const updated = get().items.map((item) => {
       if (item.type === 'raw_gold' && item.purity === parseInt(purity, 10) && item.status === 'in_stock') {
@@ -51,9 +168,11 @@ export const useInventoryStore = create((set, get) => ({
           if (item.weight >= remainingToDeduct) {
             const newWeight = Math.round((item.weight - remainingToDeduct) * 1000) / 1000;
             remainingToDeduct = 0;
+            itemsToUpdate.push({ id: item.id, weight: newWeight });
             return { ...item, weight: newWeight };
           } else {
             remainingToDeduct -= item.weight;
+            itemsToUpdate.push({ id: item.id, weight: 0 });
             return { ...item, weight: 0 };
           }
         }
@@ -62,6 +181,12 @@ export const useInventoryStore = create((set, get) => ({
     });
 
     get().save(updated);
+
+    // Sync updated docs to Firestore
+    for (const u of itemsToUpdate) {
+      get().updateItem(u.id, { weight: u.weight });
+    }
+
     return remainingToDeduct === 0;
   },
 

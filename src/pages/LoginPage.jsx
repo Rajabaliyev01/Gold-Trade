@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
-import { Sparkles, User, Lock, LogIn, Loader2, AlertCircle } from 'lucide-react';
+import { Sparkles, User, Lock, LogIn, Loader2, AlertCircle, ShieldAlert } from 'lucide-react';
 
 // Google "G" icon SVG
 const GoogleIcon = () => (
@@ -13,7 +13,7 @@ const GoogleIcon = () => (
 );
 
 export default function LoginPage() {
-  const { signInWithGoogle, signInAsEmployee, loading, error } = useAuthStore();
+  const { signInWithGoogle, signInAsEmployee } = useAuthStore();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -28,7 +28,7 @@ export default function LoginPage() {
     try {
       await signInWithGoogle();
     } catch (err) {
-      setGoogleError(err.message || 'Google bilan kirish muvaffaqiyatsiz');
+      setGoogleError(err.message || 'Google bilan kirish muvaffaqiyatsiz bo\'ldi.');
     } finally {
       setGoogleLoading(false);
     }
@@ -37,30 +37,29 @@ export default function LoginPage() {
   const handleEmployeeSignIn = async (e) => {
     e.preventDefault();
     setEmpError('');
-    if (!username.trim() || !password.trim()) {
-      setEmpError('Foydalanuvchi nomi va parolni kiriting');
+
+    const cleanUser = username.trim();
+    if (!cleanUser) {
+      setEmpError('Foydalanuvchi nomini (login) kiriting');
       return;
     }
+    if (!password) {
+      setEmpError('Parolni kiriting');
+      return;
+    }
+
     setEmpLoading(true);
     try {
-      await signInAsEmployee(username.trim(), password);
+      await signInAsEmployee(cleanUser, password);
     } catch (err) {
-      setEmpError(err.message || 'Kirish muvaffaqiyatsiz');
+      setEmpError(err.message || 'Login yoki parol xato! Qaytadan tekshiring.');
     } finally {
       setEmpLoading(false);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#0b0e14] flex items-center justify-center">
-        <Loader2 className="w-10 h-10 text-gold-400 animate-spin" />
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-[#0b0e14] flex flex-col items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-[#0b0e14] flex flex-col items-center justify-center p-4 relative overflow-hidden font-sans text-slate-100">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-gold-500/5 blur-3xl" />
@@ -69,7 +68,7 @@ export default function LoginPage() {
       </div>
 
       {/* Logo */}
-      <div className="relative mb-10 flex flex-col items-center">
+      <div className="relative mb-8 flex flex-col items-center text-center">
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-600 via-gold-500 to-yellow-300 p-[2px] shadow-gold mb-4">
           <div className="w-full h-full bg-[#0b0e14] rounded-2xl flex items-center justify-center">
             <Sparkles className="w-8 h-8 text-gold-400" />
@@ -78,7 +77,7 @@ export default function LoginPage() {
         <h1 className="text-3xl font-extrabold tracking-widest gold-gradient-text uppercase">
           Gold Trade
         </h1>
-        <span className="text-xs font-semibold uppercase tracking-widest px-2 py-0.5 rounded bg-gold-500/10 text-gold-400 border border-gold-500/30 mt-1">
+        <span className="text-xs font-semibold uppercase tracking-widest px-2.5 py-0.5 rounded bg-gold-500/10 text-gold-400 border border-gold-500/30 mt-1">
           ERP 2.0
         </span>
         <p className="text-sm text-slate-400 mt-2">Zargarlik Ishlab Chiqarish &amp; Kassa Tizimi</p>
@@ -87,109 +86,129 @@ export default function LoginPage() {
       {/* Login cards */}
       <div className="relative w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* ── Left: Factory owner Google sign-in ── */}
-        <div className="bg-[#0f131d] border border-luxury-border rounded-2xl p-8 flex flex-col items-center space-y-6 shadow-2xl">
-          <div className="text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gold-500/10 border border-gold-500/30 mb-3">
-              <Sparkles className="w-6 h-6 text-gold-400" />
+        <div className="bg-[#0f131d] border border-luxury-border rounded-2xl p-7 flex flex-col justify-between space-y-6 shadow-2xl">
+          <div className="space-y-4">
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gold-500/10 border border-gold-500/30 mb-3">
+                <Sparkles className="w-6 h-6 text-gold-400" />
+              </div>
+              <h2 className="text-lg font-bold text-slate-100">Zavod Egasi</h2>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Zavod boshqaruvi uchun Google hisobingiz orqali kiring
+              </p>
             </div>
-            <h2 className="text-lg font-bold text-slate-100">Zavod Egasi</h2>
-            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-              Zavod egasi sifatida Google bilan kirish
-            </p>
+
+            <div className="w-full border-t border-luxury-border" />
+
+            {/* Google error alert block */}
+            {googleError && (
+              <div className="w-full p-3.5 rounded-xl bg-rose-950/40 border border-rose-500/40 text-rose-200 text-xs flex items-start space-x-2.5 animate-in fade-in slide-in-from-top-1">
+                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="font-semibold text-rose-300">Google orqali kirishda xatolik</p>
+                  <p className="text-[11px] text-rose-200/90 mt-0.5">{googleError}</p>
+                </div>
+              </div>
+            )}
           </div>
 
-          <div className="w-full border-t border-luxury-border" />
+          <div className="space-y-4">
+            <button
+              onClick={handleGoogleSignIn}
+              disabled={googleLoading}
+              className="w-full flex items-center justify-center space-x-3 py-3 px-5 rounded-xl bg-white hover:bg-gray-100 text-gray-800 font-semibold text-sm transition-all duration-200 disabled:opacity-60 shadow-lg cursor-pointer"
+            >
+              {googleLoading ? (
+                <Loader2 className="w-5 h-5 animate-spin text-gray-600" />
+              ) : (
+                <GoogleIcon />
+              )}
+              <span>Google bilan kirish</span>
+            </button>
 
-          {googleError && (
-            <div className="w-full flex items-start space-x-2 p-3 rounded-lg bg-rose-900/20 border border-rose-500/30 text-rose-300 text-xs">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-              <span>{googleError}</span>
-            </div>
-          )}
-
-          <button
-            onClick={handleGoogleSignIn}
-            disabled={googleLoading}
-            className="w-full flex items-center justify-center space-x-3 py-3 px-5 rounded-xl bg-white hover:bg-gray-100 text-gray-800 font-semibold text-sm transition-all duration-200 disabled:opacity-60 shadow-lg"
-          >
-            {googleLoading ? (
-              <Loader2 className="w-5 h-5 animate-spin text-gray-600" />
-            ) : (
-              <GoogleIcon />
-            )}
-            <span>Google bilan kirish</span>
-          </button>
-
-          <p className="text-[11px] text-slate-500 text-center leading-relaxed">
-            Birinchi kirishda zavod avtomatik yaratiladi
-          </p>
+            <p className="text-[11px] text-slate-500 text-center leading-relaxed">
+              Birinchi kirishda zavod avtomatik yaratiladi
+            </p>
+          </div>
         </div>
 
         {/* ── Right: Employee username/password login ── */}
-        <div className="bg-[#0f131d] border border-luxury-border rounded-2xl p-8 flex flex-col space-y-6 shadow-2xl">
-          <div className="text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 mb-3">
-              <User className="w-6 h-6 text-blue-400" />
+        <div className="bg-[#0f131d] border border-luxury-border rounded-2xl p-7 flex flex-col justify-between space-y-5 shadow-2xl">
+          <div>
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 mb-3">
+                <User className="w-6 h-6 text-blue-400" />
+              </div>
+              <h2 className="text-lg font-bold text-slate-100">Hodim Kirishi</h2>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                Zavod bergan login va parol bilan tizimga kiring
+              </p>
             </div>
-            <h2 className="text-lg font-bold text-slate-100">Hodim Kirishi</h2>
-            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-              Foydalanuvchi nomi va parol bilan kirish
-            </p>
-          </div>
 
-          <div className="w-full border-t border-luxury-border" />
+            <div className="w-full border-t border-luxury-border my-4" />
 
-          <form onSubmit={handleEmployeeSignIn} className="flex flex-col space-y-4">
+            {/* Prominent Login or Password Error Block */}
             {empError && (
-              <div className="flex items-start space-x-2 p-3 rounded-lg bg-rose-900/20 border border-rose-500/30 text-rose-300 text-xs">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                <span>{empError}</span>
+              <div className="mb-4 p-3.5 rounded-xl bg-rose-950/50 border-2 border-rose-500/60 text-rose-200 text-xs flex items-start space-x-2.5 animate-in fade-in slide-in-from-top-2 shadow-lg shadow-rose-950/30">
+                <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="font-bold text-rose-300 text-xs">Login yoki parol noto'g'ri!</p>
+                  <p className="text-[11px] text-rose-200/95 mt-0.5 leading-relaxed">{empError}</p>
+                </div>
               </div>
             )}
 
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-300">Foydalanuvchi nomi</label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="username"
-                  autoComplete="username"
-                  className="w-full pl-9 pr-3 py-2.5 rounded-lg bg-[#141824] border border-luxury-border text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30 transition-all"
-                />
+            <form onSubmit={handleEmployeeSignIn} className="flex flex-col space-y-3.5">
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-300">Foydalanuvchi nomi (Login)</label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => {
+                      setUsername(e.target.value);
+                      if (empError) setEmpError('');
+                    }}
+                    placeholder="Masalan: usta_farhod"
+                    autoComplete="username"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-[#141824] border border-luxury-border text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30 transition-all font-mono"
+                  />
+                </div>
               </div>
-            </div>
 
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-300">Parol</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  autoComplete="current-password"
-                  className="w-full pl-9 pr-3 py-2.5 rounded-lg bg-[#141824] border border-luxury-border text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30 transition-all"
-                />
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-300">Parol</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (empError) setEmpError('');
+                    }}
+                    placeholder="••••••••"
+                    autoComplete="current-password"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-[#141824] border border-luxury-border text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30 transition-all"
+                  />
+                </div>
               </div>
-            </div>
 
-            <button
-              type="submit"
-              disabled={empLoading}
-              className="w-full flex items-center justify-center space-x-2 py-2.5 px-5 rounded-xl bg-gradient-to-r from-gold-600 to-amber-500 hover:from-gold-500 hover:to-amber-400 text-black font-bold text-sm transition-all duration-200 disabled:opacity-60 shadow-gold-sm"
-            >
-              {empLoading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <LogIn className="w-4 h-4" />
-              )}
-              <span>Kirish</span>
-            </button>
-          </form>
+              <button
+                type="submit"
+                disabled={empLoading}
+                className="w-full mt-2 flex items-center justify-center space-x-2 py-3 px-5 rounded-xl bg-gradient-to-r from-gold-600 to-amber-500 hover:from-gold-500 hover:to-amber-400 text-black font-bold text-sm transition-all duration-200 disabled:opacity-60 shadow-gold-sm cursor-pointer"
+              >
+                {empLoading ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-black" />
+                ) : (
+                  <LogIn className="w-4 h-4 text-black" />
+                )}
+                <span>{empLoading ? 'Tekshirilmoqda...' : 'Tizimga Kirish'}</span>
+              </button>
+            </form>
+          </div>
 
           <p className="text-[11px] text-slate-500 text-center leading-relaxed">
             Hisobingiz yo'qmi? Zavod egasiga murojaat qiling
@@ -198,8 +217,8 @@ export default function LoginPage() {
       </div>
 
       {/* Footer */}
-      <p className="relative mt-10 text-xs text-slate-600">
-        © 2026 Gold Trade ERP — Barcha huquqlar himoyalangan
+      <p className="relative mt-8 text-xs text-slate-600">
+        © 2026 Gold Trade ERP — Zargarlik Ishlab Chiqarish &amp; Kassa Tizimi
       </p>
     </div>
   );

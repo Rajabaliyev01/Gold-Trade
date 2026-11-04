@@ -9,6 +9,7 @@ import { POSTerminal } from './components/pos/POSTerminal';
 import { EmployeeList } from './components/employees/EmployeeList';
 import { TransactionHistory } from './components/transactions/TransactionHistory';
 import { TelegramSettings } from './components/settings/TelegramSettings';
+import { FactoryProfileModal } from './components/profile/FactoryProfileModal';
 import LoginPage from './pages/LoginPage';
 import { useAuthStore } from './store/useAuthStore';
 import { Loader2 } from 'lucide-react';
@@ -52,10 +53,10 @@ export default function App() {
         <Navbar />
 
         {/* Content with Sidebar */}
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex overflow-hidden relative">
           <Sidebar />
 
-          <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 bg-gradient-to-b from-[#0b0e14] via-[#0e121b] to-[#0b0e14]">
+          <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 lg:p-8 bg-gradient-to-b from-[#0b0e14] via-[#0e121b] to-[#0b0e14]">
             <Routes>
               {/* Dashboard is default for admin and manager */}
               <Route
@@ -63,7 +64,7 @@ export default function App() {
                 element={
                   role === 'craftsman' ? (
                     <Navigate to="/production" replace />
-                  ) : role === 'cashier' ? (
+                  ) : (role === 'cashier' || role === 'seller') ? (
                     <Navigate to="/pos" replace />
                   ) : (
                     <Dashboard />
@@ -81,6 +82,9 @@ export default function App() {
             </Routes>
           </main>
         </div>
+
+        {/* Factory Profile Modal */}
+        <FactoryProfileModal />
       </div>
     </BrowserRouter>
   );
