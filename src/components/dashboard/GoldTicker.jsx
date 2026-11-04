@@ -77,12 +77,12 @@ export const GoldTicker = () => {
               <TrendingUp className="w-4 h-4" />
             </div>
             <h2 className="text-sm font-bold text-white flex items-center space-x-2">
-              <span>Haqiqiy Real-Vaqt Oltin va Valyuta API Kotirovkalari</span>
+              <span>Haqiqiy Real-Vaqt Oltin va Valyuta kursi Kotirovkalari</span>
             </h2>
 
             <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono flex items-center space-x-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>LIVE API</span>
+              <span>LIVE PRICES</span>
             </span>
           </div>
 
