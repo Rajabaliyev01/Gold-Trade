@@ -19,6 +19,10 @@ import {
 } from 'firebase/firestore';
 import {
   signInWithGoogle as _signInWithGoogle,
+  signInWithGoogleRedirect as _signInWithGoogleRedirect,
+  checkGoogleRedirectResult,
+  signInFactoryWithEmail as _signInFactoryWithEmail,
+  registerFactoryWithEmail as _registerFactoryWithEmail,
   signInAsEmployee as _signInAsEmployee,
   createEmployeeAccount,
   signOutUser,
@@ -41,6 +45,9 @@ export const useAuthStore = create((set, get) => ({
    * Start the Firebase Auth listener. Call once on app mount.
    */
   initAuth: () => {
+    // Check if returning from a Google redirect
+    checkGoogleRedirectResult().catch(() => {});
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (!firebaseUser) {
         useInventoryStore.getState().cleanupInventory();
@@ -150,7 +157,57 @@ export const useAuthStore = create((set, get) => ({
           }
         }
 
-        // Fallback: If not recognized, sign out
+        // 3. Not an existing factory doc and not an employee ->
+        // This is a NEW factory owner (via Google login or email registration)!
+        const isEmployeeEmail = firebaseUser.email && firebaseUser.email.endsWith('@goldtrade.uz');
+        if (!isEmployeeEmail) {
+          console.info("Creating new factory for owner:", firebaseUser.uid);
+          const newFactoryData = {
+            name: firebaseUser.displayName ? `${firebaseUser.displayName} Zargarlik Zavodi` : 'Zargarlik Zavodi',
+            ownerName: firebaseUser.displayName || (firebaseUser.email ? firebaseUser.email.split('@')[0] : 'Zavod Egasi'),
+            email: firebaseUser.email || '',
+            ownerUid: firebaseUser.uid,
+            createdAt: new Date().toISOString(),
+            phone: '',
+            address: '',
+            allowedUgarRate: 2.0,
+          };
+
+          try {
+            await setDoc(factoryRef, newFactoryData);
+          } catch (writeErr) {
+            console.error("Failed to write new factory document:", writeErr);
+          }
+
+          const adminUser = {
+            uid: firebaseUser.uid,
+            name: newFactoryData.ownerName,
+            email: firebaseUser.email,
+            role: 'admin',
+            factoryId: firebaseUser.uid,
+            avatar: firebaseUser.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(newFactoryData.ownerName)}&background=d4af37&color=000`,
+            phone: '',
+          };
+
+          set({
+            currentUser: adminUser,
+            factory: {
+              id: firebaseUser.uid,
+              ...newFactoryData,
+            },
+            loading: false,
+            isAuthenticated: true,
+            error: null,
+          });
+
+          // Sync isolated inventory and production orders for this factory
+          useInventoryStore.getState().initInventory(firebaseUser.uid);
+          useProductionStore.getState().initProductionOrders(firebaseUser.uid);
+          get().loadEmployees();
+          return;
+        }
+
+        // 4. Only orphaned employee accounts get signed out
         await signOutUser();
         useInventoryStore.getState().cleanupInventory();
         useProductionStore.getState().cleanupProductionOrders();
@@ -180,6 +237,10 @@ export const useAuthStore = create((set, get) => ({
     set({ error: null });
     try {
       const result = await _signInWithGoogle();
+      if (!result || !result.user) {
+        // Redirection initiated or handled by onAuthStateChanged
+        return null;
+      }
       const user = result.user;
 
       const factoryRef = doc(db, 'factories', user.uid);
@@ -223,6 +284,39 @@ export const useAuthStore = create((set, get) => ({
       useProductionStore.getState().initProductionOrders(user.uid);
       await get().loadEmployees();
       return result;
+    } catch (err) {
+      set({ error: err.message });
+      throw err;
+    }
+  },
+
+  // ─── signInWithGoogleRedirect ────────────────────────────────────────────────
+  signInWithGoogleRedirect: async () => {
+    set({ error: null });
+    try {
+      await _signInWithGoogleRedirect();
+    } catch (err) {
+      set({ error: err.message });
+      throw err;
+    }
+  },
+
+  // ─── signInFactoryWithEmail ──────────────────────────────────────────────────
+  signInFactoryWithEmail: async (email, password) => {
+    set({ error: null });
+    try {
+      return await _signInFactoryWithEmail(email, password);
+    } catch (err) {
+      set({ error: err.message });
+      throw err;
+    }
+  },
+
+  // ─── registerFactoryWithEmail ────────────────────────────────────────────────
+  registerFactoryWithEmail: async (email, password, factoryName, ownerName) => {
+    set({ error: null });
+    try {
+      return await _registerFactoryWithEmail(email, password, factoryName, ownerName);
     } catch (err) {
       set({ error: err.message });
       throw err;

@@ -1,6 +1,6 @@
 /**
  * authService.js
- * Firebase Auth helpers for factory owners (Google) and employees (username/password)
+ * Firebase Auth helpers for factory owners (Google & Email) and employees (username/password)
  */
 
 import { initializeApp, getApps } from 'firebase/app';
@@ -35,13 +35,24 @@ function getSecondaryAuth() {
 }
 
 /**
- * Sign in a factory owner via Google popup (with automatic redirect fallback for mobile).
+ * Sign in a factory owner via Google Popup with automatic redirect fallback
  */
 export async function signInWithGoogle() {
+  // On mobile or small touch screens, popups are frequently blocked by Safari/Chrome;
+  // Use redirect directly for seamless mobile experience.
+  const isMobile = typeof window !== 'undefined' && (
+    window.innerWidth < 768 || 
+    /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
+  );
+
+  if (isMobile) {
+    return signInWithGoogleRedirect();
+  }
+
   try {
     return await signInWithPopup(auth, googleProvider);
   } catch (err) {
-    console.error("signInWithGoogle error code:", err.code, err);
+    console.warn("signInWithPopup error code:", err.code, err.message);
 
     if (err.code === 'auth/popup-closed-by-user') {
       throw new Error("Google oynasi yopildi. Qaytadan urinib ko'ring.");
@@ -54,20 +65,15 @@ export async function signInWithGoogle() {
       );
     }
 
-    if (err.code === 'auth/operation-not-allowed') {
-      throw new Error(
-        "Google bilan kirish Firebase Console'da yoqilmagan. Firebase Console -> Authentication -> Sign-in method bo'limidan Google provayderini yoqing."
-      );
-    }
-
-    // On mobile devices where popups are blocked by Safari/Chrome, fallback to redirect
-    if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-popup-request') {
-      try {
-        await signInWithRedirect(auth, googleProvider);
-        return;
-      } catch (redirectErr) {
-        throw new Error(redirectErr.message || "Brauzer popup oynani blokladi.");
-      }
+    // Popup was blocked or cross-origin policy blocked the window -> use redirect fallback
+    if (
+      err.code === 'auth/popup-blocked' ||
+      err.code === 'auth/cancelled-popup-request' ||
+      err.code === 'auth/internal-error' ||
+      (err.message && err.message.includes('Cross-Origin-Opener-Policy'))
+    ) {
+      console.info("Popup blocked or COOP error. Falling back to signInWithRedirect...");
+      return await signInWithGoogleRedirect();
     }
 
     throw new Error(err.message || "Google orqali kirishda xatolik yuz berdi.");
@@ -75,7 +81,24 @@ export async function signInWithGoogle() {
 }
 
 /**
- * Check if the user is returning from a Google signInWithRedirect
+ * Direct Google Redirect sign in (bypasses all COOP and popup blocker restrictions)
+ */
+export async function signInWithGoogleRedirect() {
+  try {
+    return await signInWithRedirect(auth, googleProvider);
+  } catch (err) {
+    if (err.code === 'auth/unauthorized-domain') {
+      const currentHost = typeof window !== 'undefined' ? window.location.hostname : 'ushbu domen';
+      throw new Error(
+        `"${currentHost}" domeni Firebase Console'da ruxsat berilgan domenlar ro'yxatiga kiritilmagan. Firebase Console -> Authentication -> Settings -> Authorized domains ga ushbu domenni qo'shing.`
+      );
+    }
+    throw err;
+  }
+}
+
+/**
+ * Check if returning from a Google redirect
  */
 export async function checkGoogleRedirectResult() {
   try {
@@ -83,6 +106,53 @@ export async function checkGoogleRedirectResult() {
   } catch (err) {
     console.warn("getRedirectResult warning:", err);
     return null;
+  }
+}
+
+/**
+ * Factory owner Email/Password registration (fallback for environments blocking Google OAuth)
+ */
+export async function registerFactoryWithEmail(email, password, factoryName, ownerName) {
+  if (!email || !password) {
+    throw new Error("Email va parolni kiriting.");
+  }
+  if (password.length < 6) {
+    throw new Error("Parol kamida 6 ta belgidan iborat bo'lishi kerak.");
+  }
+
+  const cred = await createUserWithEmailAndPassword(auth, email, password);
+  const uid = cred.user.uid;
+
+  const factoryData = {
+    name: factoryName || 'Zargarlik Zavodi',
+    ownerName: ownerName || 'Zavod Egasi',
+    email,
+    ownerUid: uid,
+    createdAt: new Date().toISOString(),
+    allowedUgarRate: 2.0,
+  };
+
+  await setDoc(doc(db, 'factories', uid), factoryData);
+  return { user: cred.user, factoryData };
+}
+
+/**
+ * Factory owner Email/Password login
+ */
+export async function signInFactoryWithEmail(email, password) {
+  if (!email || !password) {
+    throw new Error("Email va parolni kiriting.");
+  }
+  try {
+    return await signInWithEmailAndPassword(auth, email, password);
+  } catch (err) {
+    if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+      throw new Error("Kiritilgan email yoki parol noto'g'ri.");
+    }
+    if (err.code === 'auth/user-not-found') {
+      throw new Error("Bunday email bilan zavod egasi topilmadi.");
+    }
+    throw new Error(err.message || "Kirishda xatolik yuz berdi.");
   }
 }
 
