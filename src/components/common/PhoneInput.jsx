@@ -2,39 +2,41 @@ import React from 'react';
 import { Phone } from 'lucide-react';
 
 /**
- * Extract and format 9-digit Uzbekistan phone number as: XX XXX XX XX
- * e.g. 90 123 45 67
+ * Extract only the 9 local digits from an Uzbek phone number string
+ * e.g. "+998 99 899 89" -> "9989989"
+ * e.g. "+998 90 123 45 67" -> "901234567"
  */
-export function formatUzbekPhoneDigits(val) {
+export function extractLocalDigits(val) {
   if (!val) return '';
-  let digits = String(val).replace(/\D/g, '');
-  if (digits.startsWith('998') && digits.length > 9) {
-    digits = digits.slice(3);
+  let str = String(val).trim();
+  // Strip leading +998 only if it starts with +998
+  if (str.startsWith('+998')) {
+    str = str.slice(4);
+  } else if (str.startsWith('998') && str.replace(/\D/g, '').length > 9) {
+    str = str.slice(3);
   }
-  digits = digits.slice(0, 9);
-
-  let formatted = '';
-  if (digits.length > 0) formatted += digits.slice(0, 2);
-  if (digits.length > 2) formatted += ' ' + digits.slice(2, 5);
-  if (digits.length > 5) formatted += ' ' + digits.slice(5, 7);
-  if (digits.length > 7) formatted += ' ' + digits.slice(7, 9);
-
-  return formatted;
+  return str.replace(/\D/g, '').slice(0, 9);
 }
 
 /**
- * Convert formatted 9 digits to full international phone string: +998 XX XXX XX XX
+ * Format 9 local digits as: XX XXX XX XX
+ * e.g. "901234567" -> "90 123 45 67"
+ * e.g. "9989989" -> "99 899 89"
  */
-export function toFullUzbekPhone(formattedDigits) {
-  const digits = (formattedDigits || '').replace(/\D/g, '');
+export function formatLocalDigits(digits) {
   if (!digits) return '';
-  const localDigits = digits.startsWith('998') && digits.length > 9 ? digits.slice(3) : digits;
-  const f = formatUzbekPhoneDigits(localDigits);
-  return f ? `+998 ${f}` : '';
+  const d = String(digits).replace(/\D/g, '').slice(0, 9);
+  let res = '';
+  if (d.length > 0) res += d.slice(0, 2);
+  if (d.length > 2) res += ' ' + d.slice(2, 5);
+  if (d.length > 5) res += ' ' + d.slice(5, 7);
+  if (d.length > 7) res += ' ' + d.slice(7, 9);
+  return res;
 }
 
 /**
  * Reusable PhoneInput component with locked +998 badge
+ * Allows easy typing and deleting (backspace) of the 9 local digits.
  */
 export const PhoneInput = ({
   value = '',
@@ -44,12 +46,16 @@ export const PhoneInput = ({
   className = '',
   autoFocus = false,
 }) => {
-  const localFormatted = formatUzbekPhoneDigits(value);
+  const localDigits = extractLocalDigits(value);
+  const formattedDisplay = formatLocalDigits(localDigits);
 
   const handleInputChange = (e) => {
+    // Extract only digits from current input value (up to 9 digits)
     const rawVal = e.target.value;
-    const formatted = formatUzbekPhoneDigits(rawVal);
-    const fullPhone = formatted ? `+998 ${formatted}` : '';
+    const newDigits = rawVal.replace(/\D/g, '').slice(0, 9);
+    const formatted = formatLocalDigits(newDigits);
+    const fullPhone = newDigits.length > 0 ? `+998 ${formatted}` : '';
+
     if (onChange) {
       onChange(fullPhone);
     }
@@ -63,21 +69,21 @@ export const PhoneInput = ({
           : 'focus-within:border-gold-500/60 focus-within:ring-1 focus-within:ring-gold-500/30'
       } ${className}`}
     >
-      {/* Locked +998 Prefix Badge */}
+      {/* Locked +998 Prefix Badge (Never deleted) */}
       <div className="px-3.5 py-2.5 bg-[#0d1017] border-r border-luxury-border flex items-center space-x-1.5 select-none text-gold-400 font-mono font-bold text-xs shrink-0">
         <Phone className="w-3.5 h-3.5 text-gold-400" />
         <span>+998</span>
       </div>
 
-      {/* Local 9-digit input with XX XXX XX XX format */}
+      {/* Local 9-digit input: easy backspace and typing */}
       <input
         type="tel"
         disabled={disabled}
         autoFocus={autoFocus}
-        value={localFormatted}
+        value={formattedDisplay}
         onChange={handleInputChange}
         placeholder={placeholder}
-        maxLength={12} // 9 digits + 3 spaces = 12
+        maxLength={12} // 9 digits + 3 spaces = 12 characters
         className="w-full px-3.5 py-2.5 bg-transparent text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none disabled:cursor-not-allowed"
       />
     </div>

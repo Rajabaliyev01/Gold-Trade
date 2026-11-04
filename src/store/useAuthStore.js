@@ -24,6 +24,7 @@ import {
   signOutUser,
 } from '../services/authService';
 import { useInventoryStore } from './useInventoryStore';
+import { useProductionStore } from './useProductionStore';
 
 export const useAuthStore = create((set, get) => ({
   // ─── State ───────────────────────────────────────────────────────────────────
@@ -83,8 +84,9 @@ export const useAuthStore = create((set, get) => ({
             error: null,
           });
 
-          // Sync isolated inventory for this factory
+          // Sync isolated inventory and production orders for this factory
           useInventoryStore.getState().initInventory(firebaseUser.uid);
+          useProductionStore.getState().initProductionOrders(firebaseUser.uid);
 
           // Load employees list for factory owner
           get().loadEmployees();
@@ -136,8 +138,14 @@ export const useAuthStore = create((set, get) => ({
               error: null,
             });
 
-            // Sync isolated inventory for this factory
+            // Sync isolated inventory and production orders for this factory
             useInventoryStore.getState().initInventory(factoryId);
+            useProductionStore.getState().initProductionOrders(factoryId);
+
+            // If manager or admin, also load all employees
+            if (empData.role === 'manager' || empData.role === 'admin') {
+              get().loadEmployees();
+            }
             return;
           }
         }
@@ -145,6 +153,7 @@ export const useAuthStore = create((set, get) => ({
         // Fallback: If not recognized, sign out
         await signOutUser();
         useInventoryStore.getState().cleanupInventory();
+        useProductionStore.getState().cleanupProductionOrders();
         set({
           currentUser: null,
           factory: null,
@@ -211,6 +220,7 @@ export const useAuthStore = create((set, get) => ({
       });
 
       useInventoryStore.getState().initInventory(user.uid);
+      useProductionStore.getState().initProductionOrders(user.uid);
       await get().loadEmployees();
       return result;
     } catch (err) {
@@ -310,6 +320,7 @@ export const useAuthStore = create((set, get) => ({
       await signOutUser();
     } finally {
       useInventoryStore.getState().cleanupInventory();
+      useProductionStore.getState().cleanupProductionOrders();
       set({
         currentUser: null,
         factory: null,
@@ -325,7 +336,7 @@ export const useAuthStore = create((set, get) => ({
   // ─── loadEmployees ───────────────────────────────────────────────────────────
   loadEmployees: async () => {
     const { currentUser } = get();
-    if (!currentUser || currentUser.role !== 'admin') return;
+    if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'manager')) return;
 
     try {
       const empCol = collection(db, 'factories', currentUser.factoryId, 'employees');
@@ -347,8 +358,8 @@ export const useAuthStore = create((set, get) => ({
   // ─── createEmployee ──────────────────────────────────────────────────────────
   createEmployee: async (data) => {
     const { currentUser } = get();
-    if (!currentUser || currentUser.role !== 'admin') {
-      throw new Error("Faqat zavod egasi (admin) yangi hodim qo'sha oladi.");
+    if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'manager')) {
+      throw new Error("Faqat zavod egasi yoki menejer yangi hodim qo'sha oladi.");
     }
 
     const employee = await createEmployeeAccount(currentUser.factoryId, data);
@@ -367,7 +378,7 @@ export const useAuthStore = create((set, get) => ({
   // ─── updateEmployee ──────────────────────────────────────────────────────────
   updateEmployee: async (uid, data) => {
     const { currentUser } = get();
-    if (!currentUser || currentUser.role !== 'admin') return;
+    if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'manager')) return;
 
     const empRef = doc(db, 'factories', currentUser.factoryId, 'employees', uid);
     await updateDoc(empRef, { ...data, updatedAt: new Date().toISOString() });
@@ -381,7 +392,7 @@ export const useAuthStore = create((set, get) => ({
   // ─── deleteEmployee ──────────────────────────────────────────────────────────
   deleteEmployee: async (uid) => {
     const { currentUser, employees } = get();
-    if (!currentUser || currentUser.role !== 'admin') return;
+    if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'manager')) return;
 
     const emp = employees.find((e) => e.uid === uid);
     const empRef = doc(db, 'factories', currentUser.factoryId, 'employees', uid);

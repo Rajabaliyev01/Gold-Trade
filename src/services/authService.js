@@ -6,6 +6,8 @@
 import { initializeApp, getApps } from 'firebase/app';
 import {
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -22,6 +24,7 @@ import {
 import { firebaseConfig, auth, db } from './firebase';
 
 const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: 'select_account' });
 
 // Secondary Firebase Auth instance for creating employee accounts
 // without signing out the currently logged-in factory owner
@@ -32,21 +35,54 @@ function getSecondaryAuth() {
 }
 
 /**
- * Sign in a factory owner via Google popup.
+ * Sign in a factory owner via Google popup (with automatic redirect fallback for mobile).
  */
 export async function signInWithGoogle() {
   try {
     return await signInWithPopup(auth, googleProvider);
   } catch (err) {
+    console.error("signInWithGoogle error code:", err.code, err);
+
     if (err.code === 'auth/popup-closed-by-user') {
       throw new Error("Google oynasi yopildi. Qaytadan urinib ko'ring.");
     }
+
+    if (err.code === 'auth/unauthorized-domain') {
+      const currentHost = typeof window !== 'undefined' ? window.location.hostname : 'ushbu domen';
+      throw new Error(
+        `Firebase ruxsat bermadi: "${currentHost}" domeni Firebase Console'da ro'yxatdan o'tmagan. Iltimos, Firebase Console -> Authentication -> Settings -> Authorized domains bo'limiga "${currentHost}" domenini qo'shing.`
+      );
+    }
+
     if (err.code === 'auth/operation-not-allowed') {
       throw new Error(
         "Google bilan kirish Firebase Console'da yoqilmagan. Firebase Console -> Authentication -> Sign-in method bo'limidan Google provayderini yoqing."
       );
     }
+
+    // On mobile devices where popups are blocked by Safari/Chrome, fallback to redirect
+    if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-popup-request') {
+      try {
+        await signInWithRedirect(auth, googleProvider);
+        return;
+      } catch (redirectErr) {
+        throw new Error(redirectErr.message || "Brauzer popup oynani blokladi.");
+      }
+    }
+
     throw new Error(err.message || "Google orqali kirishda xatolik yuz berdi.");
+  }
+}
+
+/**
+ * Check if the user is returning from a Google signInWithRedirect
+ */
+export async function checkGoogleRedirectResult() {
+  try {
+    return await getRedirectResult(auth);
+  } catch (err) {
+    console.warn("getRedirectResult warning:", err);
+    return null;
   }
 }
 

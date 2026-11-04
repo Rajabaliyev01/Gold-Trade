@@ -1,22 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useProductionStore } from '../../store/useProductionStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useInventoryStore } from '../../store/useInventoryStore';
 import { useSettingsStore } from '../../store/useSettingsStore';
 import { formatWeight } from '../../utils/formatters';
-import { X, Hammer, ShieldAlert, Sparkles, AlertCircle } from 'lucide-react';
+import { X, Hammer, ShieldAlert, Sparkles, AlertCircle, Loader2 } from 'lucide-react';
 
 export const NewOrderModal = ({ isOpen, onClose }) => {
-  const { users } = useAuthStore();
+  const { employees, users, loadEmployees } = useAuthStore();
   const { createOrder } = useProductionStore();
   const { items } = useInventoryStore();
   const { settings } = useSettingsStore();
 
-  const craftsmen = users.filter((u) => u.role === 'craftsman');
+  const allStaff = employees && employees.length > 0 ? employees : users || [];
+  const craftsmen = allStaff.filter((u) => u.role === 'craftsman');
 
   const [formData, setFormData] = useState({
     title: '',
-    craftsmanId: craftsmen[0]?.uid || '',
+    craftsmanId: '',
     purity: '585',
     givenWeight: '',
     allowedLossRate: settings.max_allowed_loss_percentage || 2.0,
@@ -24,6 +25,13 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
   });
 
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (craftsmen.length > 0 && !formData.craftsmanId) {
+      setFormData((prev) => ({ ...prev, craftsmanId: craftsmen[0].uid }));
+    }
+  }, [craftsmen]);
 
   if (!isOpen) return null;
 
@@ -32,9 +40,15 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
     .filter((i) => i.type === 'raw_gold' && i.purity === parseInt(formData.purity, 10) && i.status === 'in_stock')
     .reduce((sum, i) => sum + (i.weight || 0), 0);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    const targetCraftsmanId = formData.craftsmanId || craftsmen[0]?.uid;
+    if (!targetCraftsmanId) {
+      setError("Zavodda birorta ham zargar usta mavjud emas. Avval 'Hodimlar' bo'limidan zargar usta qo'shing.");
+      return;
+    }
 
     const weight = parseFloat(formData.givenWeight);
     if (!weight || weight <= 0) {
@@ -47,19 +61,26 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
       return;
     }
 
-    const selectedCraftsman = craftsmen.find((c) => c.uid === formData.craftsmanId);
+    const selectedCraftsman = craftsmen.find((c) => c.uid === targetCraftsmanId);
 
-    createOrder({
-      title: formData.title || `${formData.purity} Proba Buyurtma`,
-      craftsmanId: formData.craftsmanId,
-      craftsman_name: selectedCraftsman?.name || 'Noma\'lum',
-      purity: formData.purity,
-      givenWeight: weight,
-      allowedLossRate: formData.allowedLossRate,
-      notes: formData.notes,
-    });
+    setSubmitting(true);
+    try {
+      await createOrder({
+        title: formData.title || `${formData.purity} Proba Buyurtma`,
+        craftsmanId: targetCraftsmanId,
+        craftsmanName: selectedCraftsman?.name || 'Zargar Usta',
+        purity: formData.purity,
+        givenWeight: weight,
+        allowedLossRate: formData.allowedLossRate,
+        notes: formData.notes,
+      });
 
-    onClose();
+      onClose();
+    } catch (err) {
+      setError(err.message || "Buyurtmani saqlashda xatolik yuz berdi");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -209,10 +230,15 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-gold-500 hover:from-amber-500 hover:to-gold-400 text-black font-bold transition-all shadow-gold-sm flex items-center space-x-1.5"
+              disabled={submitting}
+              className="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-gold-500 hover:from-amber-500 hover:to-gold-400 text-black font-bold transition-all shadow-gold-sm flex items-center space-x-1.5 disabled:opacity-60 cursor-pointer"
             >
-              <Sparkles className="w-4 h-4" />
-              <span>Ishni Biriktirish</span>
+              {submitting ? (
+                <Loader2 className="w-4 h-4 animate-spin text-black" />
+              ) : (
+                <Sparkles className="w-4 h-4 text-black" />
+              )}
+              <span>{submitting ? 'Saqlanmoqda...' : 'Ishni Biriktirish'}</span>
             </button>
           </div>
         </form>

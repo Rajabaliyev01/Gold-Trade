@@ -31,7 +31,7 @@ export const EmployeeList = () => {
   const [selectedOrderForReturn, setSelectedOrderForReturn] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
 
-  const isAdmin = currentUser?.role === 'admin';
+  const canManage = currentUser?.role === 'admin' || currentUser?.role === 'manager';
 
   // Role labels and badge colors
   const roleConfig = {
@@ -113,7 +113,7 @@ export const EmployeeList = () => {
           </p>
         </div>
 
-        {isAdmin && (
+        {canManage && (
           <button
             onClick={() => setIsAddModalOpen(true)}
             className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-gold-600 to-amber-500 hover:from-gold-500 hover:to-amber-400 text-black font-bold text-xs shadow-gold-sm transition-all shrink-0"
@@ -207,7 +207,7 @@ export const EmployeeList = () => {
               Zavod ustalari, kassirlari va menejerlariga tizimga kirish uchun login va parol yaratib bering.
             </p>
           </div>
-          {isAdmin && (
+          {canManage && (
             <button
               onClick={() => setIsAddModalOpen(true)}
               className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-gold-600 to-amber-500 hover:from-gold-500 hover:to-amber-400 text-black font-bold text-xs shadow-gold-sm transition-all"
@@ -355,8 +355,8 @@ export const EmployeeList = () => {
                     <span>{isActive ? 'Faol' : 'Nofaol'}</span>
                   </button>
 
-                  {/* Delete button (admin only) */}
-                  {isAdmin && (
+                  {/* Delete button (admin & manager) */}
+                  {canManage && (
                     <button
                       onClick={() => handleDelete(emp)}
                       disabled={deletingId === emp.uid}

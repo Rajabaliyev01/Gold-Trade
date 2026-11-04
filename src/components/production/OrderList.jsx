@@ -26,18 +26,26 @@ export const OrderList = () => {
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
   const [selectedOrderForReturn, setSelectedOrderForReturn] = useState(null);
 
-  // If current user is a craftsman, only show their orders by default (RBAC)
+  // If current user is a craftsman, only show their own orders by default (RBAC)
   const isCraftsman = currentUser?.role === 'craftsman';
 
-  const filteredOrders = orders.filter((order) => {
-    if (isCraftsman && order.craftsman_id !== currentUser?.uid) {
-      return false;
-    }
+  const relevantOrders = orders.filter((order) => {
+    if (!isCraftsman) return true;
+    const uidMatches = order.craftsman_id === currentUser?.uid;
+    const usernameMatches = Boolean(currentUser?.username && order.craftsman_id === currentUser?.username);
+    const nameMatches = Boolean(
+      currentUser?.name &&
+      order.craftsman_name &&
+      order.craftsman_name.trim().toLowerCase() === currentUser.name.trim().toLowerCase()
+    );
+    return uidMatches || usernameMatches || nameMatches;
+  });
 
+  const filteredOrders = relevantOrders.filter((order) => {
     const matchesSearch =
-      order.order_id.toLowerCase().includes(search.toLowerCase()) ||
-      order.title.toLowerCase().includes(search.toLowerCase()) ||
-      order.craftsman_name.toLowerCase().includes(search.toLowerCase());
+      (order.order_id || '').toLowerCase().includes(search.toLowerCase()) ||
+      (order.title || '').toLowerCase().includes(search.toLowerCase()) ||
+      (order.craftsman_name || '').toLowerCase().includes(search.toLowerCase());
 
     if (!matchesSearch) return false;
 
@@ -82,11 +90,11 @@ export const OrderList = () => {
         {/* Status filters */}
         <div className="flex items-center space-x-1 overflow-x-auto pb-1 md:pb-0 text-xs">
           {[
-            { id: 'all', label: 'Barchasi', count: orders.length },
-            { id: 'assigned', label: 'Biriktirilgan', count: orders.filter((o) => o.status === 'assigned').length },
-            { id: 'in_progress', label: 'Jarayonda', count: orders.filter((o) => o.status === 'in_progress').length },
-            { id: 'completed', label: 'Tugatilgan', count: orders.filter((o) => o.status === 'completed').length },
-            { id: 'alerts', label: 'Ugar Alertlari', count: orders.filter((o) => o.alert_triggered).length, isAlert: true },
+            { id: 'all', label: 'Barchasi', count: relevantOrders.length },
+            { id: 'assigned', label: 'Biriktirilgan', count: relevantOrders.filter((o) => o.status === 'assigned').length },
+            { id: 'in_progress', label: 'Jarayonda', count: relevantOrders.filter((o) => o.status === 'in_progress').length },
+            { id: 'completed', label: 'Tugatilgan', count: relevantOrders.filter((o) => o.status === 'completed').length },
+            { id: 'alerts', label: 'Ugar Alertlari', count: relevantOrders.filter((o) => o.alert_triggered).length, isAlert: true },
           ].map((tab) => {
             const isActive = statusFilter === tab.id;
             return (
