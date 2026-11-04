@@ -44,6 +44,21 @@ export const formatDate = (dateStr) => {
   }).format(date);
 };
 
+// Format detailed date and time with seconds (for audit trails & timelines)
+export const formatDateTimeDetailed = (dateStr) => {
+  if (!dateStr) return '—';
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return '—';
+  return new Intl.DateTimeFormat('uz-UZ', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).format(date);
+};
+
 // Proba labels with color indicators
 export const PROBA_COLORS = {
   999: { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/30' },

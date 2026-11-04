@@ -237,6 +237,170 @@ export const useInventoryStore = create((set, get) => ({
     get().updateItem(id, { status: 'sold' });
   },
 
+  // 1. RAW MATERIAL INWARD (Xomashyo Kirim Nakladnoyasi)
+  addRawMaterialInward: async ({
+    supplier,
+    materialType = 'scrap_gold', // 'scrap_gold' | 'ingot_999' | 'granules'
+    grossWeight,
+    purity,
+    pureGoldEquivalent,
+    usdValuation,
+    invoiceNumber,
+    notes = '',
+  }) => {
+    const factoryId = get().currentFactoryId;
+    const now = new Date().toISOString();
+    const slipId = 'INW-' + Date.now().toString().slice(-6);
+
+    const netWeightNum = parseFloat(grossWeight) || 0;
+    const purityNum = parseInt(purity, 10) || 585;
+    const pureEqNum = parseFloat(pureGoldEquivalent) || ((netWeightNum * purityNum) / 999.9);
+    const usdValNum = parseFloat(usdValuation) || 0;
+
+    // A) Create material inward log record in Firestore
+    const inwardSlip = {
+      slip_id: slipId,
+      factoryId: factoryId || null,
+      supplier: supplier || 'Noma\'lum ta\'minotchi',
+      material_type: materialType,
+      gross_weight: netWeightNum,
+      purity: purityNum,
+      pure_gold_equivalent: Math.round(pureEqNum * 1000) / 1000,
+      usd_valuation: usdValNum,
+      invoice_number: invoiceNumber || slipId,
+      notes,
+      created_at: now,
+      status: 'received',
+    };
+
+    if (factoryId && db) {
+      try {
+        const slipRef = doc(db, 'factories', factoryId, 'material_inwards', slipId);
+        await setDoc(slipRef, inwardSlip);
+      } catch (err) {
+        console.error("Firestore inwardSlip error:", err);
+      }
+    }
+
+    // B) Add directly to Raw Gold inventory
+    const inventoryItem = await get().addItem({
+      name: `${purityNum} Proba Xomashyo (${materialType === 'ingot_999' ? 'Sof Ingot 999.9' : 'Lom / Qotishma'})`,
+      type: 'raw_gold',
+      purity: purityNum,
+      weight: netWeightNum,
+      price_per_gram: usdValNum && netWeightNum > 0 ? Math.round((usdValNum / netWeightNum) * 100) / 100 : 55,
+      category: materialType === 'ingot_999' ? 'Sof Tilla (999.9)' : 'Lom / Xomashyo',
+      notes: `Kirim nakladnoyasi #${slipId} (${supplier}). Sof ekvivalent: ${pureEqNum.toFixed(3)} gr 999.9`,
+      barcode: `INW-${purityNum}-${Date.now().toString().slice(-4)}`,
+    });
+
+    return { success: true, inwardSlip, inventoryItem };
+  },
+
+  // 1.2 GEMS & FITTINGS INWARD (Tosh va Furnitura Kirim Akti)
+  addGemstoneOrFittingInward: async ({
+    name,
+    itemType = 'gemstone', // 'gemstone' | 'fitting'
+    carats = 0,
+    piecesCount = 1,
+    cutShape = 'Dumaloq',
+    clarity = 'VVS1',
+    totalUsd = 0,
+    supplier = '',
+    notes = '',
+  }) => {
+    const factoryId = get().currentFactoryId;
+    const now = new Date().toISOString();
+    const slipId = 'GEM-' + Date.now().toString().slice(-6);
+
+    const piecesNum = parseInt(piecesCount, 10) || 1;
+    const caratsNum = parseFloat(carats) || 0;
+    const usdNum = parseFloat(totalUsd) || 0;
+
+    const inventoryItem = await get().addItem({
+      name: name || (itemType === 'gemstone' ? 'Brilliant / Qimmatbaho Tosh' : 'Zargarlik Qulf / Zanjir Furnitura'),
+      type: itemType,
+      category: itemType === 'gemstone' ? 'Qimmatbaho Toshlar' : 'Furnitura & Qulflar',
+      weight: caratsNum > 0 ? Math.round((caratsNum * 0.2) * 1000) / 1000 : 0, // 1 carat = 0.2 gram
+      carats: caratsNum,
+      pieces_count: piecesNum,
+      cut_shape: cutShape,
+      clarity,
+      selling_price: usdNum,
+      price_per_unit: piecesNum > 0 ? Math.round((usdNum / piecesNum) * 100) / 100 : usdNum,
+      supplier,
+      notes: `Kirim akti #${slipId}. ${notes}`,
+      barcode: `GEM-${Date.now().toString().slice(-5)}`,
+    });
+
+    return { success: true, inventoryItem };
+  },
+
+  // 2. METAL PROCESSING: MELTING & ALLOYING (Eritish, Qotishma va Proba O'zgartirish)
+  recordMeltingSheet: async ({
+    pureGoldWeight,
+    ligatureCopper = 0,
+    ligatureSilver = 0,
+    targetPurity = 585,
+    outputIngotWeight,
+    furnaceLossWeight = 0,
+    operatorName = '',
+    notes = '',
+  }) => {
+    const factoryId = get().currentFactoryId;
+    const now = new Date().toISOString();
+    const sheetId = 'MELT-' + Date.now().toString().slice(-5);
+
+    const pureWeightNum = parseFloat(pureGoldWeight) || 0;
+    const cuNum = parseFloat(ligatureCopper) || 0;
+    const agNum = parseFloat(ligatureSilver) || 0;
+    const targetPurityNum = parseInt(targetPurity, 10) || 585;
+    const outIngotNum = parseFloat(outputIngotWeight) || (pureWeightNum + cuNum + agNum);
+    const furnaceLossNum = parseFloat(furnaceLossWeight) || Math.max(0, (pureWeightNum + cuNum + agNum) - outIngotNum);
+
+    // A) Deduct pure 999.9 gold used in melting
+    await get().deductRawGold(999, pureWeightNum);
+
+    // B) Add newly formed alloyed ingot to Raw Gold inventory
+    const newIngotItem = await get().addItem({
+      name: `${targetPurityNum} Proba Quyma Ingot (Eritish natijasida)`,
+      type: 'raw_gold',
+      purity: targetPurityNum,
+      weight: outIngotNum,
+      price_per_gram: 75,
+      category: 'Quyma / Ingot',
+      notes: `Eritish akti #${sheetId}. Ligatura: ${cuNum}g Mis + ${agNum}g Kumush. Pech yo'qotishi: ${furnaceLossNum.toFixed(3)} gr`,
+      barcode: `INGOT-${targetPurityNum}-${Date.now().toString().slice(-4)}`,
+    });
+
+    // C) Save official Melting & Alloying Sheet in Firestore
+    const meltingRecord = {
+      sheet_id: sheetId,
+      factoryId: factoryId || null,
+      pure_gold_weight: pureWeightNum,
+      ligature_copper: cuNum,
+      ligature_silver: agNum,
+      target_purity: targetPurityNum,
+      output_ingot_weight: outIngotNum,
+      furnace_loss_weight: furnaceLossNum,
+      operator_name: operatorName || 'Usta / Erituvchi',
+      notes,
+      created_at: now,
+      output_item_id: newIngotItem.id,
+    };
+
+    if (factoryId && db) {
+      try {
+        const sheetRef = doc(db, 'factories', factoryId, 'melting_sheets', sheetId);
+        await setDoc(sheetRef, meltingRecord);
+      } catch (err) {
+        console.error("Firestore meltingRecord error:", err);
+      }
+    }
+
+    return { success: true, meltingRecord, newIngotItem };
+  },
+
   // Get total raw gold in vault by purity
   getVaultSummary: () => {
     const items = get().items;

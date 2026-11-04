@@ -1,34 +1,50 @@
 import React, { useState } from 'react';
 import { useProductionStore } from '../../store/useProductionStore';
 import { useAuthStore } from '../../store/useAuthStore';
-import { formatWeight, formatDate, PROBA_COLORS } from '../../utils/formatters';
+import { formatWeight, formatDate, formatDateTimeDetailed, PROBA_COLORS } from '../../utils/formatters';
 import { NewOrderModal } from './NewOrderModal';
-import { ReturnWorkModal } from './ReturnWorkModal';
+import { CraftsmanFinishModal } from './CraftsmanFinishModal';
+import { ManagerQCReviewModal } from './ManagerQCReviewModal';
+import { OrderTimelineModal } from './OrderTimelineModal';
+import { JewelryTagModal } from './JewelryTagModal';
+import { JewelryPipelineHub } from './JewelryPipelineHub';
 import { 
   Hammer, 
   Plus, 
   Search, 
-  Filter, 
   CheckCircle2, 
   Clock, 
   AlertTriangle, 
   Flame, 
-  ArrowRight,
-  Scale
+  Scale,
+  ShieldCheck,
+  Tag,
+  PackageCheck,
+  Play,
+  RotateCcw,
+  Sparkles,
+  Info
 } from 'lucide-react';
 
 export const OrderList = () => {
-  const { orders, updateOrderStatus } = useProductionStore();
+  const { orders, startOrderWork } = useProductionStore();
   const { currentUser } = useAuthStore();
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  
+  // Modals state
   const [isNewModalOpen, setIsNewModalOpen] = useState(false);
-  const [selectedOrderForReturn, setSelectedOrderForReturn] = useState(null);
+  const [selectedOrderForFinish, setSelectedOrderForFinish] = useState(null);
+  const [selectedOrderForQC, setSelectedOrderForQC] = useState(null);
+  const [selectedOrderForTimeline, setSelectedOrderForTimeline] = useState(null);
+  const [selectedOrderForTag, setSelectedOrderForTag] = useState(null);
 
-  // If current user is a craftsman, only show their own orders by default (RBAC)
+  // Role checks
   const isCraftsman = currentUser?.role === 'craftsman';
+  const isManagerOrAdmin = currentUser?.role === 'admin' || currentUser?.role === 'manager';
 
+  // Filter orders by permissions
   const relevantOrders = orders.filter((order) => {
     if (!isCraftsman) return true;
     const uidMatches = order.craftsman_id === currentUser?.uid;
@@ -45,7 +61,8 @@ export const OrderList = () => {
     const matchesSearch =
       (order.order_id || '').toLowerCase().includes(search.toLowerCase()) ||
       (order.title || '').toLowerCase().includes(search.toLowerCase()) ||
-      (order.craftsman_name || '').toLowerCase().includes(search.toLowerCase());
+      (order.craftsman_name || '').toLowerCase().includes(search.toLowerCase()) ||
+      (order.barcode || '').toLowerCase().includes(search.toLowerCase());
 
     if (!matchesSearch) return false;
 
@@ -55,29 +72,35 @@ export const OrderList = () => {
   });
 
   const statusConfig = {
-    assigned: { label: 'Biriktirildi', bg: 'bg-blue-500/10 text-blue-400 border-blue-500/30', icon: Clock },
-    in_progress: { label: 'Jarayonda', bg: 'bg-amber-500/10 text-amber-400 border-amber-500/30', icon: Hammer },
-    completed: { label: 'Tugatildi', bg: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30', icon: CheckCircle2 },
+    assigned: { label: '1. Biriktirilgan', bg: 'bg-blue-500/10 text-blue-400 border-blue-500/30', icon: Clock },
+    in_progress: { label: '2. Usta Ishlamoqda', bg: 'bg-amber-500/10 text-amber-400 border-amber-500/30', icon: Hammer },
+    pending_review: { label: '3. Tekshiruv Kutilmoqda (QC)', bg: 'bg-purple-500/10 text-purple-300 border-purple-500/30', icon: ShieldCheck },
+    completed: { label: '4. Omborga Qabul Qilingan', bg: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30', icon: CheckCircle2 },
   };
 
   return (
     <div className="space-y-6">
+      {/* 5-Stage Jewelry Production Pipeline Hub */}
+      {isManagerOrAdmin && (
+        <JewelryPipelineHub onOpenNewOrder={() => setIsNewModalOpen(true)} />
+      )}
+
       {/* Page Title & Action Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl font-bold text-white flex items-center space-x-2.5">
             <Hammer className="w-5 h-5 text-gold-400" />
-            <span>Ishlab Chiqarish & Ugar Nazorati</span>
+            <span>Ishlab Chiqarish &amp; Ugar Nazorati</span>
           </h1>
           <p className="text-xs text-slate-400">
-            Zargarlarga xomashyo ajratish, topshirilgan mahsulotni milligramm aniqlikda qabul qilish
+            Zargarlarga xomashyo ajratish, topshirilgan mahsulotni milligramm aniqlikda tekshirish va omborga qabul qilish
           </p>
         </div>
 
-        {currentUser?.role !== 'craftsman' && (
+        {isManagerOrAdmin && (
           <button
             onClick={() => setIsNewModalOpen(true)}
-            className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-gold-500 hover:from-amber-500 hover:to-gold-400 text-black font-bold text-xs transition-all shadow-gold-sm"
+            className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-gold-500 hover:from-amber-500 hover:to-gold-400 text-black font-bold text-xs transition-all shadow-gold-sm cursor-pointer shrink-0"
           >
             <Plus className="w-4 h-4" />
             <span>Yangi Buyurtma Biriktirish</span>
@@ -91,9 +114,10 @@ export const OrderList = () => {
         <div className="flex items-center space-x-1 overflow-x-auto pb-1 md:pb-0 text-xs">
           {[
             { id: 'all', label: 'Barchasi', count: relevantOrders.length },
-            { id: 'assigned', label: 'Biriktirilgan', count: relevantOrders.filter((o) => o.status === 'assigned').length },
-            { id: 'in_progress', label: 'Jarayonda', count: relevantOrders.filter((o) => o.status === 'in_progress').length },
-            { id: 'completed', label: 'Tugatilgan', count: relevantOrders.filter((o) => o.status === 'completed').length },
+            { id: 'assigned', label: '1. Biriktirilgan', count: relevantOrders.filter((o) => o.status === 'assigned').length },
+            { id: 'in_progress', label: '2. Jarayonda', count: relevantOrders.filter((o) => o.status === 'in_progress').length },
+            { id: 'pending_review', label: '3. Tekshiruvda (QC)', count: relevantOrders.filter((o) => o.status === 'pending_review').length },
+            { id: 'completed', label: '4. Tugallangan', count: relevantOrders.filter((o) => o.status === 'completed').length },
             { id: 'alerts', label: 'Ugar Alertlari', count: relevantOrders.filter((o) => o.alert_triggered).length, isAlert: true },
           ].map((tab) => {
             const isActive = statusFilter === tab.id;
@@ -101,7 +125,7 @@ export const OrderList = () => {
               <button
                 key={tab.id}
                 onClick={() => setStatusFilter(tab.id)}
-                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl font-medium transition-colors shrink-0 ${
+                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl font-medium transition-colors shrink-0 cursor-pointer ${
                   isActive
                     ? 'bg-gold-500 text-black font-bold shadow-gold-sm'
                     : 'text-slate-400 hover:text-white hover:bg-[#1a2030]'
@@ -126,7 +150,7 @@ export const OrderList = () => {
           <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-500" />
           <input
             type="text"
-            placeholder="Buyurtma, usta, mahsulot..."
+            placeholder="Buyurtma, usta, shtrix-kod..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-[#0d1017] border border-luxury-border text-xs text-white placeholder-slate-500 focus:outline-none focus:border-gold-500"
@@ -147,23 +171,41 @@ export const OrderList = () => {
             const statusInfo = statusConfig[order.status] || statusConfig.assigned;
             const probaStyle = PROBA_COLORS[order.purity] || PROBA_COLORS[585];
             const isCompleted = order.status === 'completed';
+            const isPendingReview = order.status === 'pending_review';
+            const isInProgress = order.status === 'in_progress';
+            const isAssigned = order.status === 'assigned';
 
             return (
               <div
                 key={order.order_id}
                 className={`rounded-2xl bg-[#141824] border transition-all p-4 hover:border-gold-500/30 ${
-                  order.alert_triggered ? 'border-rose-500/40 bg-gradient-to-r from-rose-950/10 to-[#141824]' : 'border-luxury-border'
+                  order.alert_triggered
+                    ? 'border-rose-500/40 bg-gradient-to-r from-rose-950/10 to-[#141824]'
+                    : isPendingReview
+                    ? 'border-purple-500/30 bg-gradient-to-r from-purple-950/10 to-[#141824]'
+                    : 'border-luxury-border'
                 }`}
               >
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                  
                   {/* Left: Info */}
-                  <div className="space-y-1.5">
+                  <div className="space-y-1.5 flex-1">
                     <div className="flex items-center space-x-2.5 flex-wrap gap-y-1">
-                      <span className="font-mono font-bold text-sm text-gold-400">#{order.order_id}</span>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedOrderForTimeline(order)}
+                        className="font-mono font-bold text-sm text-gold-400 hover:text-gold-300 underline underline-offset-2 flex items-center space-x-1 cursor-pointer"
+                        title="Vaqt xaritasi va to'liq audit trailni ko'rish"
+                      >
+                        <span>#{order.order_id}</span>
+                        <Info className="w-3.5 h-3.5 text-gold-500/80" />
+                      </button>
+
                       <span className={`px-2 py-0.5 rounded text-[11px] font-mono font-bold border ${probaStyle.bg} ${probaStyle.text} ${probaStyle.border}`}>
                         {order.purity} Proba
                       </span>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border flex items-center space-x-1 ${statusInfo.bg}`}>
+
+                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold border flex items-center space-x-1 ${statusInfo.bg}`}>
                         <span>{statusInfo.label}</span>
                       </span>
 
@@ -173,15 +215,39 @@ export const OrderList = () => {
                           <span>Ugar me'yordan oshdi</span>
                         </span>
                       )}
+
+                      {order.barcode && (
+                        <span className="px-2 py-0.5 rounded bg-black/40 font-mono text-[10px] text-slate-300 border border-luxury-border">
+                          {order.barcode}
+                        </span>
+                      )}
                     </div>
 
                     <h3 className="font-semibold text-sm text-slate-100">{order.title}</h3>
 
-                    <div className="flex items-center space-x-4 text-xs text-slate-400">
+                    <div className="flex items-center space-x-4 text-xs text-slate-400 flex-wrap gap-y-1">
                       <span>Usta: <b className="text-slate-200">{order.craftsman_name}</b></span>
                       <span>•</span>
-                      <span>Sana: {formatDate(order.timestamp)}</span>
+                      <span>Berildi: <b>{formatDate(order.assigned_at || order.created_at || order.timestamp)}</b></span>
+                      {order.started_at && (
+                        <>
+                          <span>•</span>
+                          <span>Boshlandi: <b>{formatDate(order.started_at)}</b></span>
+                        </>
+                      )}
+                      {order.completed_by_craftsman_at && (
+                        <>
+                          <span>•</span>
+                          <span>Bitirdi: <b>{formatDate(order.completed_by_craftsman_at)}</b></span>
+                        </>
+                      )}
                     </div>
+
+                    {order.reject_reason && (
+                      <p className="text-[11px] text-rose-300 italic bg-rose-950/20 p-2 rounded-lg border border-rose-500/30">
+                        ⚠️ Qayta ishlash sababi: "{order.reject_reason}"
+                      </p>
+                    )}
 
                     {order.notes && (
                       <p className="text-[11px] text-slate-400 italic">"{order.notes}"</p>
@@ -189,7 +255,7 @@ export const OrderList = () => {
                   </div>
 
                   {/* Middle: Milligram Measurements */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#0d1017] p-3 rounded-xl border border-luxury-border text-xs font-mono">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#0d1017] p-3 rounded-xl border border-luxury-border text-xs font-mono shrink-0">
                     <div>
                       <span className="text-[10px] text-slate-400 block">Berilgan:</span>
                       <span className="font-bold text-slate-200">{formatWeight(order.given_weight)}</span>
@@ -198,20 +264,20 @@ export const OrderList = () => {
                     <div>
                       <span className="text-[10px] text-slate-400 block">Tayyor Mahsulot:</span>
                       <span className="font-bold text-emerald-400">
-                        {isCompleted ? formatWeight(order.received_weight) : '—'}
+                        {order.received_weight ? formatWeight(order.received_weight) : order.craftsman_received_weight ? formatWeight(order.craftsman_received_weight) : '—'}
                       </span>
                     </div>
 
                     <div>
                       <span className="text-[10px] text-slate-400 block">Qirindi/Chang:</span>
                       <span className="font-bold text-slate-300">
-                        {isCompleted ? formatWeight(order.returned_scrap) : '—'}
+                        {order.returned_scrap ? formatWeight(order.returned_scrap) : order.craftsman_returned_scrap ? formatWeight(order.craftsman_returned_scrap) : '—'}
                       </span>
                     </div>
 
                     <div>
                       <span className="text-[10px] text-slate-400 block">Ugar (Yo'qotish):</span>
-                      {isCompleted ? (
+                      {order.loss_weight ? (
                         <span
                           className={`font-bold ${
                             order.alert_triggered ? 'text-rose-400' : 'text-emerald-400'
@@ -225,33 +291,85 @@ export const OrderList = () => {
                     </div>
                   </div>
 
-                  {/* Right: Actions */}
-                  <div className="flex items-center space-x-2 shrink-0 self-end lg:self-center">
-                    {order.status === 'assigned' && (
+                  {/* Right: Actions based on Workflow State */}
+                  <div className="flex items-center space-x-2 shrink-0 self-end lg:self-center flex-wrap gap-y-2">
+                    
+                    {/* ── 1. Assigned state ── */}
+                    {isAssigned && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => startOrderWork(order.order_id)}
+                          className="px-3.5 py-1.5 rounded-xl bg-blue-600/30 hover:bg-blue-600/50 text-blue-300 border border-blue-500/40 text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer shadow-sm"
+                        >
+                          <Play className="w-3.5 h-3.5 text-blue-400" />
+                          <span>Ishni Qabul Qilish va Boshlash</span>
+                        </button>
+                      </>
+                    )}
+
+                    {/* ── 2. In Progress state ── */}
+                    {isInProgress && (
                       <button
-                        onClick={() => updateOrderStatus(order.order_id, 'in_progress')}
-                        className="px-3 py-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 text-xs font-medium transition-colors"
+                        type="button"
+                        onClick={() => setSelectedOrderForFinish(order)}
+                        className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-gold-400 hover:from-amber-400 hover:to-gold-300 text-black text-xs font-bold transition-all shadow-gold-sm flex items-center space-x-1.5 cursor-pointer"
                       >
-                        Jarayonni Boshlash
+                        <Scale className="w-3.5 h-3.5 text-black" />
+                        <span>Ishni Yakunlash (Topshirish)</span>
                       </button>
                     )}
 
-                    {(order.status === 'assigned' || order.status === 'in_progress') && (
-                      <button
-                        onClick={() => setSelectedOrderForReturn(order)}
-                        className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white text-xs font-bold transition-all shadow-md flex items-center space-x-1.5"
-                      >
-                        <Scale className="w-3.5 h-3.5" />
-                        <span>Ishni Qabul Qilish</span>
-                      </button>
+                    {/* ── 3. Pending Review (QC) state ── */}
+                    {isPendingReview && (
+                      <>
+                        {isManagerOrAdmin ? (
+                          <button
+                            type="button"
+                            onClick={() => setSelectedOrderForQC(order)}
+                            className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-500 hover:from-purple-500 hover:to-indigo-400 text-white text-xs font-bold transition-all shadow-md flex items-center space-x-1.5 cursor-pointer animate-pulse"
+                          >
+                            <ShieldCheck className="w-4 h-4 text-white" />
+                            <span>Tekshirish &amp; Omborga Qo'shish (QC)</span>
+                          </button>
+                        ) : (
+                          <div className="flex items-center space-x-1.5 text-xs text-purple-300 px-3 py-1.5 rounded-xl bg-purple-950/40 border border-purple-500/30">
+                            <Clock className="w-3.5 h-3.5 text-purple-400" />
+                            <span>Menejer tekshiruvini kutmoqda</span>
+                          </div>
+                        )}
+                      </>
                     )}
 
+                    {/* ── 4. Completed state ── */}
                     {isCompleted && (
-                      <div className="flex items-center space-x-1.5 text-xs text-slate-400 px-3 py-1.5 rounded-lg bg-[#1a2030]">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>Omborga kiritildi</span>
-                      </div>
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedOrderForTag(order)}
+                          className="px-3 py-1.5 rounded-xl bg-gold-500/20 hover:bg-gold-500/30 text-gold-300 border border-gold-500/40 text-xs font-semibold transition-all flex items-center space-x-1.5 cursor-pointer"
+                        >
+                          <Tag className="w-3.5 h-3.5 text-gold-400" />
+                          <span>Birka (Tag)</span>
+                        </button>
+
+                        <div className="flex items-center space-x-1.5 text-xs text-emerald-400 px-3 py-1.5 rounded-xl bg-emerald-950/30 border border-emerald-500/30">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>Omborga kiritildi</span>
+                        </div>
+                      </>
                     )}
+
+                    {/* Always visible: Timeline button */}
+                    <button
+                      type="button"
+                      onClick={() => setSelectedOrderForTimeline(order)}
+                      className="p-1.5 rounded-xl bg-[#1e2436] hover:bg-[#28314a] text-slate-300 transition-colors"
+                      title="Vaqt xaritasi va Audit jurnali"
+                    >
+                      <Clock className="w-4 h-4 text-slate-400" />
+                    </button>
+
                   </div>
                 </div>
               </div>
@@ -263,11 +381,39 @@ export const OrderList = () => {
       {/* Modals */}
       <NewOrderModal isOpen={isNewModalOpen} onClose={() => setIsNewModalOpen(false)} />
       
-      {selectedOrderForReturn && (
-        <ReturnWorkModal
-          order={selectedOrderForReturn}
-          isOpen={Boolean(selectedOrderForReturn)}
-          onClose={() => setSelectedOrderForReturn(null)}
+      {/* Craftsman Finish Modal (Usta topshiruvi) */}
+      {selectedOrderForFinish && (
+        <CraftsmanFinishModal
+          order={selectedOrderForFinish}
+          isOpen={Boolean(selectedOrderForFinish)}
+          onClose={() => setSelectedOrderForFinish(null)}
+        />
+      )}
+
+      {/* Manager QC & Inventory Approval Modal */}
+      {selectedOrderForQC && (
+        <ManagerQCReviewModal
+          order={selectedOrderForQC}
+          isOpen={Boolean(selectedOrderForQC)}
+          onClose={() => setSelectedOrderForQC(null)}
+        />
+      )}
+
+      {/* Order Detailed Timeline & Audit Trail Modal */}
+      {selectedOrderForTimeline && (
+        <OrderTimelineModal
+          order={selectedOrderForTimeline}
+          isOpen={Boolean(selectedOrderForTimeline)}
+          onClose={() => setSelectedOrderForTimeline(null)}
+        />
+      )}
+
+      {/* Jewelry Certificate Tag Modal */}
+      {selectedOrderForTag && (
+        <JewelryTagModal
+          order={selectedOrderForTag}
+          isOpen={Boolean(selectedOrderForTag)}
+          onClose={() => setSelectedOrderForTag(null)}
         />
       )}
     </div>
