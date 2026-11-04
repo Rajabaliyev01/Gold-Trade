@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
+import { PhoneInput } from '../common/PhoneInput';
 import { 
   X, 
   UserPlus, 
   User, 
   Lock, 
-  Phone, 
   Briefcase, 
   Eye, 
   EyeOff, 
@@ -137,16 +137,12 @@ export const AddEmployeeModal = ({ isOpen, onClose }) => {
 
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-300">Telefon Raqami</label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="text"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+998 90 123-45-67"
-                  className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-[#141824] border border-luxury-border text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
-                />
-              </div>
+              <PhoneInput
+                value={phone}
+                onChange={setPhone}
+                placeholder="90 123 45 67"
+              />
+              <p className="text-[10px] text-slate-500">Raqamni kiriting (masalan: 90 123 45 67)</p>
             </div>
           </div>
 

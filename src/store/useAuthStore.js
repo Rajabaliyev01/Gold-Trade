@@ -261,6 +261,49 @@ export const useAuthStore = create((set, get) => ({
     return updatedDoc;
   },
 
+  // ─── updateOwnProfile ────────────────────────────────────────────────────────
+  /**
+   * Updates currently logged-in user profile (works for both Admin and Employees)
+   */
+  updateOwnProfile: async ({ name, phone }) => {
+    const { currentUser } = get();
+    if (!currentUser) return;
+
+    if (currentUser.role === 'admin') {
+      return get().updateFactoryProfile({ ownerName: name, phone });
+    }
+
+    // Employee updating their personal profile
+    const factoryId = currentUser.factoryId;
+    const uid = currentUser.uid;
+    const empRef = doc(db, 'factories', factoryId, 'employees', uid);
+
+    await updateDoc(empRef, {
+      name: name.trim(),
+      phone: phone.trim(),
+      updatedAt: new Date().toISOString(),
+    });
+
+    const updatedUser = {
+      ...currentUser,
+      name: name.trim(),
+      phone: phone.trim(),
+      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name.trim())}&background=141824&color=d4af37`,
+    };
+
+    set({
+      currentUser: updatedUser,
+      employees: get().employees.map((e) =>
+        e.uid === uid ? { ...e, name: name.trim(), phone: phone.trim() } : e
+      ),
+      users: get().users.map((u) =>
+        u.uid === uid ? { ...u, name: name.trim(), phone: phone.trim() } : u
+      ),
+    });
+
+    return updatedUser;
+  },
+
   // ─── signOut ─────────────────────────────────────────────────────────────────
   signOut: async () => {
     try {
