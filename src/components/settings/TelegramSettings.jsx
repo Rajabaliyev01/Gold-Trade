@@ -7,7 +7,8 @@ import {
   fetchGoldApiIo, 
   fetchMetalsApi 
 } from '../../services/goldPriceService';
-import { isFirebaseConfigured } from '../../services/firebase';
+import { isFirebaseConfigured, firebaseConfig } from '../../services/firebase';
+import { seedInitialDataToFirestore } from '../../services/firestoreService';
 import { 
   Settings, 
   Send, 
@@ -23,7 +24,8 @@ import {
   ExternalLink,
   Sparkles,
   Globe2,
-  RefreshCw
+  RefreshCw,
+  UploadCloud
 } from 'lucide-react';
 
 export const TelegramSettings = () => {
@@ -34,6 +36,8 @@ export const TelegramSettings = () => {
   const [showToken, setShowToken] = useState(false);
   const [testResult, setTestResult] = useState(null);
   const [isTesting, setIsTesting] = useState(false);
+  const [isSeedingFirestore, setIsSeedingFirestore] = useState(false);
+  const [firestoreFeedback, setFirestoreFeedback] = useState(null);
 
   // External APIs config
   const [goldApiKey, setGoldApiKey] = useState(settings.gold_api_key || '');
@@ -599,7 +603,7 @@ export const TelegramSettings = () => {
         </div>
 
         {/* 5. Firebase & Security Status */}
-        <div className="rounded-2xl bg-[#141824] border border-luxury-border p-5 space-y-3">
+        <div className="rounded-2xl bg-[#141824] border border-luxury-border p-5 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 text-slate-300 text-xs font-semibold">
               <Database className="w-4 h-4 text-gold-400" />
@@ -612,14 +616,72 @@ export const TelegramSettings = () => {
                   : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
               }`}
             >
-              {isFirebaseConfigured ? 'Live Firebase Ulandi' : 'Offline / Mock Rejimi'}
+              {isFirebaseConfigured ? `Live: ${firebaseConfig.projectId}` : 'Offline / Mock Rejimi'}
             </span>
+          </div>
+
+          <div className="p-3 rounded-xl bg-[#0d1017] border border-luxury-border text-xs space-y-1.5 font-mono">
+            <div className="flex justify-between text-slate-400">
+              <span>Firebase Project ID:</span>
+              <span className="text-gold-300 font-bold">{firebaseConfig.projectId}</span>
+            </div>
+            <div className="flex justify-between text-slate-400">
+              <span>Auth Domain:</span>
+              <span className="text-slate-300">{firebaseConfig.authDomain}</span>
+            </div>
+            <div className="flex justify-between text-slate-400">
+              <span>Storage Bucket:</span>
+              <span className="text-slate-300">{firebaseConfig.storageBucket}</span>
+            </div>
           </div>
 
           <p className="text-[11px] text-slate-400">
             Tizim TZ bo'yicha <code>firestore.rules</code> qoidalari bilan himoyalangan:
             Admin (to'liq nazorat), Usta (faqat o'ziga tegishli buyurtmalar) va Kassir (savdolar).
           </p>
+
+          {firestoreFeedback && (
+            <div
+              className={`p-3 rounded-xl text-xs flex items-center space-x-2 ${
+                firestoreFeedback.type === 'success'
+                  ? 'bg-emerald-950/60 border border-emerald-500/40 text-emerald-200'
+                  : 'bg-rose-950/60 border border-rose-500/40 text-rose-200'
+              }`}
+            >
+              {firestoreFeedback.type === 'success' ? (
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+              ) : (
+                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+              )}
+              <span>{firestoreFeedback.text}</span>
+            </div>
+          )}
+
+          <div className="pt-1">
+            <button
+              type="button"
+              onClick={async () => {
+                setIsSeedingFirestore(true);
+                setFirestoreFeedback(null);
+                const res = await seedInitialDataToFirestore();
+                setIsSeedingFirestore(false);
+                if (res.success) {
+                  setFirestoreFeedback({ type: 'success', text: res.message });
+                } else {
+                  setFirestoreFeedback({ type: 'error', text: res.error });
+                }
+              }}
+              disabled={isSeedingFirestore}
+              className="px-4 py-2 rounded-xl bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 border border-gold-500/30 text-xs font-bold transition-all flex items-center space-x-2"
+            >
+              <UploadCloud className={`w-4 h-4 ${isSeedingFirestore ? 'animate-bounce' : ''}`} />
+              <span>
+                {isSeedingFirestore
+                  ? "Firestore bazasiga yuklanmoqda..."
+                  : "Boshlang'ich Ma'lumotlarni Firestore (gold-trade-01) ga Yuklash"}
+              </span>
+            </button>
+          </div>
         </div>
 
         {/* Save All Button */}

@@ -2,28 +2,31 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import { getAnalytics, isSupported } from 'firebase/analytics';
 
-// Firebase configuration from environment variables
+// Web app Firebase konfiguratsiyasi
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyAYcvy_LxkWw89C36yTEOwuY_-Wx9DXU8Y",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "gold-trade-01.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "gold-trade-01",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "gold-trade-01.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "1086686957592",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:1086686957592:web:26cd518ce93fc70131b36d",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-2N5TBHGM9X"
 };
 
-// Check if valid Firebase configuration exists
+// Firebase konfiguratsiyasi to'g'riligini tekshirish
 export const isFirebaseConfigured = Boolean(
   firebaseConfig.apiKey &&
   firebaseConfig.projectId &&
-  firebaseConfig.apiKey !== "your_api_key_here"
+  firebaseConfig.projectId !== "your_project_id"
 );
 
 let app = null;
 let auth = null;
 let db = null;
 let storage = null;
+let analytics = null;
 
 if (isFirebaseConfigured) {
   try {
@@ -31,12 +34,22 @@ if (isFirebaseConfigured) {
     auth = getAuth(app);
     db = getFirestore(app);
     storage = getStorage(app);
-    console.info("🔥 Firebase muvaffaqiyatli ulandi (Live Mode)");
+
+    // Brauzer muhitida Analytics ni xavfsiz initsializatsiya qilish
+    if (typeof window !== 'undefined') {
+      isSupported().then((supported) => {
+        if (supported) {
+          analytics = getAnalytics(app);
+        }
+      }).catch(() => {});
+    }
+
+    console.info("🔥 Firebase muvaffaqiyatli ulandi (Project: gold-trade-01)");
   } catch (err) {
     console.warn("Firebase initsializatsiyasida ogohlantirish:", err);
   }
 } else {
-  console.info("⚡ Firebase kalitlari topilmadi - Tizim Local/Offline Mock rejimida ishlamoqda. Barcha ma'lumotlar saqlanadi.");
+  console.info("⚡ Tizim Local/Offline rejimda ishlamoqda.");
 }
 
-export { app, auth, db, storage };
+export { app, auth, db, storage, analytics, firebaseConfig };
