@@ -104,14 +104,14 @@ export const Navbar = () => {
   };
 
   return (
-    <header className="h-16 border-b border-luxury-border bg-[#0f131d]/95 backdrop-blur sticky top-0 z-30 px-3 sm:px-4 lg:px-6 flex items-center justify-between">
+    <header className="h-16 border-b border-white/10 bg-[#12141c]/60 backdrop-blur-xl sticky top-0 z-30 px-3 sm:px-4 lg:px-6 flex items-center justify-between shadow-[0_8px_32px_0_rgba(0,0,0,0.37)]" style={{ WebkitBackdropFilter: 'blur(20px)' }}>
       {/* Left: Mobile Toggle + Brand & Gold Price Ticker */}
       <div className="flex items-center space-x-3 sm:space-x-5">
         {/* Mobile Hamburger Button */}
         <button
           onClick={toggleSidebar}
           aria-label="Menyuni ochish/yopish"
-          className="lg:hidden p-2 rounded-xl bg-[#141824] hover:bg-[#1f2638] border border-luxury-border text-gold-400 transition-colors"
+          className="lg:hidden p-2 rounded-xl bg-[#12141c]/60 hover:bg-[#1a1d29]/80 border border-white/10 text-gold-400 transition-colors"
         >
           {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
@@ -137,7 +137,7 @@ export const Navbar = () => {
         </div>
 
         {/* Live Gold Ticker widget in Header (Desktop) */}
-        <div className="hidden xl:flex items-center space-x-4 px-3 py-1.5 rounded-xl bg-[#141824] border border-luxury-border text-xs font-mono">
+        <div className="hidden xl:flex items-center space-x-4 px-3 py-1.5 rounded-xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 text-xs font-mono shadow-[0_4px_16px_0_rgba(0,0,0,0.25)]">
           <div className="flex items-center space-x-2 text-slate-300">
             <span><span className="text-slate-400">999:</span> <b className="text-gold-300">${settings.gold_rate_999 || '—'}/g</b></span>
             <span className="text-slate-600">|</span>
@@ -165,11 +165,11 @@ export const Navbar = () => {
 
         {/* Feedback alert toast */}
         {reportFeedback && (
-          <div className={`fixed bottom-6 right-6 z-50 p-3 rounded-lg border text-xs shadow-xl flex items-center space-x-2 backdrop-blur-md ${
+          <div className={`fixed bottom-6 right-6 z-50 p-3 rounded-xl border text-xs shadow-2xl flex items-center space-x-2 backdrop-blur-xl ${
             reportFeedback.type === 'success' 
-              ? 'bg-emerald-950/90 border-emerald-500 text-emerald-200' 
-              : 'bg-slate-900/90 border-gold-500/40 text-gold-200'
-          }`}>
+              ? 'bg-emerald-950/80 border-emerald-500 text-emerald-200' 
+              : 'bg-[#12141c]/90 border-gold-500/40 text-gold-200'
+          }`} style={{ WebkitBackdropFilter: 'blur(20px)' }}>
             {reportFeedback.type === 'success' ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <AlertTriangle className="w-4 h-4 text-gold-400" />}
             <span>{reportFeedback.text}</span>
           </div>
@@ -179,7 +179,7 @@ export const Navbar = () => {
         <div className="relative">
           <button
             onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className="flex items-center space-x-2 sm:space-x-2.5 p-1 sm:p-1.5 sm:pr-2.5 rounded-xl bg-[#141824] hover:bg-[#1a2030] border border-luxury-border transition-colors text-left cursor-pointer"
+            className="flex items-center space-x-2 sm:space-x-2.5 p-1 sm:p-1.5 sm:pr-2.5 rounded-xl bg-[#12141c]/60 hover:bg-[#1a1d29]/80 border border-white/10 transition-all text-left cursor-pointer"
           >
             <img
               src={currentUser?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser?.name || 'User')}&background=d4af37&color=000`}
@@ -195,11 +195,12 @@ export const Navbar = () => {
 
           {isProfileOpen && (
             <div 
-              className="absolute right-0 mt-2 w-64 rounded-2xl bg-[#141824] border border-luxury-border shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150"
+              className="absolute right-0 mt-2 w-64 rounded-2xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.5)] p-2 z-50 animate-in fade-in zoom-in-95 duration-150"
+              style={{ WebkitBackdropFilter: 'blur(28px)' }}
               onMouseLeave={() => setIsProfileOpen(false)}
             >
               {/* Profile Details */}
-              <div className="px-3 py-2.5 border-b border-luxury-border mb-1">
+              <div className="px-3 py-2.5 border-b border-white/10 mb-1">
                 <p className="text-xs font-bold text-slate-100 truncate">{currentUser?.name}</p>
                 <p className="text-[11px] text-gold-400 mt-0.5">
                   {roleLabels[currentUser?.role]?.label || currentUser?.role}

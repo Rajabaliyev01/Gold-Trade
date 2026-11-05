@@ -54,7 +54,7 @@ export const TransactionHistory = () => {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-4 rounded-2xl bg-[#141824] border border-luxury-border flex items-center space-x-3.5">
+        <div className="p-4 rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 flex items-center space-x-3.5">
           <div className="w-10 h-10 rounded-xl bg-gold-500/10 flex items-center justify-center text-gold-400">
             <Receipt className="w-5 h-5" />
           </div>
@@ -67,7 +67,7 @@ export const TransactionHistory = () => {
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#141824] border border-luxury-border flex items-center space-x-3.5">
+        <div className="p-4 rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 flex items-center space-x-3.5">
           <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
             <Sparkles className="w-5 h-5" />
           </div>
@@ -77,7 +77,7 @@ export const TransactionHistory = () => {
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#141824] border border-luxury-border flex items-center space-x-3.5">
+        <div className="p-4 rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 flex items-center space-x-3.5">
           <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400">
             <RefreshCw className="w-5 h-5" />
           </div>
@@ -90,7 +90,7 @@ export const TransactionHistory = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-[#141824] p-3 rounded-2xl border border-luxury-border">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-[#12141c]/60 backdrop-blur-xl p-3 rounded-2xl border border-white/10">
         <div className="flex items-center space-x-1 text-xs">
           {[
             { id: 'all', label: 'Barchasi' },
@@ -119,17 +119,17 @@ export const TransactionHistory = () => {
             placeholder="Chek ID, mijoz ismi, kassir..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-[#0d1017] border border-luxury-border text-xs text-white placeholder-slate-500 focus:outline-none focus:border-gold-500"
+            className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
           />
         </div>
       </div>
 
       {/* Table */}
-      <div className="rounded-2xl bg-[#141824] border border-luxury-border overflow-hidden">
+      <div className="rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-luxury-border bg-[#0d1017] text-slate-400 font-semibold">
+              <tr className="border-b border-white/10 bg-white/5 text-slate-400 font-semibold">
                 <th className="py-3.5 pl-4">Chek ID</th>
                 <th className="py-3.5">Vaqt / Sana</th>
                 <th className="py-3.5">Xaridor</th>

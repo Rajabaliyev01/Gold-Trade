@@ -91,10 +91,10 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="w-full max-w-xl rounded-2xl bg-[#141824] border border-luxury-border shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-150">
+      <div className="w-full max-w-xl rounded-2xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] overflow-hidden max-h-[92vh] flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-luxury-border flex items-center justify-between shrink-0 bg-[#0f131d]">
+        <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between shrink-0 bg-white/5">
           <div className="flex items-center space-x-2.5">
             <div className="w-8 h-8 rounded-lg bg-gold-500/10 flex items-center justify-center text-gold-400 border border-gold-500/20">
               <Hammer className="w-4 h-4" />
@@ -130,7 +130,7 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
                 placeholder="Masalan: 585 Proba Italiya Zanjir (Bismark)"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white placeholder-slate-500 focus:outline-none focus:border-gold-500"
+                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
               />
             </div>
 
@@ -140,7 +140,7 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
                 <select
                   value={formData.craftsmanId}
                   onChange={(e) => setFormData({ ...formData, craftsmanId: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-gold-500/50"
                 >
                   {craftsmen.map((c) => (
                     <option key={c.uid || c.id} value={c.uid || c.id}>
@@ -155,7 +155,7 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
                 <select
                   value={formData.purity}
                   onChange={(e) => setFormData({ ...formData, purity: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-gold-500/50"
                 >
                   <option value="999">999.9 (Sof Bank Tillasi)</option>
                   <option value="750">750 (Italyan / Standart)</option>
@@ -183,7 +183,7 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
                   value={formData.givenWeight}
                   onKeyDown={preventNegativeKey}
                   onChange={(e) => setFormData({ ...formData, givenWeight: sanitizeNonNegative(e.target.value) })}
-                  className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono placeholder-slate-500 focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                 />
                 <span className="absolute right-3 top-2 text-slate-500 font-mono">gr</span>
               </div>
@@ -203,7 +203,7 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
                   value={formData.stonesCount}
                   onKeyDown={preventNegativeKey}
                   onChange={(e) => setFormData({ ...formData, stonesCount: sanitizeNonNegative(e.target.value) })}
-                  className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono focus:outline-none focus:border-gold-500/50"
                 />
               </div>
 
@@ -217,7 +217,7 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
                   placeholder="Masalan: 60 sm, 18 razmer"
                   value={formData.dimensions}
                   onChange={(e) => setFormData({ ...formData, dimensions: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-gold-500/50"
                 />
               </div>
 
@@ -230,7 +230,7 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
                   type="date"
                   value={formData.deadline}
                   onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-gold-500/50"
                 />
               </div>
             </div>
@@ -247,7 +247,7 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
                     value={formData.allowedLossRate}
                     onKeyDown={preventNegativeKey}
                     onChange={(e) => setFormData({ ...formData, allowedLossRate: sanitizeNonNegative(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono focus:outline-none focus:border-gold-500/50"
                   />
                   <span className="absolute right-3 top-2 text-slate-500 font-mono">%</span>
                 </div>
@@ -255,7 +255,7 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
 
               <div>
                 <label className="block text-slate-300 font-semibold mb-1">Maksimal Yo'qotish (gr)</label>
-                <div className="px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-gold-400 font-mono">
+                <div className="px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-gold-400 font-mono">
                   {formData.givenWeight
                     ? formatWeight((parseFloat(formData.givenWeight) * (parseFloat(formData.allowedLossRate) || 2)) / 100)
                     : '0.000 gr'}
@@ -270,14 +270,14 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
                 placeholder="To'qilishi, qulfi, yuzasi pardozlash talablari..."
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white placeholder-slate-500 focus:outline-none focus:border-gold-500 resize-none"
+                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-gold-500 resize-none"
               />
             </div>
           </form>
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-luxury-border flex items-center justify-between shrink-0 bg-[#0f131d]">
+        <div className="px-6 py-4 border-t border-white/10 flex items-center justify-between shrink-0 bg-white/5">
           <button
             type="button"
             onClick={onClose}

@@ -49,7 +49,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-[#0b0e14] text-slate-100 flex flex-col font-sans selection:bg-gold-500 selection:text-black">
+      <div className="min-h-screen bg-transparent text-slate-100 flex flex-col font-sans selection:bg-gold-500 selection:text-black">
         {/* Global Navbar */}
         <Navbar />
 
@@ -57,7 +57,7 @@ export default function App() {
         <div className="flex-1 flex overflow-hidden relative">
           <Sidebar />
 
-          <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 lg:p-8 bg-gradient-to-b from-[#0b0e14] via-[#0e121b] to-[#0b0e14]">
+          <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 lg:p-8 bg-transparent">
             <Routes>
               {/* Dashboard is default for admin and manager */}
               <Route

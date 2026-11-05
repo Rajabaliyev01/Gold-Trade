@@ -206,7 +206,7 @@ export const TelegramSettings = () => {
 
       <form onSubmit={handleSaveAll} className="space-y-6">
         {/* 1. REAL EXTERNAL FINANCIAL APIS INTEGRATION (NEW & ENHANCED) */}
-        <div className="rounded-2xl bg-[#141824] border border-gold-500/30 p-5 space-y-4 shadow-gold-sm">
+        <div className="rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-gold-500/30 p-5 space-y-4 shadow-gold-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2.5">
               <div className="w-8 h-8 rounded-lg bg-gold-500/10 flex items-center justify-center text-gold-400">
@@ -251,7 +251,7 @@ export const TelegramSettings = () => {
 
           <div className="space-y-4 text-xs pt-1">
             {/* A. Central Bank of Uzbekistan (CBU) */}
-            <div className="p-3.5 rounded-xl bg-[#0d1017] border border-luxury-border space-y-2">
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <Building2 className="w-4 h-4 text-blue-400" />
@@ -289,7 +289,7 @@ export const TelegramSettings = () => {
             </div>
 
             {/* B. GoldAPI.io */}
-            <div className="p-3.5 rounded-xl bg-[#0d1017] border border-luxury-border space-y-3">
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <Coins className="w-4 h-4 text-gold-400" />
@@ -329,13 +329,13 @@ export const TelegramSettings = () => {
                   placeholder="goldapi-123abc-token"
                   value={goldApiKey}
                   onChange={(e) => setGoldApiKey(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-lg bg-[#141824] border border-luxury-border text-white font-mono text-xs focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-1.5 rounded-lg bg-[#12141c]/60 backdrop-blur-xl border border-white/10 text-white font-mono text-xs focus:outline-none focus:border-gold-500/50"
                 />
               </div>
             </div>
 
             {/* C. Metals-API */}
-            <div className="p-3.5 rounded-xl bg-[#0d1017] border border-luxury-border space-y-3">
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <Coins className="w-4 h-4 text-amber-400" />
@@ -375,7 +375,7 @@ export const TelegramSettings = () => {
                   placeholder="metals_access_key_xyz123"
                   value={metalsApiKey}
                   onChange={(e) => setMetalsApiKey(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-lg bg-[#141824] border border-luxury-border text-white font-mono text-xs focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-1.5 rounded-lg bg-[#12141c]/60 backdrop-blur-xl border border-white/10 text-white font-mono text-xs focus:outline-none focus:border-gold-500/50"
                 />
               </div>
             </div>
@@ -396,7 +396,7 @@ export const TelegramSettings = () => {
                     className={`py-2 px-2 rounded-xl font-medium border text-center transition-colors ${
                       provider === item.id
                         ? 'bg-gold-500 text-black border-gold-500 font-bold'
-                        : 'bg-[#0d1017] border-luxury-border text-slate-400 hover:bg-[#1a2030]'
+                        : 'bg-white/5 border-white/10 text-slate-400 hover:bg-[#1a2030]'
                     }`}
                   >
                     {item.label}
@@ -408,7 +408,7 @@ export const TelegramSettings = () => {
         </div>
 
         {/* 2. Telegram Bot API Integration */}
-        <div className="rounded-2xl bg-[#141824] border border-luxury-border p-5 space-y-4">
+        <div className="rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 p-5 space-y-4">
           <div className="flex items-center space-x-2.5">
             <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
               <Send className="w-4 h-4" />
@@ -430,7 +430,7 @@ export const TelegramSettings = () => {
                   placeholder="123456789:ABCdefGhIJKlmNoPQRstuvWxyz"
                   value={botToken}
                   onChange={(e) => setBotToken(e.target.value)}
-                  className="w-full pl-3 pr-9 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono focus:outline-none focus:border-gold-500"
+                  className="w-full pl-3 pr-9 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono focus:outline-none focus:border-gold-500/50"
                 />
                 <button
                   type="button"
@@ -450,7 +450,7 @@ export const TelegramSettings = () => {
                 placeholder="Masalan: 12345678 yoki -100123456789"
                 value={chatId}
                 onChange={(e) => setChatId(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono focus:outline-none focus:border-gold-500"
+                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono focus:outline-none focus:border-gold-500/50"
               />
               <p className="text-[10px] text-slate-500 mt-1">@userinfobot orqali Chat ID'ni bilishingiz mumkin</p>
             </div>
@@ -487,7 +487,7 @@ export const TelegramSettings = () => {
         </div>
 
         {/* 3. Production & Ugar Rules */}
-        <div className="rounded-2xl bg-[#141824] border border-luxury-border p-5 space-y-4">
+        <div className="rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 p-5 space-y-4">
           <div className="flex items-center space-x-2.5">
             <div className="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-400">
               <Flame className="w-4 h-4" />
@@ -511,7 +511,7 @@ export const TelegramSettings = () => {
                   step="0.1"
                   value={maxLoss}
                   onChange={(e) => setMaxLoss(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono focus:outline-none focus:border-gold-500/50"
                 />
                 <span className="absolute right-3 top-2 text-slate-500 font-mono">%</span>
               </div>
@@ -545,7 +545,7 @@ export const TelegramSettings = () => {
         </div>
 
         {/* 4. Current Rates Overview & Manual Override */}
-        <div className="rounded-2xl bg-[#141824] border border-luxury-border p-5 space-y-4">
+        <div className="rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 p-5 space-y-4">
           <div className="flex items-center space-x-2.5">
             <div className="w-8 h-8 rounded-lg bg-gold-500/10 flex items-center justify-center text-gold-400">
               <Coins className="w-4 h-4" />
@@ -566,7 +566,7 @@ export const TelegramSettings = () => {
                 step="0.1"
                 value={rate999}
                 onChange={(e) => setRate999(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono focus:outline-none focus:border-gold-500"
+                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono focus:outline-none focus:border-gold-500/50"
               />
             </div>
             <div>
@@ -576,7 +576,7 @@ export const TelegramSettings = () => {
                 step="0.1"
                 value={rate750}
                 onChange={(e) => setRate750(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono focus:outline-none focus:border-gold-500"
+                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono focus:outline-none focus:border-gold-500/50"
               />
             </div>
             <div>
@@ -586,7 +586,7 @@ export const TelegramSettings = () => {
                 step="0.1"
                 value={rate585}
                 onChange={(e) => setRate585(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono focus:outline-none focus:border-gold-500"
+                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono focus:outline-none focus:border-gold-500/50"
               />
             </div>
             <div>
@@ -596,14 +596,14 @@ export const TelegramSettings = () => {
                 step="1"
                 value={usdToUzs}
                 onChange={(e) => setUsdToUzs(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono focus:outline-none focus:border-gold-500"
+                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono focus:outline-none focus:border-gold-500/50"
               />
             </div>
           </div>
         </div>
 
         {/* 5. Firebase & Security Status */}
-        <div className="rounded-2xl bg-[#141824] border border-luxury-border p-5 space-y-4">
+        <div className="rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 p-5 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 text-slate-300 text-xs font-semibold">
               <Database className="w-4 h-4 text-gold-400" />
@@ -620,7 +620,7 @@ export const TelegramSettings = () => {
             </span>
           </div>
 
-          <div className="p-3 rounded-xl bg-[#0d1017] border border-luxury-border text-xs space-y-1.5 font-mono">
+          <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-xs space-y-1.5 font-mono">
             <div className="flex justify-between text-slate-400">
               <span>Firebase Project ID:</span>
               <span className="text-gold-300 font-bold">{firebaseConfig.projectId}</span>

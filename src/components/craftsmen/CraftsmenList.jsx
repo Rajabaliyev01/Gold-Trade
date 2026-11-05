@@ -43,7 +43,7 @@ export const CraftsmenList = () => {
           return (
             <div
               key={c.uid}
-              className="rounded-2xl bg-[#141824] border border-luxury-border p-5 space-y-4 hover:border-gold-500/40 transition-all flex flex-col justify-between"
+              className="rounded-2xl bg-white/5 border border-white/10 p-5 space-y-4 hover:border-gold-500/40 transition-all flex flex-col justify-between"
             >
               {/* Header */}
               <div className="flex items-center space-x-3.5">
@@ -60,7 +60,7 @@ export const CraftsmenList = () => {
               </div>
 
               {/* Stats Box */}
-              <div className="grid grid-cols-2 gap-2 bg-[#0d1017] p-3 rounded-xl border border-luxury-border font-mono text-xs">
+              <div className="grid grid-cols-2 gap-2 bg-white/5 p-3 rounded-xl border border-white/10 font-mono text-xs">
                 <div>
                   <span className="text-[10px] text-slate-400 block">Qo'lidagi Tilla</span>
                   <span className="font-bold text-gold-300 text-sm">{formatWeight(c.current_gold_balance || 0)}</span>
@@ -100,7 +100,7 @@ export const CraftsmenList = () => {
                     {activeOrders.map((order) => (
                       <div
                         key={order.order_id}
-                        className="p-2 rounded-lg bg-[#141824] border border-luxury-border flex items-center justify-between text-xs"
+                        className="p-2 rounded-lg bg-white/5 border border-white/10 flex items-center justify-between text-xs"
                       >
                         <div className="min-w-0 flex-1">
                           <p className="font-medium text-slate-200 truncate">{order.title}</p>

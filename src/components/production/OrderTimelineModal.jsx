@@ -70,10 +70,10 @@ export const OrderTimelineModal = ({ order, isOpen, onClose }) => {
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="w-full max-w-3xl rounded-2xl bg-[#141824] border border-luxury-border shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-150">
+      <div className="w-full max-w-3xl rounded-2xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] overflow-hidden max-h-[92vh] flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-luxury-border flex items-center justify-between shrink-0 bg-[#0f131d]">
+        <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between shrink-0 bg-white/5">
           <div className="flex items-center space-x-2.5">
             <div className="w-8 h-8 rounded-lg bg-gold-500/10 flex items-center justify-center text-gold-400 border border-gold-500/20">
               <Clock className="w-4 h-4" />
@@ -102,7 +102,7 @@ export const OrderTimelineModal = ({ order, isOpen, onClose }) => {
         {/* Content */}
         <div className="p-6 overflow-y-auto space-y-6 text-xs">
           {/* Visual Step Progression Bar */}
-          <div className="p-4 rounded-xl bg-[#0d1017] border border-luxury-border">
+          <div className="p-4 rounded-xl bg-white/5 border border-white/10">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-4">
               Jarayon Bosqichlari va Vaqtlar
             </span>
@@ -116,7 +116,7 @@ export const OrderTimelineModal = ({ order, isOpen, onClose }) => {
                     className={`flex flex-col items-center text-center p-2.5 rounded-xl border transition-all ${
                       step.isDone
                         ? 'bg-gradient-to-b from-[#182030] to-[#0f1420] border-gold-500/40'
-                        : 'bg-[#10141e]/50 border-luxury-border opacity-50'
+                        : 'bg-[#10141e]/50 border-white/10 opacity-50'
                     }`}
                   >
                     <div
@@ -132,7 +132,7 @@ export const OrderTimelineModal = ({ order, isOpen, onClose }) => {
                     <span className="font-bold text-slate-200 text-[11px] line-clamp-1">{step.title}</span>
                     <span className="text-[10px] text-slate-400">{step.subtitle}</span>
 
-                    <span className="mt-2 text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-black/40 text-gold-400 border border-luxury-border">
+                    <span className="mt-2 text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-black/40 text-gold-400 border border-white/10">
                       {step.isDone ? formatDateTimeDetailed(step.time) : "Bajarilmagan"}
                     </span>
                   </div>
@@ -143,7 +143,7 @@ export const OrderTimelineModal = ({ order, isOpen, onClose }) => {
 
           {/* Key Timestamps Detailed Card */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div className="p-3.5 rounded-xl bg-[#0d1017] border border-luxury-border space-y-1">
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-1">
               <span className="text-[10px] text-slate-400 flex items-center space-x-1">
                 <Calendar className="w-3 h-3 text-blue-400" />
                 <span>Ustaga Yuborilgan Vaqt:</span>
@@ -153,7 +153,7 @@ export const OrderTimelineModal = ({ order, isOpen, onClose }) => {
               </p>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-[#0d1017] border border-luxury-border space-y-1">
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-1">
               <span className="text-[10px] text-slate-400 flex items-center space-x-1">
                 <Hammer className="w-3 h-3 text-amber-400" />
                 <span>Usta Ishni Boshlagan Vaqt:</span>
@@ -163,7 +163,7 @@ export const OrderTimelineModal = ({ order, isOpen, onClose }) => {
               </p>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-[#0d1017] border border-luxury-border space-y-1">
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-1">
               <span className="text-[10px] text-slate-400 flex items-center space-x-1">
                 <Clock className="w-3 h-3 text-purple-400" />
                 <span>Usta Bitirgan Vaqt:</span>
@@ -173,7 +173,7 @@ export const OrderTimelineModal = ({ order, isOpen, onClose }) => {
               </p>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-[#0d1017] border border-luxury-border space-y-1">
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-1">
               <span className="text-[10px] text-slate-400 flex items-center space-x-1">
                 <ShieldCheck className="w-3 h-3 text-teal-400" />
                 <span>Menejer Tekshirgan Vaqt:</span>
@@ -186,7 +186,7 @@ export const OrderTimelineModal = ({ order, isOpen, onClose }) => {
               )}
             </div>
 
-            <div className="p-3.5 rounded-xl bg-[#0d1017] border border-luxury-border space-y-1 md:col-span-2">
+            <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-1 md:col-span-2">
               <span className="text-[10px] text-slate-400 flex items-center space-x-1">
                 <PackageCheck className="w-3 h-3 text-emerald-400" />
                 <span>Omborga Qo'shilgan Vaqt &amp; Shtrix-kod:</span>
@@ -212,7 +212,7 @@ export const OrderTimelineModal = ({ order, isOpen, onClose }) => {
             </h3>
 
             {(!order.timeline || order.timeline.length === 0) ? (
-              <div className="p-4 rounded-xl bg-[#0d1017] border border-luxury-border text-center text-slate-500 text-xs">
+              <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center text-slate-500 text-xs">
                 Ushbu buyurtma bo'yicha qo'shimcha hodisalar qayd etilmagan.
               </div>
             ) : (
@@ -220,7 +220,7 @@ export const OrderTimelineModal = ({ order, isOpen, onClose }) => {
                 {order.timeline.map((item, index) => (
                   <div
                     key={index}
-                    className="p-3 rounded-xl bg-[#0d1017] border border-luxury-border flex items-start space-x-3 transition-colors hover:border-gold-500/30"
+                    className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-start space-x-3 transition-colors hover:border-gold-500/30"
                   >
                     <div className="w-6 h-6 rounded-full bg-gold-500/10 border border-gold-500/30 flex items-center justify-center shrink-0 mt-0.5">
                       <span className="text-[10px] font-bold text-gold-400">{index + 1}</span>
@@ -244,7 +244,7 @@ export const OrderTimelineModal = ({ order, isOpen, onClose }) => {
                       </div>
 
                       {item.details && (
-                        <p className="text-[11px] text-slate-400 bg-black/30 p-2 rounded-lg font-mono border border-luxury-border/60 mt-1">
+                        <p className="text-[11px] text-slate-400 bg-black/30 p-2 rounded-lg font-mono border border-white/10/60 mt-1">
                           {item.details}
                         </p>
                       )}
@@ -257,7 +257,7 @@ export const OrderTimelineModal = ({ order, isOpen, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-luxury-border flex items-center justify-end shrink-0 bg-[#0f131d]">
+        <div className="px-6 py-4 border-t border-white/10 flex items-center justify-end shrink-0 bg-white/5">
           <button
             type="button"
             onClick={onClose}

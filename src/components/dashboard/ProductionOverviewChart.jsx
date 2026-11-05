@@ -41,7 +41,10 @@ export const ProductionOverviewChart = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* 1. Gold Movement Chart */}
-      <div className="rounded-2xl bg-[#141824] border border-luxury-border p-5">
+      <div
+        className="rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] p-5 transition-all duration-300 hover:border-white/20"
+        style={{ WebkitBackdropFilter: 'blur(20px)' }}
+      >
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-sm font-bold text-white">Haftalik Tilla Aylanmasi</h3>
@@ -88,7 +91,10 @@ export const ProductionOverviewChart = () => {
       </div>
 
       {/* 2. Craftsmen Ugar (Loss Rate) Comparison */}
-      <div className="rounded-2xl bg-[#141824] border border-luxury-border p-5">
+      <div
+        className="rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] p-5 transition-all duration-300 hover:border-white/20"
+        style={{ WebkitBackdropFilter: 'blur(20px)' }}
+      >
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-sm font-bold text-white">Ustalar Bo'yicha Ugar Me'yori (%)</h3>

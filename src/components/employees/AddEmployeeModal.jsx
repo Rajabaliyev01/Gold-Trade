@@ -64,13 +64,13 @@ export const AddEmployeeModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-150">
       <div 
-        className="w-full max-w-lg bg-[#0f131d] border border-luxury-border rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150"
+        className="w-full max-w-lg bg-white/5 border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-luxury-border bg-[#141824]">
+        <div className="flex items-center justify-between p-5 border-b border-white/10 bg-[#141824]">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-xl bg-gold-500/10 border border-gold-500/30 flex items-center justify-center text-gold-400">
               <UserPlus className="w-5 h-5" />
@@ -110,7 +110,7 @@ export const AddEmployeeModal = ({ isOpen, onClose }) => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Masalan: Farhod Zargariy"
-                className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-[#141824] border border-luxury-border text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
+                className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
               />
             </div>
           </div>
@@ -129,7 +129,7 @@ export const AddEmployeeModal = ({ isOpen, onClose }) => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
                   placeholder="farhod_zargar"
-                  className="w-full pl-8 pr-3 py-2.5 rounded-xl bg-[#141824] border border-luxury-border text-sm font-mono text-slate-200 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
+                  className="w-full pl-8 pr-3 py-2.5 rounded-xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] text-sm font-mono text-slate-200 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
                 />
               </div>
               <p className="text-[10px] text-slate-500">Lotin harflari, raqamlar, pastki chiziq</p>
@@ -159,7 +159,7 @@ export const AddEmployeeModal = ({ isOpen, onClose }) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Kamida 6 ta belgi"
-                className="w-full pl-9 pr-10 py-2.5 rounded-xl bg-[#141824] border border-luxury-border text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
+                className="w-full pl-9 pr-10 py-2.5 rounded-xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
               />
               <button
                 type="button"
@@ -192,7 +192,7 @@ export const AddEmployeeModal = ({ isOpen, onClose }) => {
                   className={`p-3 rounded-xl border cursor-pointer text-left transition-all ${
                     role === r.id
                       ? 'bg-gold-500/15 border-gold-500 text-gold-200 shadow-gold-sm'
-                      : 'bg-[#141824] border-luxury-border text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                      : 'bg-[#141824] border-white/10 text-slate-400 hover:text-slate-200 hover:border-slate-700'
                   }`}
                 >
                   <p className="font-semibold text-xs text-slate-100">{r.label}</p>
@@ -203,12 +203,12 @@ export const AddEmployeeModal = ({ isOpen, onClose }) => {
           </div>
 
           {/* Action buttons */}
-          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-luxury-border">
+          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-white/10">
             <button
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="px-4 py-2.5 rounded-xl border border-luxury-border text-xs font-semibold text-slate-300 hover:bg-[#141824] transition-colors"
+              className="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-slate-300 hover:bg-[#141824] transition-colors"
             >
               Bekor qilish
             </button>

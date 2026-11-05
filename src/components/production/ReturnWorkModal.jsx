@@ -85,10 +85,10 @@ export const ReturnWorkModal = ({ order, isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="w-full max-w-xl rounded-2xl bg-[#141824] border border-luxury-border shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-150">
+      <div className="w-full max-w-xl rounded-2xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] overflow-hidden max-h-[92vh] flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-luxury-border flex items-center justify-between shrink-0">
+        <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between shrink-0">
           <div className="flex items-center space-x-2.5">
             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
               <Scale className="w-4 h-4" />
@@ -111,7 +111,7 @@ export const ReturnWorkModal = ({ order, isOpen, onClose }) => {
         {/* Form Body */}
         <div className="p-6 overflow-y-auto space-y-5 text-xs">
           {/* Order reference banner */}
-          <div className="p-3.5 rounded-xl bg-[#0d1017] border border-luxury-border flex items-center justify-between font-mono">
+          <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between font-mono">
             <div>
               <span className="text-[10px] text-slate-400 block">Ustaga berilgan xomashyo</span>
               <span className="text-base font-bold text-gold-400">{formatWeight(order.given_weight)}</span>
@@ -141,7 +141,7 @@ export const ReturnWorkModal = ({ order, isOpen, onClose }) => {
                     value={receivedWeight}
                     onKeyDown={preventNegativeKey}
                     onChange={(e) => setReceivedWeight(sanitizeNonNegative(e.target.value))}
-                    className="w-full px-3 py-2.5 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                   />
                   <span className="absolute right-3 top-2.5 text-slate-500 font-mono">gr</span>
                 </div>
@@ -161,7 +161,7 @@ export const ReturnWorkModal = ({ order, isOpen, onClose }) => {
                     value={returnedScrap}
                     onKeyDown={preventNegativeKey}
                     onChange={(e) => setReturnedScrap(sanitizeNonNegative(e.target.value))}
-                    className="w-full px-3 py-2.5 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                   />
                   <span className="absolute right-3 top-2.5 text-slate-500 font-mono">gr</span>
                 </div>
@@ -197,7 +197,7 @@ export const ReturnWorkModal = ({ order, isOpen, onClose }) => {
                 </span>
               </div>
 
-              <div className="grid grid-cols-3 gap-2 text-center py-2 border-y border-luxury-border/50 font-mono my-2">
+              <div className="grid grid-cols-3 gap-2 text-center py-2 border-y border-white/10/50 font-mono my-2">
                 <div>
                   <span className="text-[10px] text-slate-400 block">Jami Qaytdi</span>
                   <span className="font-bold text-slate-200">{formatWeight(calculation.returnedTotal)}</span>
@@ -265,7 +265,7 @@ export const ReturnWorkModal = ({ order, isOpen, onClose }) => {
             </div>
 
             {/* Finished product details to be registered into inventory */}
-            <div className="space-y-3 pt-2 border-t border-luxury-border">
+            <div className="space-y-3 pt-2 border-t border-white/10">
               <h4 className="font-semibold text-slate-200 flex items-center space-x-2">
                 <PackageCheck className="w-4 h-4 text-gold-400" />
                 <span>Omborga Qabul Qilinadigan Tayyor Mahsulot</span>
@@ -280,7 +280,7 @@ export const ReturnWorkModal = ({ order, isOpen, onClose }) => {
                     value={productName}
                     onChange={(e) => setProductName(e.target.value)}
                     placeholder="Masalan: Bismark Qalin Zanjir"
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-gold-500/50"
                   />
                 </div>
 
@@ -289,7 +289,7 @@ export const ReturnWorkModal = ({ order, isOpen, onClose }) => {
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-gold-500/50"
                   >
                     <option value="Zanjir">Zanjir</option>
                     <option value="Uzuk">Uzuk</option>
@@ -312,7 +312,7 @@ export const ReturnWorkModal = ({ order, isOpen, onClose }) => {
                     value={sellingPrice}
                     onKeyDown={preventNegativeKey}
                     onChange={(e) => setSellingPrice(sanitizeNonNegative(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono focus:outline-none focus:border-gold-500/50"
                   />
                   <span className="absolute right-3 top-2 text-slate-500 font-mono">$</span>
                 </div>
@@ -330,7 +330,7 @@ export const ReturnWorkModal = ({ order, isOpen, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-luxury-border flex items-center justify-end space-x-3 shrink-0 bg-[#0d1017]">
+        <div className="px-6 py-4 border-t border-white/10 flex items-center justify-end space-x-3 shrink-0 bg-[#0d1017]">
           <button
             type="button"
             onClick={onClose}

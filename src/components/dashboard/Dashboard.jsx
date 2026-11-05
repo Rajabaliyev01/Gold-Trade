@@ -131,7 +131,7 @@ export const Dashboard = () => {
       </div>
 
       {/* Recent Transactions List */}
-      <div className="rounded-2xl bg-[#141824] border border-luxury-border p-5">
+      <div className="rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 p-5">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-sm font-bold text-white flex items-center space-x-2">
@@ -152,7 +152,7 @@ export const Dashboard = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-luxury-border text-slate-400 font-semibold">
+              <tr className="border-b border-white/10 text-slate-400 font-semibold">
                 <th className="pb-3 pl-2">Chek ID</th>
                 <th className="pb-3">Mijoz</th>
                 <th className="pb-3">Vaqt</th>

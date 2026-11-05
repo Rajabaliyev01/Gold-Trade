@@ -79,7 +79,7 @@ export const InventoryList = () => {
 
       {/* Mini KPI Cards for Warehouse */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-4 rounded-2xl bg-[#141824] border border-luxury-border flex items-center space-x-3.5">
+        <div className="p-4 rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 flex items-center space-x-3.5">
           <div className="w-10 h-10 rounded-xl bg-gold-500/10 flex items-center justify-center text-gold-400">
             <Coins className="w-5 h-5" />
           </div>
@@ -89,7 +89,7 @@ export const InventoryList = () => {
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#141824] border border-luxury-border flex items-center space-x-3.5">
+        <div className="p-4 rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 flex items-center space-x-3.5">
           <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
             <Sparkles className="w-5 h-5" />
           </div>
@@ -99,7 +99,7 @@ export const InventoryList = () => {
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-[#141824] border border-luxury-border flex items-center space-x-3.5">
+        <div className="p-4 rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 flex items-center space-x-3.5">
           <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400">
             <Diamond className="w-5 h-5" />
           </div>
@@ -113,7 +113,7 @@ export const InventoryList = () => {
       </div>
 
       {/* Tabs & Search */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-[#141824] p-3 rounded-2xl border border-luxury-border">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-[#12141c]/60 backdrop-blur-xl p-3 rounded-2xl border border-white/10">
         <div className="flex items-center space-x-1 overflow-x-auto pb-1 md:pb-0 text-xs">
           {[
             { id: 'all', label: 'Barchasi', count: items.length },
@@ -152,17 +152,17 @@ export const InventoryList = () => {
             placeholder="Nomi, shtrix-kod, proba..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-[#0d1017] border border-luxury-border text-xs text-white placeholder-slate-500 focus:outline-none focus:border-gold-500"
+            className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
           />
         </div>
       </div>
 
       {/* Inventory Table */}
-      <div className="rounded-2xl bg-[#141824] border border-luxury-border overflow-hidden">
+      <div className="rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-luxury-border bg-[#0d1017] text-slate-400 font-semibold">
+              <tr className="border-b border-white/10 bg-white/5 text-slate-400 font-semibold">
                 <th className="py-3.5 pl-4">Mahsulot / Xomashyo</th>
                 <th className="py-3.5">Turi</th>
                 <th className="py-3.5">Proba</th>
@@ -261,7 +261,7 @@ export const InventoryList = () => {
 
                       <td className="py-3.5 text-center font-mono text-[11px] text-slate-400">
                         {item.barcode ? (
-                          <span className="px-1.5 py-0.5 rounded bg-[#0d1017] border border-luxury-border">
+                          <span className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10">
                             {item.barcode}
                           </span>
                         ) : (
@@ -293,8 +293,8 @@ export const InventoryList = () => {
       {/* Printable Barcode Label Tag Preview Modal */}
       {selectedBarcodeItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-2xl bg-[#141824] border border-gold-500/40 p-6 shadow-2xl text-center space-y-4">
-            <div className="flex justify-between items-center border-b border-luxury-border pb-3">
+          <div className="w-full max-w-sm rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-gold-500/40 p-6 shadow-2xl text-center space-y-4">
+            <div className="flex justify-between items-center border-b border-white/10 pb-3">
               <span className="font-extrabold gold-gradient-text tracking-wider uppercase text-xs">Gold Trade ERP</span>
               <button
                 onClick={() => setSelectedBarcodeItem(null)}

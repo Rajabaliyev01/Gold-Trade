@@ -26,10 +26,10 @@ export const JewelryTagModal = ({ order, isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="w-full max-w-lg rounded-2xl bg-[#141824] border border-luxury-border shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-150">
+      <div className="w-full max-w-lg rounded-2xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] overflow-hidden max-h-[92vh] flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-luxury-border flex items-center justify-between shrink-0 bg-[#0f131d]">
+        <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between shrink-0 bg-white/5">
           <div className="flex items-center space-x-2.5">
             <div className="w-8 h-8 rounded-lg bg-gold-500/10 flex items-center justify-center text-gold-400 border border-gold-500/20">
               <Tag className="w-4 h-4" />
@@ -161,7 +161,7 @@ export const JewelryTagModal = ({ order, isOpen, onClose }) => {
         </div>
 
         {/* Footer with Print Action */}
-        <div className="px-6 py-4 border-t border-luxury-border flex items-center justify-between shrink-0 bg-[#0f131d]">
+        <div className="px-6 py-4 border-t border-white/10 flex items-center justify-between shrink-0 bg-white/5">
           <button
             type="button"
             onClick={onClose}

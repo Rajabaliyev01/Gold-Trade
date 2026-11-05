@@ -36,11 +36,11 @@ export const TradeInCalculator = () => {
   };
 
   return (
-    <div className="rounded-xl bg-[#0d1017] border border-luxury-border overflow-hidden text-xs">
+    <div className="rounded-xl bg-white/5 border border-white/10 overflow-hidden text-xs">
       {/* Header */}
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="px-3.5 py-2.5 flex items-center justify-between cursor-pointer hover:bg-[#141824] transition-colors"
+        className="px-3.5 py-2.5 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
       >
         <div className="flex items-center space-x-2">
           <div className="w-6 h-6 rounded-md bg-amber-500/10 flex items-center justify-center text-amber-400">
@@ -63,7 +63,7 @@ export const TradeInCalculator = () => {
 
       {/* Accordion content */}
       {isOpen && (
-        <div className="p-3.5 border-t border-luxury-border space-y-3 bg-[#0a0d13]">
+        <div className="p-3.5 border-t border-white/10 space-y-3 bg-white/5">
           {tradeIn ? (
             <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-between">
               <div>
@@ -94,7 +94,7 @@ export const TradeInCalculator = () => {
                   <select
                     value={purity}
                     onChange={(e) => handlePurityChange(e.target.value)}
-                    className="w-full px-2.5 py-1.5 rounded-lg bg-[#141824] border border-luxury-border text-white text-xs focus:outline-none focus:border-gold-500"
+                    className="w-full px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-gold-500/50"
                   >
                     <option value="999">999.9 Sof</option>
                     <option value="750">750 (18K)</option>
@@ -110,7 +110,7 @@ export const TradeInCalculator = () => {
                     step="0.5"
                     value={scrapRate}
                     onChange={(e) => setScrapRate(e.target.value)}
-                    className="w-full px-2.5 py-1.5 rounded-lg bg-[#141824] border border-luxury-border text-white font-mono text-xs focus:outline-none focus:border-gold-500"
+                    className="w-full px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white font-mono text-xs focus:outline-none focus:border-gold-500/50"
                   />
                 </div>
               </div>
@@ -124,7 +124,7 @@ export const TradeInCalculator = () => {
                     placeholder="Masalan: 8.500"
                     value={weight}
                     onChange={(e) => setWeight(e.target.value)}
-                    className="w-full px-2.5 py-1.5 rounded-lg bg-[#141824] border border-luxury-border text-white font-mono text-xs focus:outline-none focus:border-gold-500"
+                    className="w-full px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white font-mono text-xs focus:outline-none focus:border-gold-500/50"
                   />
                   <span className="absolute right-2.5 top-1.5 text-slate-500 font-mono text-[10px]">gr</span>
                 </div>

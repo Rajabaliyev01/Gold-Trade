@@ -105,10 +105,10 @@ export const ManagerQCReviewModal = ({ order, isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="w-full max-w-2xl rounded-2xl bg-[#141824] border border-luxury-border shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-150">
+      <div className="w-full max-w-2xl rounded-2xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] overflow-hidden max-h-[92vh] flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-luxury-border flex items-center justify-between shrink-0 bg-[#0f131d]">
+        <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between shrink-0 bg-white/5">
           <div className="flex items-center space-x-2.5">
             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
               <ShieldCheck className="w-4 h-4" />
@@ -131,7 +131,7 @@ export const ManagerQCReviewModal = ({ order, isOpen, onClose }) => {
         {/* Modal Body */}
         <div className="p-6 overflow-y-auto space-y-5 text-xs">
           {/* Summary Weights Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#0d1017] p-3.5 rounded-xl border border-luxury-border font-mono">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#0d1017] p-3.5 rounded-xl border border-white/10 font-mono">
             <div>
               <span className="text-[10px] text-slate-400 block">Ustaga berilgan:</span>
               <span className="text-sm font-bold text-gold-400">{formatWeight(order.given_weight)}</span>
@@ -220,14 +220,14 @@ export const ManagerQCReviewModal = ({ order, isOpen, onClose }) => {
           ) : (
             <form id="manager-qc-form" onSubmit={handleApprove} className="space-y-4">
               {/* Section 1: Quality Control (QC) Checklist */}
-              <div className="p-4 rounded-xl bg-[#0d1017] border border-luxury-border space-y-2.5">
+              <div className="p-4 rounded-xl bg-white/5 border border-white/10 space-y-2.5">
                 <h3 className="font-bold text-slate-200 text-xs flex items-center space-x-2">
                   <ShieldCheck className="w-4 h-4 text-emerald-400" />
                   <span>Sifat Nazorati (QC Protocol Checklist)</span>
                 </h3>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-                  <label className="flex items-center space-x-2.5 p-2 rounded-lg bg-[#141824] border border-luxury-border cursor-pointer hover:border-gold-500/40">
+                  <label className="flex items-center space-x-2.5 p-2 rounded-lg bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] cursor-pointer hover:border-gold-500/40">
                     <input
                       type="checkbox"
                       checked={qcChecklist.dimensionsMatch}
@@ -237,7 +237,7 @@ export const ManagerQCReviewModal = ({ order, isOpen, onClose }) => {
                     <span className="text-slate-300 text-xs">O'lcham va eskizga muvofiq</span>
                   </label>
 
-                  <label className="flex items-center space-x-2.5 p-2 rounded-lg bg-[#141824] border border-luxury-border cursor-pointer hover:border-gold-500/40">
+                  <label className="flex items-center space-x-2.5 p-2 rounded-lg bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] cursor-pointer hover:border-gold-500/40">
                     <input
                       type="checkbox"
                       checked={qcChecklist.stonesSecure}
@@ -247,7 +247,7 @@ export const ManagerQCReviewModal = ({ order, isOpen, onClose }) => {
                     <span className="text-slate-300 text-xs">Toshlar mustahkam o'rnatilgan</span>
                   </label>
 
-                  <label className="flex items-center space-x-2.5 p-2 rounded-lg bg-[#141824] border border-luxury-border cursor-pointer hover:border-gold-500/40">
+                  <label className="flex items-center space-x-2.5 p-2 rounded-lg bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] cursor-pointer hover:border-gold-500/40">
                     <input
                       type="checkbox"
                       checked={qcChecklist.polishingQuality}
@@ -257,7 +257,7 @@ export const ManagerQCReviewModal = ({ order, isOpen, onClose }) => {
                     <span className="text-slate-300 text-xs">Jilolash (polishing) a'lo darajada</span>
                   </label>
 
-                  <label className="flex items-center space-x-2.5 p-2 rounded-lg bg-[#141824] border border-luxury-border cursor-pointer hover:border-gold-500/40">
+                  <label className="flex items-center space-x-2.5 p-2 rounded-lg bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] cursor-pointer hover:border-gold-500/40">
                     <input
                       type="checkbox"
                       checked={qcChecklist.hallmarkingApproved}
@@ -284,7 +284,7 @@ export const ManagerQCReviewModal = ({ order, isOpen, onClose }) => {
                       value={approvedWeight}
                       onKeyDown={preventNegativeKey}
                       onChange={(e) => setApprovedWeight(sanitizeNonNegative(e.target.value))}
-                      className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
+                      className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm focus:outline-none focus:border-gold-500/50"
                     />
                     <span className="absolute right-3 top-2 text-slate-500 font-mono">gr</span>
                   </div>
@@ -302,7 +302,7 @@ export const ManagerQCReviewModal = ({ order, isOpen, onClose }) => {
                       value={approvedScrap}
                       onKeyDown={preventNegativeKey}
                       onChange={(e) => setApprovedScrap(sanitizeNonNegative(e.target.value))}
-                      className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
+                      className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm focus:outline-none focus:border-gold-500/50"
                     />
                     <span className="absolute right-3 top-2 text-slate-500 font-mono">gr</span>
                   </div>
@@ -321,7 +321,7 @@ export const ManagerQCReviewModal = ({ order, isOpen, onClose }) => {
                     value={productName}
                     onChange={(e) => setProductName(e.target.value)}
                     placeholder="Masalan: 585 Italiya Zanjiri (Bismark)"
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white text-xs focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-gold-500/50"
                   />
                 </div>
 
@@ -330,7 +330,7 @@ export const ManagerQCReviewModal = ({ order, isOpen, onClose }) => {
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white text-xs focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs focus:outline-none focus:border-gold-500/50"
                   >
                     <option value="Zanjir">Zanjir</option>
                     <option value="Uzuk">Uzuk</option>
@@ -357,7 +357,7 @@ export const ManagerQCReviewModal = ({ order, isOpen, onClose }) => {
                     value={sellingPrice}
                     onKeyDown={preventNegativeKey}
                     onChange={(e) => setSellingPrice(sanitizeNonNegative(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-xs focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-xs focus:outline-none focus:border-gold-500/50"
                   />
                 </div>
               </div>
@@ -371,7 +371,7 @@ export const ManagerQCReviewModal = ({ order, isOpen, onClose }) => {
                   value={managerNotes}
                   onChange={(e) => setManagerNotes(e.target.value)}
                   placeholder="Sifat nazorati xulosasi yoki qo'shimcha ko'rsatma..."
-                  className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white text-xs placeholder-slate-500 focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                 />
               </div>
             </form>
@@ -379,7 +379,7 @@ export const ManagerQCReviewModal = ({ order, isOpen, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-luxury-border flex items-center justify-between shrink-0 bg-[#0f131d]">
+        <div className="px-6 py-4 border-t border-white/10 flex items-center justify-between shrink-0 bg-white/5">
           {!rejectMode ? (
             <>
               <button

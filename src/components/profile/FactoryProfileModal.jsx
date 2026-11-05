@@ -133,13 +133,13 @@ export const FactoryProfileModal = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-150">
       <div 
-        className="w-full max-w-2xl bg-[#0f131d] border border-luxury-border rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150 flex flex-col max-h-[90vh]"
+        className="w-full max-w-2xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150 flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header with User's Real Name instead of generic title */}
-        <div className="flex items-center justify-between p-5 border-b border-luxury-border bg-[#141824] shrink-0">
+        <div className="flex items-center justify-between p-5 border-b border-white/10 bg-[#141824] shrink-0">
           <div className="flex items-center space-x-3.5">
             <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-amber-600 via-gold-500 to-yellow-300 p-[1px] shadow-gold-sm shrink-0">
               <div className="w-full h-full bg-[#0b0e14] rounded-xl flex items-center justify-center">
@@ -203,7 +203,7 @@ export const FactoryProfileModal = () => {
               {/* Craftsman Overview Stats */}
               {isCraftsman ? (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="p-3.5 rounded-xl bg-[#141824] border border-luxury-border">
+                  <div className="p-3.5 rounded-xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)]">
                     <div className="flex items-center space-x-2 text-slate-400 text-[11px]">
                       <Scale className="w-3.5 h-3.5 text-gold-400" />
                       <span>Qo'lingizdagi Tilla</span>
@@ -213,7 +213,7 @@ export const FactoryProfileModal = () => {
                     </p>
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-[#141824] border border-luxury-border">
+                  <div className="p-3.5 rounded-xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)]">
                     <div className="flex items-center space-x-2 text-slate-400 text-[11px]">
                       <Percent className="w-3.5 h-3.5 text-emerald-400" />
                       <span>O'rtacha Ugar Me'yori</span>
@@ -223,7 +223,7 @@ export const FactoryProfileModal = () => {
                     </p>
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-[#141824] border border-luxury-border">
+                  <div className="p-3.5 rounded-xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)]">
                     <div className="flex items-center space-x-2 text-slate-400 text-[11px]">
                       <Award className="w-3.5 h-3.5 text-blue-400" />
                       <span>Bajarilgan Buyurtmalar</span>
@@ -235,7 +235,7 @@ export const FactoryProfileModal = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="p-3.5 rounded-xl bg-[#141824] border border-luxury-border">
+                  <div className="p-3.5 rounded-xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)]">
                     <div className="flex items-center space-x-2 text-slate-400 text-[11px]">
                       <Building2 className="w-3.5 h-3.5 text-gold-400" />
                       <span>Biriktirilgan Zavod</span>
@@ -245,7 +245,7 @@ export const FactoryProfileModal = () => {
                     </p>
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-[#141824] border border-luxury-border">
+                  <div className="p-3.5 rounded-xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)]">
                     <div className="flex items-center space-x-2 text-slate-400 text-[11px]">
                       <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                       <span>Hisob Holati</span>
@@ -273,7 +273,7 @@ export const FactoryProfileModal = () => {
                       value={empForm.name}
                       onChange={(e) => setEmpForm({ ...empForm, name: e.target.value })}
                       placeholder="Masalan: Farhod Zargariy"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#141824] border border-luxury-border text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
                     />
                   </div>
 
@@ -287,7 +287,7 @@ export const FactoryProfileModal = () => {
                       type="text"
                       disabled
                       value={currentUser?.username ? `@${currentUser.username}` : '@hodim'}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0e14] border border-luxury-border text-sm font-mono text-gold-400 cursor-not-allowed select-all"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm font-mono text-gold-400 cursor-not-allowed select-all"
                     />
                     <p className="text-[10px] text-slate-500">Tizimga kirish uchun biriktirilgan unikal login</p>
                   </div>
@@ -319,17 +319,17 @@ export const FactoryProfileModal = () => {
                       type="text"
                       disabled
                       value={factory?.name || "Zargarlik Zavodi"}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0e14] border border-luxury-border text-sm text-slate-300 cursor-not-allowed"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-slate-300 cursor-not-allowed"
                     />
                   </div>
                 </div>
 
                 {/* Submit button for employee */}
-                <div className="flex items-center justify-end space-x-3 pt-4 border-t border-luxury-border">
+                <div className="flex items-center justify-end space-x-3 pt-4 border-t border-white/10">
                   <button
                     type="button"
                     onClick={closeProfileModal}
-                    className="px-4 py-2.5 rounded-xl border border-luxury-border text-xs font-semibold text-slate-300 hover:bg-[#141824] transition-colors"
+                    className="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-slate-300 hover:bg-[#141824] transition-colors"
                   >
                     Yopish
                   </button>
@@ -357,7 +357,7 @@ export const FactoryProfileModal = () => {
             <>
               {/* Quick Stats overview cards */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="p-3 rounded-xl bg-[#141824] border border-luxury-border">
+                <div className="p-3 rounded-xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)]">
                   <div className="flex items-center space-x-2 text-slate-400 text-[11px]">
                     <ShieldCheck className="w-3.5 h-3.5 text-gold-400" />
                     <span>Roli</span>
@@ -367,7 +367,7 @@ export const FactoryProfileModal = () => {
                   </p>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#141824] border border-luxury-border">
+                <div className="p-3 rounded-xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)]">
                   <div className="flex items-center space-x-2 text-slate-400 text-[11px]">
                     <Users className="w-3.5 h-3.5 text-blue-400" />
                     <span>Jami Hodimlar</span>
@@ -377,7 +377,7 @@ export const FactoryProfileModal = () => {
                   </p>
                 </div>
 
-                <div className="p-3 rounded-xl bg-[#141824] border border-luxury-border">
+                <div className="p-3 rounded-xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)]">
                   <div className="flex items-center space-x-2 text-slate-400 text-[11px]">
                     <Calendar className="w-3.5 h-3.5 text-emerald-400" />
                     <span>Ro'yxatdan O'tgan</span>
@@ -402,7 +402,7 @@ export const FactoryProfileModal = () => {
                       value={adminForm.name}
                       onChange={(e) => setAdminForm({ ...adminForm, name: e.target.value })}
                       placeholder="Masalan: Samarqand Zargarlik Zavodi"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#141824] border border-luxury-border text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
                     />
                   </div>
 
@@ -417,7 +417,7 @@ export const FactoryProfileModal = () => {
                       value={adminForm.ownerName}
                       onChange={(e) => setAdminForm({ ...adminForm, ownerName: e.target.value })}
                       placeholder="Ism Familiya"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#141824] border border-luxury-border text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
                     />
                   </div>
                 </div>
@@ -433,7 +433,7 @@ export const FactoryProfileModal = () => {
                       type="email"
                       disabled
                       value={currentUser?.email || ''}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#0b0e14] border border-luxury-border text-sm text-slate-400 cursor-not-allowed select-all"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-slate-400 cursor-not-allowed select-all"
                     />
                     <p className="text-[10px] text-slate-500">Google autentifikatsiyasi orqali biriktirilgan</p>
                   </div>
@@ -466,7 +466,7 @@ export const FactoryProfileModal = () => {
                       value={adminForm.address}
                       onChange={(e) => setAdminForm({ ...adminForm, address: e.target.value })}
                       placeholder="Toshkent sh., Shayxontohur tumani"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#141824] border border-luxury-border text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
                     />
                   </div>
 
@@ -480,7 +480,7 @@ export const FactoryProfileModal = () => {
                       value={adminForm.inn}
                       onChange={(e) => setAdminForm({ ...adminForm, inn: e.target.value })}
                       placeholder="123456789"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#141824] border border-luxury-border text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
                     />
                   </div>
                 </div>
@@ -499,7 +499,7 @@ export const FactoryProfileModal = () => {
                       max="10.0"
                       value={adminForm.allowedUgarRate}
                       onChange={(e) => setAdminForm({ ...adminForm, allowedUgarRate: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#141824] border border-luxury-border text-sm font-mono text-slate-100 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] text-sm font-mono text-slate-100 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
                     />
                     <span className="absolute right-3.5 top-2.5 text-xs text-gold-400 font-bold">%</span>
                   </div>
@@ -518,16 +518,16 @@ export const FactoryProfileModal = () => {
                     value={adminForm.description}
                     onChange={(e) => setAdminForm({ ...adminForm, description: e.target.value })}
                     placeholder="Zavod faoliyati, bank rekvizitlari yoki ichki tartib qoidalari..."
-                    className="w-full px-3.5 py-2 rounded-xl bg-[#141824] border border-luxury-border text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500/60 focus:ring-1 focus:ring-gold-500/30"
                   />
                 </div>
 
                 {/* Footer Buttons for Admin */}
-                <div className="flex items-center justify-end space-x-3 pt-4 border-t border-luxury-border">
+                <div className="flex items-center justify-end space-x-3 pt-4 border-t border-white/10">
                   <button
                     type="button"
                     onClick={closeProfileModal}
-                    className="px-4 py-2.5 rounded-xl border border-luxury-border text-xs font-semibold text-slate-300 hover:bg-[#141824] transition-colors"
+                    className="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-slate-300 hover:bg-[#141824] transition-colors"
                   >
                     Yopish
                   </button>

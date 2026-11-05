@@ -126,7 +126,7 @@ export const EmployeeList = () => {
 
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-2xl bg-[#0f131d] border border-luxury-border p-4 flex items-center space-x-3.5">
+        <div className="rounded-2xl bg-white/5 border border-white/10 p-4 flex items-center space-x-3.5">
           <div className="w-10 h-10 rounded-xl bg-gold-500/10 border border-gold-500/30 flex items-center justify-center text-gold-400 shrink-0">
             <Users className="w-5 h-5" />
           </div>
@@ -136,7 +136,7 @@ export const EmployeeList = () => {
           </div>
         </div>
 
-        <div className="rounded-2xl bg-[#0f131d] border border-luxury-border p-4 flex items-center space-x-3.5">
+        <div className="rounded-2xl bg-white/5 border border-white/10 p-4 flex items-center space-x-3.5">
           <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
             <Hammer className="w-5 h-5" />
           </div>
@@ -146,7 +146,7 @@ export const EmployeeList = () => {
           </div>
         </div>
 
-        <div className="rounded-2xl bg-[#0f131d] border border-luxury-border p-4 flex items-center space-x-3.5">
+        <div className="rounded-2xl bg-white/5 border border-white/10 p-4 flex items-center space-x-3.5">
           <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
             <Scale className="w-5 h-5" />
           </div>
@@ -156,7 +156,7 @@ export const EmployeeList = () => {
           </div>
         </div>
 
-        <div className="rounded-2xl bg-[#0f131d] border border-luxury-border p-4 flex items-center space-x-3.5">
+        <div className="rounded-2xl bg-white/5 border border-white/10 p-4 flex items-center space-x-3.5">
           <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0">
             <Store className="w-5 h-5" />
           </div>
@@ -170,7 +170,7 @@ export const EmployeeList = () => {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center space-x-2 border-b border-luxury-border pb-2 text-xs">
+      <div className="flex items-center space-x-2 border-b border-white/10 pb-2 text-xs">
         {[
           { id: 'all', label: 'Barchasi', count: employees.length },
           { id: 'craftsman', label: 'Zargar Ustalar', count: craftsmen.length },
@@ -184,7 +184,7 @@ export const EmployeeList = () => {
             className={`px-3.5 py-1.5 rounded-lg font-medium transition-all flex items-center space-x-1.5 ${
               activeTab === tab.id
                 ? 'bg-gold-500/20 text-gold-300 border border-gold-500/40 font-semibold'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-[#141824]'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-[#12141c]/60 backdrop-blur-xl'
             }`}
           >
             <span>{tab.label}</span>
@@ -197,7 +197,7 @@ export const EmployeeList = () => {
 
       {/* Empty State */}
       {filteredEmployees.length === 0 ? (
-        <div className="rounded-2xl bg-[#0f131d] border border-luxury-border p-12 text-center flex flex-col items-center justify-center space-y-4">
+        <div className="rounded-2xl bg-white/5 border border-white/10 p-12 text-center flex flex-col items-center justify-center space-y-4">
           <div className="w-16 h-16 rounded-2xl bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-400">
             <Users className="w-8 h-8" />
           </div>
@@ -238,8 +238,8 @@ export const EmployeeList = () => {
             return (
               <div
                 key={emp.uid}
-                className={`rounded-2xl bg-[#141824] border transition-all p-5 flex flex-col justify-between space-y-4 ${
-                  isActive ? 'border-luxury-border hover:border-gold-500/40' : 'border-slate-800 opacity-70'
+                className={`rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border transition-all p-5 flex flex-col justify-between space-y-4 ${
+                  isActive ? 'border-white/10 hover:border-gold-500/40' : 'border-slate-800 opacity-70'
                 }`}
               >
                 {/* Header */}
@@ -275,7 +275,7 @@ export const EmployeeList = () => {
 
                 {/* Craftsman Stats (if craftsman) */}
                 {isCraftsman && (
-                  <div className="grid grid-cols-2 gap-2 bg-[#0d1017] p-3 rounded-xl border border-luxury-border font-mono text-xs">
+                  <div className="grid grid-cols-2 gap-2 bg-white/5 p-3 rounded-xl border border-white/10 font-mono text-xs">
                     <div>
                       <span className="text-[10px] text-slate-400 block font-sans">Qo'lidagi Tilla</span>
                       <span className="font-bold text-gold-300 text-sm">
@@ -319,7 +319,7 @@ export const EmployeeList = () => {
                         {activeOrders.map((order) => (
                           <div
                             key={order.order_id}
-                            className="p-2 rounded-lg bg-[#0d1017] border border-luxury-border flex items-center justify-between text-xs"
+                            className="p-2 rounded-lg bg-white/5 border border-white/10 flex items-center justify-between text-xs"
                           >
                             <div className="min-w-0 flex-1">
                               <p className="font-medium text-slate-200 truncate">{order.title}</p>
@@ -341,7 +341,7 @@ export const EmployeeList = () => {
                 )}
 
                 {/* Footer Actions */}
-                <div className="flex items-center justify-between pt-3 border-t border-luxury-border text-xs">
+                <div className="flex items-center justify-between pt-3 border-t border-white/10 text-xs">
                   {/* Status toggle */}
                   <button
                     onClick={() => handleToggleStatus(emp)}

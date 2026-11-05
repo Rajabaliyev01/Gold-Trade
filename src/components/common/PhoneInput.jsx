@@ -89,14 +89,14 @@ export const PhoneInput = ({
 
   return (
     <div
-      className={`flex items-center rounded-xl bg-[#141824] border border-luxury-border transition-all overflow-hidden ${
+      className={`flex items-center rounded-xl bg-white/5 border border-white/10 transition-all overflow-hidden ${
         disabled
           ? 'opacity-60 cursor-not-allowed bg-[#0b0e14]'
           : 'focus-within:border-gold-500/60 focus-within:ring-1 focus-within:ring-gold-500/30'
       } ${className}`}
     >
       {/* Locked +998 Prefix Badge (Never deleted) */}
-      <div className="px-3.5 py-2.5 bg-[#0d1017] border-r border-luxury-border flex items-center space-x-1.5 select-none text-gold-400 font-mono font-bold text-xs shrink-0">
+      <div className="px-3.5 py-2.5 bg-white/5 border-r border-white/10 flex items-center space-x-1.5 select-none text-gold-400 font-mono font-bold text-xs shrink-0">
         <Phone className="w-3.5 h-3.5 text-gold-400" />
         <span>+998</span>
       </div>

@@ -121,7 +121,7 @@ export const GoldTicker = () => {
       )}
 
       {/* Central Bank of Uzbekistan (CBU) Rate Ribbon */}
-      <div className="p-3 rounded-xl bg-[#0d1017] border border-luxury-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+      <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-center space-x-2.5">
           <div className="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-400">
             <Building2 className="w-4 h-4" />
@@ -171,7 +171,7 @@ export const GoldTicker = () => {
           return (
             <div
               key={p.proba}
-              className={`p-3.5 rounded-xl bg-[#0d1017]/90 border ${p.border} relative overflow-hidden flex flex-col justify-between`}
+              className={`p-3.5 rounded-xl bg-white/5/90 border ${p.border} relative overflow-hidden flex flex-col justify-between`}
             >
               <div>
                 <div className="flex items-center justify-between text-xs mb-1.5">
@@ -184,7 +184,7 @@ export const GoldTicker = () => {
                 </div>
               </div>
 
-              <div className="text-[11px] font-mono text-slate-400 mt-2 pt-2 border-t border-luxury-border/50">
+              <div className="text-[11px] font-mono text-slate-400 mt-2 pt-2 border-t border-white/5">
                 <span className="text-slate-500 text-[10px] block">CBU kursi bo'yicha:</span>
                 <span className="text-gold-300 font-bold">{Number(uzsPrice).toLocaleString()}</span> so'm/gr
               </div>

@@ -35,6 +35,9 @@ export default {
       boxShadow: {
         'gold-glow': '0 0 25px -5px rgba(212, 175, 55, 0.3)',
         'gold-sm': '0 0 10px -2px rgba(212, 175, 55, 0.25)',
+        'glass-card': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+        'glass-glow': '0 8px 40px 0 rgba(212, 175, 55, 0.15)',
+        'glass-modal': '0 24px 64px 0 rgba(0, 0, 0, 0.6)',
       }
     },
   },

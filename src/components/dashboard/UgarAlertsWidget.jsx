@@ -10,7 +10,10 @@ export const UgarAlertsWidget = () => {
 
   if (alertOrders.length === 0) {
     return (
-      <div className="rounded-2xl bg-[#141824] border border-luxury-border p-5">
+      <div
+        className="rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] p-5 transition-all duration-300 hover:border-white/20"
+        style={{ WebkitBackdropFilter: 'blur(20px)' }}
+      >
         <div className="flex items-center space-x-2 text-emerald-400 mb-2">
           <CheckCircle2 className="w-5 h-5" />
           <h3 className="text-sm font-bold">Ugar Me'yori Nazorati</h3>
@@ -23,7 +26,10 @@ export const UgarAlertsWidget = () => {
   }
 
   return (
-    <div className="rounded-2xl bg-gradient-to-br from-rose-950/20 via-[#141824] to-[#141824] border border-rose-500/30 p-5">
+    <div
+      className="rounded-2xl bg-gradient-to-br from-rose-950/30 via-[#12141c]/70 to-[#12141c]/70 backdrop-blur-xl border border-rose-500/40 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] p-5 transition-all duration-300 hover:border-rose-500/60"
+      style={{ WebkitBackdropFilter: 'blur(20px)' }}
+    >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-2">
           <div className="w-7 h-7 rounded-lg bg-rose-500/20 flex items-center justify-center text-rose-400">

@@ -141,7 +141,10 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
   return (
     <div id="jewelry-pipeline-hub" className="space-y-4">
       {/* 5-Stage Process Pipeline Bar */}
-      <div className="bg-[#10141f] border border-luxury-border rounded-2xl p-4 sm:p-5 transition-all">
+      <div
+        className="bg-[#12141c]/60 backdrop-blur-xl border border-white/10 rounded-2xl p-4 sm:p-5 transition-all shadow-[0_8px_32px_0_rgba(0,0,0,0.37)]"
+        style={{ WebkitBackdropFilter: 'blur(20px)' }}
+      >
         <div 
           onClick={onToggle}
           className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer group select-none"
@@ -169,7 +172,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
             <span className="text-xs text-gold-400 font-semibold">
               {isOpen ? "Yopish" : "Ochish"}
             </span>
-            <div className="w-7 h-7 rounded-lg bg-[#141824] border border-luxury-border flex items-center justify-center text-slate-400 group-hover:text-white transition-colors">
+            <div className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 group-hover:text-white transition-colors">
               {isOpen ? <ChevronUp className="w-4 h-4 text-gold-400" /> : <ChevronDown className="w-4 h-4" />}
             </div>
           </div>
@@ -177,10 +180,13 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
 
         {/* Stages Cards Grid (Shown when isOpen is true) */}
         {isOpen && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-4 border-t border-luxury-border mt-4 animate-in fade-in duration-200">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-4 border-t border-white/10 mt-4 animate-in fade-in duration-200">
           
           {/* Stage 1: Raw Material */}
-          <div className="p-3.5 rounded-xl bg-[#141926] border border-luxury-border flex flex-col justify-between hover:border-gold-500/40 transition-all space-y-3">
+          <div
+            className="p-3.5 rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] flex flex-col justify-between hover:bg-[#1a1d29]/80 hover:border-white/20 hover:shadow-[0_8px_40px_0_rgba(212,175,55,0.15)] hover:-translate-y-0.5 transition-all duration-300 space-y-3"
+            style={{ WebkitBackdropFilter: 'blur(20px)' }}
+          >
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-bold text-amber-400 px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 font-mono">
@@ -215,7 +221,10 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
           </div>
 
           {/* Stage 2: Metal Processing */}
-          <div className="p-3.5 rounded-xl bg-[#141926] border border-luxury-border flex flex-col justify-between hover:border-gold-500/40 transition-all space-y-3">
+          <div
+            className="p-3.5 rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] flex flex-col justify-between hover:bg-[#1a1d29]/80 hover:border-white/20 hover:shadow-[0_8px_40px_0_rgba(212,175,55,0.15)] hover:-translate-y-0.5 transition-all duration-300 space-y-3"
+            style={{ WebkitBackdropFilter: 'blur(20px)' }}
+          >
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-bold text-orange-400 px-2 py-0.5 rounded bg-orange-500/10 border border-orange-500/30 font-mono">
@@ -242,7 +251,10 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
           </div>
 
           {/* Stage 3: Production & Orders */}
-          <div className="p-3.5 rounded-xl bg-[#141926] border border-luxury-border flex flex-col justify-between hover:border-gold-500/40 transition-all space-y-3">
+          <div
+            className="p-3.5 rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] flex flex-col justify-between hover:bg-[#1a1d29]/80 hover:border-white/20 hover:shadow-[0_8px_40px_0_rgba(212,175,55,0.15)] hover:-translate-y-0.5 transition-all duration-300 space-y-3"
+            style={{ WebkitBackdropFilter: 'blur(20px)' }}
+          >
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-bold text-gold-400 px-2 py-0.5 rounded bg-gold-500/10 border border-gold-500/30 font-mono">
@@ -269,7 +281,10 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
           </div>
 
           {/* Stage 4: Finishing & QC */}
-          <div className="p-3.5 rounded-xl bg-[#141926] border border-luxury-border flex flex-col justify-between hover:border-gold-500/40 transition-all space-y-3">
+          <div
+            className="p-3.5 rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] flex flex-col justify-between hover:bg-[#1a1d29]/80 hover:border-white/20 hover:shadow-[0_8px_40px_0_rgba(212,175,55,0.15)] hover:-translate-y-0.5 transition-all duration-300 space-y-3"
+            style={{ WebkitBackdropFilter: 'blur(20px)' }}
+          >
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-bold text-teal-400 px-2 py-0.5 rounded bg-teal-500/10 border border-teal-500/30 font-mono">
@@ -296,7 +311,10 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
           </div>
 
           {/* Stage 5: Finished Goods */}
-          <div className="p-3.5 rounded-xl bg-[#141926] border border-luxury-border flex flex-col justify-between hover:border-gold-500/40 transition-all space-y-3">
+          <div
+            className="p-3.5 rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] flex flex-col justify-between hover:bg-[#1a1d29]/80 hover:border-white/20 hover:shadow-[0_8px_40px_0_rgba(212,175,55,0.15)] hover:-translate-y-0.5 transition-all duration-300 space-y-3"
+            style={{ WebkitBackdropFilter: 'blur(20px)' }}
+          >
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-bold text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 font-mono">
@@ -323,9 +341,9 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
 
       {/* ── MODAL 1: RAW MATERIAL INWARD (Xomashyo Kirimi) ── */}
       {activeModal === 'raw_inward' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in">
-          <div className="w-full max-w-lg rounded-2xl bg-[#141824] border border-luxury-border shadow-2xl overflow-hidden">
-            <div className="px-6 py-4 border-b border-luxury-border flex items-center justify-between bg-[#0f131d]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in">
+          <div className="w-full max-w-lg rounded-2xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] overflow-hidden">
+            <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-white/5">
               <div className="flex items-center space-x-2">
                 <Boxes className="w-4 h-4 text-amber-400" />
                 <h3 className="text-sm font-bold text-white">Xomashyo Kirim Nakladnoyasi (Material Inward Slip)</h3>
@@ -344,7 +362,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                   placeholder="Masalan: Alisher Valiyev (Tadbirkor)"
                   value={supplier}
                   onChange={(e) => setSupplier(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white text-xs focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                 />
               </div>
 
@@ -354,7 +372,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                   <select
                     value={materialType}
                     onChange={(e) => setMaterialType(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white text-xs focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                   >
                     <option value="scrap_gold">Lom / Qayta ishlash tillasi</option>
                     <option value="ingot_999">Sof Ingot (999.9)</option>
@@ -367,7 +385,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                   <select
                     value={rawPurity}
                     onChange={(e) => setRawPurity(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white text-xs focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                   >
                     <option value="999">999.9 (Sof oltin)</option>
                     <option value="750">750 (18K)</option>
@@ -389,7 +407,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                     value={rawWeight}
                     onKeyDown={preventNegativeKey}
                     onChange={(e) => setRawWeight(sanitizeNonNegative(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                   />
                 </div>
 
@@ -403,7 +421,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                     value={usdValuation}
                     onKeyDown={preventNegativeKey}
                     onChange={(e) => setUsdValuation(sanitizeNonNegative(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                   />
                 </div>
               </div>
@@ -440,9 +458,9 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
 
       {/* ── MODAL 2: GEMSTONE / FITTING INWARD (Tosh va Qulflar Kirimi) ── */}
       {activeModal === 'gem_inward' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in">
-          <div className="w-full max-w-lg rounded-2xl bg-[#141824] border border-luxury-border shadow-2xl overflow-hidden">
-            <div className="px-6 py-4 border-b border-luxury-border flex items-center justify-between bg-[#0f131d]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in">
+          <div className="w-full max-w-lg rounded-2xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] overflow-hidden">
+            <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-white/5">
               <div className="flex items-center space-x-2">
                 <Gem className="w-4 h-4 text-blue-400" />
                 <h3 className="text-sm font-bold text-white">Tosh va Furnitura Kirim Akti</h3>
@@ -461,7 +479,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                   placeholder="Masalan: Yakut Brilliant 0.50 ct yoki 585 Qulf Karabin"
                   value={gemName}
                   onChange={(e) => setGemName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white text-xs focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                 />
               </div>
 
@@ -471,7 +489,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                   <select
                     value={gemType}
                     onChange={(e) => setGemType(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white text-xs focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                   >
                     <option value="gemstone">Qimmatbaho Tosh (Brilliant, Yoqut va hk)</option>
                     <option value="fitting">Furnitura / Qulflar / Zanjir qismlari</option>
@@ -486,7 +504,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                     value={gemPieces}
                     onKeyDown={preventNegativeKey}
                     onChange={(e) => setGemPieces(sanitizeNonNegative(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                   />
                 </div>
               </div>
@@ -503,7 +521,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                       value={gemCarats}
                       onKeyDown={preventNegativeKey}
                       onChange={(e) => setGemCarats(sanitizeNonNegative(e.target.value))}
-                      className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
+                      className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                     />
                   </div>
                   <div>
@@ -513,7 +531,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                       placeholder="VVS1 / D-E"
                       value={gemClarity}
                       onChange={(e) => setGemClarity(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white text-xs focus:outline-none focus:border-gold-500"
+                      className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                     />
                   </div>
                 </div>
@@ -529,7 +547,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                   value={gemPrice}
                   onKeyDown={preventNegativeKey}
                   onChange={(e) => setGemPrice(sanitizeNonNegative(e.target.value))}
-                  className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                 />
               </div>
 
@@ -556,9 +574,9 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
 
       {/* ── MODAL 3: MELTING & LIGATURE (Eritish va Qotishma) ── */}
       {activeModal === 'melting' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in">
-          <div className="w-full max-w-lg rounded-2xl bg-[#141824] border border-luxury-border shadow-2xl overflow-hidden">
-            <div className="px-6 py-4 border-b border-luxury-border flex items-center justify-between bg-[#0f131d]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in">
+          <div className="w-full max-w-lg rounded-2xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] overflow-hidden">
+            <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-white/5">
               <div className="flex items-center space-x-2">
                 <Flame className="w-4 h-4 text-orange-400" />
                 <h3 className="text-sm font-bold text-white">Eritish va Ligatura Akti (Melting Sheet)</h3>
@@ -597,7 +615,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                       setFurnaceLoss((totalAlloy * 0.002).toFixed(3));
                     }
                   }}
-                  className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                 />
               </div>
 
@@ -607,7 +625,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                   <select
                     value={targetPurity}
                     onChange={(e) => setTargetPurity(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white text-xs focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                   >
                     <option value="585">585 Proba (14K)</option>
                     <option value="750">750 Proba (18K)</option>
@@ -623,7 +641,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                     value={copperInput}
                     onKeyDown={preventNegativeKey}
                     onChange={(e) => setCopperInput(sanitizeNonNegative(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-xs focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-xs focus:outline-none focus:border-gold-500/50"
                   />
                 </div>
 
@@ -636,7 +654,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                     value={silverInput}
                     onKeyDown={preventNegativeKey}
                     onChange={(e) => setSilverInput(sanitizeNonNegative(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-xs focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-xs focus:outline-none focus:border-gold-500/50"
                   />
                 </div>
               </div>
@@ -652,7 +670,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                     value={outputIngot}
                     onKeyDown={preventNegativeKey}
                     onChange={(e) => setOutputIngot(sanitizeNonNegative(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                   />
                 </div>
 
@@ -665,7 +683,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                     value={furnaceLoss}
                     onKeyDown={preventNegativeKey}
                     onChange={(e) => setFurnaceLoss(sanitizeNonNegative(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                   />
                 </div>
               </div>
@@ -693,9 +711,9 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
 
       {/* ── MODAL 4: HALLMARKING TRANSFER (Proba Palatasi Topshirish Akti) ── */}
       {activeModal === 'hallmark' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in">
-          <div className="w-full max-w-lg rounded-2xl bg-[#141824] border border-luxury-border shadow-2xl overflow-hidden">
-            <div className="px-6 py-4 border-b border-luxury-border flex items-center justify-between bg-[#0f131d]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in">
+          <div className="w-full max-w-lg rounded-2xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] overflow-hidden">
+            <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-white/5">
               <div className="flex items-center space-x-2">
                 <ShieldCheck className="w-4 h-4 text-teal-400" />
                 <h3 className="text-sm font-bold text-white">Davlat Proba Palatasi Topshirish-Qabul Akti</h3>
@@ -712,7 +730,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                   type="text"
                   value={hallmarkOffice}
                   onChange={(e) => setHallmarkOffice(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white text-xs focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                 />
               </div>
 
@@ -727,7 +745,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                     value={hallmarkCount}
                     onKeyDown={preventNegativeKey}
                     onChange={(e) => setHallmarkCount(sanitizeNonNegative(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                   />
                 </div>
 
@@ -742,7 +760,7 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                     value={hallmarkWeight}
                     onKeyDown={preventNegativeKey}
                     onChange={(e) => setHallmarkWeight(sanitizeNonNegative(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                   />
                 </div>
               </div>

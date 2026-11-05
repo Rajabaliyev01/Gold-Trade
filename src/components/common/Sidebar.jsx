@@ -95,20 +95,21 @@ export const Sidebar = () => {
       )}
 
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-50 w-72 lg:w-64 bg-[#0f131d] border-r border-luxury-border flex flex-col justify-between shrink-0 min-h-[calc(100vh-4rem)] transition-transform duration-300 ease-in-out ${
+        className={`fixed lg:static inset-y-0 left-0 z-50 w-72 lg:w-64 bg-[#12141c]/70 backdrop-blur-xl border-r border-white/10 flex flex-col justify-between shrink-0 min-h-[calc(100vh-4rem)] transition-transform duration-300 ease-in-out shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] ${
           isSidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full lg:translate-x-0'
         }`}
+        style={{ WebkitBackdropFilter: 'blur(20px)' }}
       >
         <div className="p-4 space-y-5">
           {/* Mobile Header with Close button */}
-          <div className="flex items-center justify-between lg:hidden pb-3 border-b border-luxury-border">
+          <div className="flex items-center justify-between lg:hidden pb-3 border-b border-white/10">
             <div className="flex items-center space-x-2">
               <Sparkles className="w-4 h-4 text-gold-400" />
               <span className="font-extrabold text-sm gold-gradient-text uppercase">Gold Trade ERP</span>
             </div>
             <button
               onClick={closeSidebar}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-[#141824]"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5"
             >
               <X className="w-5 h-5" />
             </button>
@@ -125,10 +126,10 @@ export const Sidebar = () => {
                   end
                   onClick={handleMobileNavClick}
                   className={({ isActive }) =>
-                    `flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 ${
+                    `flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 ${
                       isActive
-                        ? 'bg-gradient-to-r from-gold-500/20 to-gold-500/5 text-gold-300 border-l-2 border-gold-500 font-semibold shadow-gold-sm'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-[#141824]'
+                        ? 'bg-gradient-to-r from-gold-500/25 to-gold-500/5 text-gold-300 border-l-2 border-gold-500 font-semibold shadow-[0_4px_20px_0_rgba(212,175,55,0.15)]'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
                     }`
                   }
                 >
@@ -144,10 +145,10 @@ export const Sidebar = () => {
                 <div className="space-y-1">
                   <div
                     onClick={() => setIsProductionOpen(!isProductionOpen)}
-                    className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium cursor-pointer transition-all duration-150 select-none ${
+                    className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium cursor-pointer transition-all duration-200 select-none ${
                       isProductionRoute
-                        ? 'bg-[#141824] text-gold-300 font-semibold border-l-2 border-gold-500/50'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-[#141824]'
+                        ? 'bg-white/5 text-gold-300 font-semibold border-l-2 border-gold-500/60'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
                     }`}
                   >
                     <div className="flex items-center space-x-3">
@@ -188,7 +189,7 @@ export const Sidebar = () => {
                           `flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-medium transition-all duration-150 ${
                             isActive
                               ? 'bg-gold-500/15 text-gold-300 font-semibold border border-gold-500/30'
-                              : 'text-slate-400 hover:text-slate-200 hover:bg-[#141824]'
+                              : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
                           }`
                         }
                       >
@@ -207,16 +208,16 @@ export const Sidebar = () => {
                             `flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-medium transition-all duration-150 ${
                               isActive
                                 ? 'bg-gold-500/15 text-gold-300 font-semibold border border-gold-500/30'
-                                : 'text-slate-400 hover:text-slate-200 hover:bg-[#141824]'
-                            }`
-                          }
-                        >
-                          <div className="flex items-center space-x-2">
-                            <Sparkles className="w-3.5 h-3.5 shrink-0 text-gold-400" />
-                            <span>5 Bosqichli Tizim</span>
-                          </div>
-                        </NavLink>
-                      )}
+                                : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
+                          }`
+                        }
+                      >
+                        <div className="flex items-center space-x-2">
+                          <Sparkles className="w-3.5 h-3.5 shrink-0 text-gold-400" />
+                          <span>5 Bosqichli Tizim</span>
+                        </div>
+                      </NavLink>
+                    )}
                     </div>
                   )}
                 </div>
@@ -233,10 +234,10 @@ export const Sidebar = () => {
                       to={item.path}
                       onClick={handleMobileNavClick}
                       className={({ isActive }) =>
-                        `flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 ${
+                        `flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 ${
                           isActive
-                            ? 'bg-gradient-to-r from-gold-500/20 to-gold-500/5 text-gold-300 border-l-2 border-gold-500 font-semibold shadow-gold-sm'
-                            : 'text-slate-400 hover:text-slate-200 hover:bg-[#141824]'
+                            ? 'bg-gradient-to-r from-gold-500/25 to-gold-500/5 text-gold-300 border-l-2 border-gold-500 font-semibold shadow-[0_4px_20px_0_rgba(212,175,55,0.15)]'
+                            : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
                         }`
                       }
                     >
@@ -252,8 +253,8 @@ export const Sidebar = () => {
         </div>
 
         {/* Footer Info Box */}
-        <div className="p-4 border-t border-luxury-border space-y-3">
-          <div className="p-3 rounded-xl bg-[#141824] border border-luxury-border">
+        <div className="p-4 border-t border-white/10 space-y-3">
+          <div className="p-3 rounded-xl bg-[#0d1017]/50 backdrop-blur-md border border-white/10">
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-[11px] font-medium text-slate-300 flex items-center space-x-1.5">
                 <Radio className="w-3 h-3 text-emerald-400 animate-pulse" />

@@ -43,9 +43,9 @@ export const AddProductModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="w-full max-w-lg rounded-2xl bg-[#141824] border border-luxury-border shadow-2xl overflow-hidden">
-        <div className="px-6 py-4 border-b border-luxury-border flex items-center justify-between">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-150">
+      <div className="w-full max-w-lg rounded-2xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] overflow-hidden">
+        <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
             <div className="w-8 h-8 rounded-lg bg-gold-500/10 flex items-center justify-center text-gold-400">
               <Boxes className="w-4 h-4" />
@@ -79,7 +79,7 @@ export const AddProductModal = ({ isOpen, onClose }) => {
                   className={`py-2 px-2 rounded-xl font-medium border text-center transition-colors ${
                     formData.type === t.id
                       ? 'bg-gold-500 text-black border-gold-500 font-bold'
-                      : 'bg-[#0d1017] border-luxury-border text-slate-400 hover:bg-[#1a2030]'
+                      : 'bg-[#0d1017] border-white/10 text-slate-400 hover:bg-[#1a2030]'
                   }`}
                 >
                   {t.label}
@@ -96,7 +96,7 @@ export const AddProductModal = ({ isOpen, onClose }) => {
               placeholder="Masalan: 585 Proba Qotishma Tilla yoki Brilliant VVS"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white placeholder-slate-500 focus:outline-none focus:border-gold-500"
+              className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
             />
           </div>
 
@@ -107,7 +107,7 @@ export const AddProductModal = ({ isOpen, onClose }) => {
                 <select
                   value={formData.purity}
                   onChange={(e) => setFormData({ ...formData, purity: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-gold-500/50"
                 >
                   <option value="999">999.9 (Bank Quymasi)</option>
                   <option value="750">750 (18K)</option>
@@ -121,7 +121,7 @@ export const AddProductModal = ({ isOpen, onClose }) => {
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-gold-500/50"
                 >
                   <option value="Brilliant">Brilliant / Olmos</option>
                   <option value="Zumrad">Zumrad (Emerald)</option>
@@ -144,7 +144,7 @@ export const AddProductModal = ({ isOpen, onClose }) => {
                   value={formData.weight}
                   onKeyDown={preventNegativeKey}
                   onChange={(e) => setFormData({ ...formData, weight: sanitizeNonNegative(e.target.value) })}
-                  className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono focus:outline-none focus:border-gold-500/50"
                 />
                 <span className="absolute right-3 top-2 text-slate-500 font-mono">gr</span>
               </div>
@@ -163,7 +163,7 @@ export const AddProductModal = ({ isOpen, onClose }) => {
                   value={formData.price_per_gram}
                   onKeyDown={preventNegativeKey}
                   onChange={(e) => setFormData({ ...formData, price_per_gram: sanitizeNonNegative(e.target.value) })}
-                  className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono focus:outline-none focus:border-gold-500"
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono focus:outline-none focus:border-gold-500/50"
                 />
                 <span className="absolute right-3 top-2 text-slate-500 font-mono">$</span>
               </div>
@@ -181,7 +181,7 @@ export const AddProductModal = ({ isOpen, onClose }) => {
                     value={formData.selling_price}
                     onKeyDown={preventNegativeKey}
                     onChange={(e) => setFormData({ ...formData, selling_price: sanitizeNonNegative(e.target.value) })}
-                    className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono focus:outline-none focus:border-gold-500/50"
                   />
                   <span className="absolute right-3 top-2 text-slate-500 font-mono">$</span>
                 </div>
@@ -207,7 +207,7 @@ export const AddProductModal = ({ isOpen, onClose }) => {
               placeholder="GOLD-585-00123"
               value={formData.barcode}
               onChange={(e) => setFormData({ ...formData, barcode: e.target.value })}
-              className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono placeholder-slate-500 focus:outline-none focus:border-gold-500"
+              className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
             />
           </div>
 
@@ -218,7 +218,7 @@ export const AddProductModal = ({ isOpen, onClose }) => {
               placeholder="Qo'shimcha ma'lumotlar..."
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white placeholder-slate-500 focus:outline-none focus:border-gold-500"
+              className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
             />
           </div>
 

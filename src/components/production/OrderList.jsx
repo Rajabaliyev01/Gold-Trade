@@ -121,7 +121,10 @@ export const OrderList = () => {
       </div>
 
       {/* Filter Tabs & Search */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-[#141824] p-3 rounded-2xl border border-luxury-border">
+      <div
+        className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-[#12141c]/60 backdrop-blur-xl p-3 rounded-2xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)]"
+        style={{ WebkitBackdropFilter: 'blur(20px)' }}
+      >
         {/* Status filters */}
         <div className="flex items-center space-x-1 overflow-x-auto pb-1 md:pb-0 text-xs">
           {[
@@ -137,17 +140,17 @@ export const OrderList = () => {
               <button
                 key={tab.id}
                 onClick={() => setStatusFilter(tab.id)}
-                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl font-medium transition-colors shrink-0 cursor-pointer ${
+                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl font-medium transition-all duration-200 shrink-0 cursor-pointer ${
                   isActive
                     ? 'bg-gold-500 text-black font-bold shadow-gold-sm'
-                    : 'text-slate-400 hover:text-white hover:bg-[#1a2030]'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
                 {tab.isAlert && <Flame className="w-3.5 h-3.5 text-rose-500" />}
                 <span>{tab.label}</span>
                 <span
                   className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                    isActive ? 'bg-black/20 text-black' : 'bg-[#1e2436] text-slate-400'
+                    isActive ? 'bg-black/20 text-black' : 'bg-white/10 text-slate-300'
                   }`}
                 >
                   {tab.count}
@@ -159,13 +162,13 @@ export const OrderList = () => {
 
         {/* Search */}
         <div className="relative min-w-[240px]">
-          <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-500" />
+          <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
           <input
             type="text"
             placeholder="Buyurtma, usta, shtrix-kod..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-[#0d1017] border border-luxury-border text-xs text-white placeholder-slate-500 focus:outline-none focus:border-gold-500"
+            className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-[#0a0c12]/60 backdrop-blur-md border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-gold-500/60 shadow-inner"
           />
         </div>
       </div>
@@ -173,7 +176,10 @@ export const OrderList = () => {
       {/* Orders List / Cards */}
       <div className="grid grid-cols-1 gap-3.5">
         {filteredOrders.length === 0 ? (
-          <div className="p-12 text-center rounded-2xl bg-[#141824] border border-luxury-border">
+          <div
+            className="p-12 text-center rounded-2xl bg-[#12141c]/60 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)]"
+            style={{ WebkitBackdropFilter: 'blur(20px)' }}
+          >
             <Scale className="w-10 h-10 text-slate-600 mx-auto mb-2" />
             <p className="text-sm font-semibold text-slate-300">Buyurtmalar topilmadi</p>
             <p className="text-xs text-slate-500">Qidiruv parametrlarini o'zgartiring yoki yangi buyurtma yarating.</p>
@@ -190,13 +196,14 @@ export const OrderList = () => {
             return (
               <div
                 key={order.order_id}
-                className={`rounded-2xl bg-[#141824] border transition-all p-4 hover:border-gold-500/30 ${
+                className={`rounded-2xl backdrop-blur-xl border p-4 transition-all duration-300 hover:bg-[#1a1d29]/80 hover:border-white/20 hover:shadow-[0_8px_40px_0_rgba(212,175,55,0.15)] hover:-translate-y-0.5 ${
                   order.alert_triggered
-                    ? 'border-rose-500/40 bg-gradient-to-r from-rose-950/10 to-[#141824]'
+                    ? 'border-rose-500/40 bg-gradient-to-r from-rose-950/20 via-[#12141c]/70 to-[#12141c]/70 shadow-[0_8px_32px_0_rgba(225,29,72,0.1)]'
                     : isPendingReview
-                    ? 'border-purple-500/30 bg-gradient-to-r from-purple-950/10 to-[#141824]'
-                    : 'border-luxury-border'
+                    ? 'border-purple-500/30 bg-gradient-to-r from-purple-950/20 via-[#12141c]/70 to-[#12141c]/70 shadow-[0_8px_32px_0_rgba(168,85,247,0.1)]'
+                    : 'border-white/10 bg-[#12141c]/60 shadow-[0_8px_32px_0_rgba(0,0,0,0.37)]'
                 }`}
+                style={{ WebkitBackdropFilter: 'blur(20px)' }}
               >
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                   

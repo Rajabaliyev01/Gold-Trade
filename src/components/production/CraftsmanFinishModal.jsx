@@ -75,10 +75,10 @@ export const CraftsmanFinishModal = ({ order, isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-in fade-in duration-150">
-      <div className="w-full max-w-xl rounded-2xl bg-[#141824] border border-luxury-border shadow-2xl overflow-hidden max-h-[92vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-150">
+      <div className="w-full max-w-xl rounded-2xl bg-[#12141c]/90 backdrop-blur-2xl border border-white/15 shadow-[0_24px_64px_0_rgba(0,0,0,0.6)] overflow-hidden max-h-[92vh] flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-luxury-border flex items-center justify-between shrink-0 bg-[#0f131d]">
+        <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between shrink-0 bg-white/5">
           <div className="flex items-center space-x-2.5">
             <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 border border-amber-500/20">
               <Hammer className="w-4 h-4" />
@@ -101,7 +101,7 @@ export const CraftsmanFinishModal = ({ order, isOpen, onClose }) => {
         {/* Form Body */}
         <div className="p-6 overflow-y-auto space-y-4 text-xs">
           {/* Order reference banner */}
-          <div className="p-3.5 rounded-xl bg-[#0d1017] border border-luxury-border flex items-center justify-between font-mono">
+          <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between font-mono">
             <div>
               <span className="text-[10px] text-slate-400 block">Sizga berilgan xomashyo</span>
               <span className="text-base font-bold text-gold-400">{formatWeight(order.given_weight)}</span>
@@ -131,7 +131,7 @@ export const CraftsmanFinishModal = ({ order, isOpen, onClose }) => {
                     value={receivedWeight}
                     onKeyDown={preventNegativeKey}
                     onChange={(e) => setReceivedWeight(sanitizeNonNegative(e.target.value))}
-                    className="w-full px-3 py-2.5 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                   />
                   <span className="absolute right-3 top-2.5 text-slate-500 font-mono">gr</span>
                 </div>
@@ -151,7 +151,7 @@ export const CraftsmanFinishModal = ({ order, isOpen, onClose }) => {
                     value={returnedScrap}
                     onKeyDown={preventNegativeKey}
                     onChange={(e) => setReturnedScrap(sanitizeNonNegative(e.target.value))}
-                    className="w-full px-3 py-2.5 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500"
+                    className="w-full px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500/50"
                   />
                   <span className="absolute right-3 top-2.5 text-slate-500 font-mono">gr</span>
                 </div>
@@ -171,7 +171,7 @@ export const CraftsmanFinishModal = ({ order, isOpen, onClose }) => {
                 onKeyDown={preventNegativeKey}
                 onChange={(e) => setUsedStonesCount(sanitizeNonNegative(e.target.value))}
                 placeholder="0"
-                className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
+                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white font-mono text-sm focus:outline-none focus:border-gold-500/50"
               />
             </div>
 
@@ -185,7 +185,7 @@ export const CraftsmanFinishModal = ({ order, isOpen, onClose }) => {
                 placeholder="Buyum holati, polishing darajasi yoki o'ziga xos jihatlari..."
                 value={craftsmanNotes}
                 onChange={(e) => setCraftsmanNotes(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white text-xs placeholder-slate-500 focus:outline-none focus:border-gold-500 resize-none"
+                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-gold-500 resize-none"
               />
             </div>
 
@@ -198,7 +198,7 @@ export const CraftsmanFinishModal = ({ order, isOpen, onClose }) => {
                     : 'bg-emerald-950/30 border-emerald-500/50'
                 }`}
               >
-                <div className="flex items-center justify-between pb-2 border-b border-luxury-border mb-2.5">
+                <div className="flex items-center justify-between pb-2 border-b border-white/10 mb-2.5">
                   <div className="flex items-center space-x-2">
                     {calculation.isOverThreshold ? (
                       <Flame className="w-4 h-4 text-rose-400 animate-pulse" />
@@ -250,7 +250,7 @@ export const CraftsmanFinishModal = ({ order, isOpen, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-luxury-border flex items-center justify-between shrink-0 bg-[#0f131d]">
+        <div className="px-6 py-4 border-t border-white/10 flex items-center justify-between shrink-0 bg-white/5">
           <button
             type="button"
             onClick={onClose}
