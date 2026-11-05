@@ -4,6 +4,7 @@ import { useProductionStore } from '../../store/useProductionStore';
 import { useSettingsStore } from '../../store/useSettingsStore';
 import { calculateUgar } from '../../utils/ugarCalculator';
 import { formatWeight, formatPercent } from '../../utils/formatters';
+import { preventNegativeKey, sanitizeNonNegative } from '../../utils/precisionMath';
 import { 
   X, 
   Scale, 
@@ -124,10 +125,12 @@ export const CraftsmanFinishModal = ({ order, isOpen, onClose }) => {
                   <input
                     type="number"
                     step="0.001"
+                    min="0"
                     required
                     placeholder="Masalan: 96.500"
                     value={receivedWeight}
-                    onChange={(e) => setReceivedWeight(e.target.value)}
+                    onKeyDown={preventNegativeKey}
+                    onChange={(e) => setReceivedWeight(sanitizeNonNegative(e.target.value))}
                     className="w-full px-3 py-2.5 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500"
                   />
                   <span className="absolute right-3 top-2.5 text-slate-500 font-mono">gr</span>
@@ -143,9 +146,11 @@ export const CraftsmanFinishModal = ({ order, isOpen, onClose }) => {
                   <input
                     type="number"
                     step="0.001"
+                    min="0"
                     placeholder="Masalan: 1.800"
                     value={returnedScrap}
-                    onChange={(e) => setReturnedScrap(e.target.value)}
+                    onKeyDown={preventNegativeKey}
+                    onChange={(e) => setReturnedScrap(sanitizeNonNegative(e.target.value))}
                     className="w-full px-3 py-2.5 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-gold-500"
                   />
                   <span className="absolute right-3 top-2.5 text-slate-500 font-mono">gr</span>
@@ -163,7 +168,8 @@ export const CraftsmanFinishModal = ({ order, isOpen, onClose }) => {
                 type="number"
                 min="0"
                 value={usedStonesCount}
-                onChange={(e) => setUsedStonesCount(e.target.value)}
+                onKeyDown={preventNegativeKey}
+                onChange={(e) => setUsedStonesCount(sanitizeNonNegative(e.target.value))}
                 placeholder="0"
                 className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
               />

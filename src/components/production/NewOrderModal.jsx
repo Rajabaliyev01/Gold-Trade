@@ -4,6 +4,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { useInventoryStore } from '../../store/useInventoryStore';
 import { useSettingsStore } from '../../store/useSettingsStore';
 import { formatWeight } from '../../utils/formatters';
+import { preventNegativeKey, sanitizeNonNegative } from '../../utils/precisionMath';
 import { X, Hammer, ShieldAlert, Sparkles, AlertCircle, Loader2, Gem, Calendar, Ruler } from 'lucide-react';
 
 export const NewOrderModal = ({ isOpen, onClose }) => {
@@ -176,10 +177,12 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
                 <input
                   type="number"
                   step="0.001"
+                  min="0"
                   required
                   placeholder="100.000"
                   value={formData.givenWeight}
-                  onChange={(e) => setFormData({ ...formData, givenWeight: e.target.value })}
+                  onKeyDown={preventNegativeKey}
+                  onChange={(e) => setFormData({ ...formData, givenWeight: sanitizeNonNegative(e.target.value) })}
                   className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono placeholder-slate-500 focus:outline-none focus:border-gold-500"
                 />
                 <span className="absolute right-3 top-2 text-slate-500 font-mono">gr</span>
@@ -198,7 +201,8 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
                   min="0"
                   placeholder="0 dona"
                   value={formData.stonesCount}
-                  onChange={(e) => setFormData({ ...formData, stonesCount: e.target.value })}
+                  onKeyDown={preventNegativeKey}
+                  onChange={(e) => setFormData({ ...formData, stonesCount: sanitizeNonNegative(e.target.value) })}
                   className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono focus:outline-none focus:border-gold-500"
                 />
               </div>
@@ -239,8 +243,10 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
                   <input
                     type="number"
                     step="0.1"
+                    min="0"
                     value={formData.allowedLossRate}
-                    onChange={(e) => setFormData({ ...formData, allowedLossRate: e.target.value })}
+                    onKeyDown={preventNegativeKey}
+                    onChange={(e) => setFormData({ ...formData, allowedLossRate: sanitizeNonNegative(e.target.value) })}
                     className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono focus:outline-none focus:border-gold-500"
                   />
                   <span className="absolute right-3 top-2 text-slate-500 font-mono">%</span>

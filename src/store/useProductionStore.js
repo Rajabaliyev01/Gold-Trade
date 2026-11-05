@@ -9,7 +9,10 @@ import {
   onSnapshot,
 } from 'firebase/firestore';
 import { calculateUgar } from '../utils/ugarCalculator';
+import { roundWeight } from '../utils/precisionMath';
 import { sendTelegramMessage, formatUgarAlertMessage } from '../services/telegramService';
+import { logAuditEvent } from '../services/auditService';
+import { atomicCreateProductionOrder, atomicApproveQCAndFinishOrder } from '../services/transactionService';
 import { useInventoryStore } from './useInventoryStore';
 import { useAuthStore } from './useAuthStore';
 import { useSettingsStore } from './useSettingsStore';
@@ -91,7 +94,7 @@ export const useProductionStore = create((set, get) => ({
     set({ orders: newOrders });
   },
 
-  // 1. Yangi ishlab chiqarish buyurtmasini yaratish va ustaga xomashyo ajratish (Firestore)
+  // 1. Yangi ishlab chiqarish buyurtmasini yaratish va ustaga xomashyo ajratish (Atomik Firestore Tranzaksiya)
   createOrder: async ({ 
     title, 
     craftsmanId, 
@@ -106,76 +109,87 @@ export const useProductionStore = create((set, get) => ({
   }) => {
     const factoryId = get().currentFactoryId || useAuthStore.getState().currentUser?.factoryId;
     const currentUser = useAuthStore.getState().currentUser;
-    const weightNum = parseFloat(givenWeight);
+    const weightNum = roundWeight(givenWeight);
     const purityNum = parseInt(purity, 10);
     const now = new Date().toISOString();
 
-    // Ombordan xomashyoni kamaytirish
-    useInventoryStore.getState().deductRawGold(purityNum, weightNum);
+    let createdOrder = null;
 
-    // Ustaning qo'lidagi tilla balansini oshirish
-    useAuthStore.getState().updateCraftsmanBalance(craftsmanId, weightNum);
-
-    const orderId = 'ORD-' + new Date().getFullYear() + '-' + Math.floor(100 + Math.random() * 900);
-
-    const initialTimeline = [
-      {
-        stage: 'assigned',
-        action: "Xomashyo ajratildi va buyurtma ustaga biriktirildi",
-        timestamp: now,
-        user_name: currentUser?.name || 'Menejer',
-        user_role: currentUser?.role || 'manager',
-        details: `${weightNum.toFixed(3)} gr ${purityNum} proba tilla topshirildi`,
-      }
-    ];
-
-    const newOrder = {
-      order_id: orderId,
-      factoryId: factoryId || null,
-      title: title || `${purityNum} Proba Zargarlik Buyumi`,
-      craftsman_id: craftsmanId,
-      craftsman_name: craftsmanName,
-      purity: purityNum,
-      given_weight: weightNum,
-      received_weight: 0,
-      returned_scrap: 0,
-      loss_weight: 0,
-      loss_percentage: 0,
-      allowed_loss_rate: parseFloat(allowedLossRate) || 2.0,
-      status: 'assigned', // 'assigned' | 'in_progress' | 'pending_review' | 'completed'
-      alert_triggered: false,
-      notes,
-      stones_count: parseInt(stonesCount, 10) || 0,
-      dimensions: dimensions || '',
-      deadline: deadline || '',
-      
-      // Detailed Timestamps for audit trail
-      created_at: now,
-      assigned_at: now,
-      started_at: null,
-      completed_by_craftsman_at: null,
-      reviewed_at: null,
-      added_to_inventory_at: null,
-      timestamp: now, // backward compat
-
-      timeline: initialTimeline,
-    };
-
-    // Update state immediately
-    const updated = [newOrder, ...get().orders];
-    get().save(updated);
-
-    // Save directly to Firestore under factories/{factoryId}/production_orders/{orderId}
+    // A) Run Firestore Atomic Transaction if connected
     if (factoryId && db) {
       try {
-        const docRef = doc(db, 'factories', factoryId, 'production_orders', orderId);
-        await setDoc(docRef, newOrder);
+        createdOrder = await atomicCreateProductionOrder({
+          factoryId,
+          actor: currentUser,
+          orderData: {
+            title,
+            craftsmanId,
+            craftsmanName,
+            purity: purityNum,
+            givenWeight: weightNum,
+            allowedLossRate,
+            notes,
+            stonesCount,
+            dimensions,
+            deadline,
+          },
+        });
       } catch (err) {
-        console.error("Firestore createOrder error:", err);
+        console.error("atomicCreateProductionOrder failed:", err);
+        throw err; // Propagate error to UI modal so manager knows transaction failed
       }
     }
 
-    return newOrder;
+    // B) Fallback or instant local update
+    if (!createdOrder) {
+      const orderId = 'ORD-' + new Date().getFullYear() + '-' + Math.floor(100 + Math.random() * 900);
+      createdOrder = {
+        order_id: orderId,
+        factoryId: factoryId || null,
+        title: title || `${purityNum} Proba Zargarlik Buyumi`,
+        craftsman_id: craftsmanId,
+        craftsman_name: craftsmanName,
+        purity: purityNum,
+        given_weight: weightNum,
+        received_weight: 0,
+        returned_scrap: 0,
+        loss_weight: 0,
+        loss_percentage: 0,
+        allowed_loss_rate: parseFloat(allowedLossRate) || 2.0,
+        status: 'assigned',
+        alert_triggered: false,
+        notes,
+        stones_count: parseInt(stonesCount, 10) || 0,
+        dimensions: dimensions || '',
+        deadline: deadline || '',
+        created_at: now,
+        assigned_at: now,
+        started_at: null,
+        completed_by_craftsman_at: null,
+        reviewed_at: null,
+        added_to_inventory_at: null,
+        timestamp: now,
+        timeline: [
+          {
+            stage: 'assigned',
+            action: "Xomashyo ajratildi va buyurtma ustaga biriktirildi",
+            timestamp: now,
+            user_name: currentUser?.name || 'Menejer',
+            user_role: currentUser?.role || 'manager',
+            details: `${weightNum.toFixed(3)} gr ${purityNum} proba tilla topshirildi`,
+          },
+        ],
+      };
+    }
+
+    // Update local state and cache
+    useInventoryStore.getState().deductRawGold(purityNum, weightNum);
+    useAuthStore.getState().updateCraftsmanBalance(craftsmanId, weightNum);
+
+    const updated = [createdOrder, ...get().orders.filter(o => o.order_id !== createdOrder.order_id)];
+    get().save(updated);
+
+    return createdOrder;
   },
 
   // 2. Ustaga ish borganda: 1-bosqich — Ishni qabul qilish va boshlash (in_progress)
@@ -213,6 +227,17 @@ export const useProductionStore = create((set, get) => ({
           status: 'in_progress',
           started_at: now,
           timeline: updatedOrder.timeline,
+        });
+
+        // Write immutable audit log
+        await logAuditEvent(factoryId, {
+          actionType: 'ORDER_WORK_STARTED',
+          stage: 'production',
+          targetId: orderId,
+          actor: currentUser,
+          purity: order.purity,
+          weightGrams: order.given_weight,
+          details: `Usta (${currentUser?.name || order.craftsman_name}) buyurtma ustida ish boshladi.`,
         });
       } catch (err) {
         console.error("Firestore startOrderWork error:", err);
@@ -302,6 +327,22 @@ export const useProductionStore = create((set, get) => ({
           alert_triggered: calc.isOverThreshold,
           timeline: updatedOrder.timeline,
         });
+
+        // Write immutable audit log
+        await logAuditEvent(factoryId, {
+          actionType: 'ORDER_WORK_SUBMITTED',
+          stage: 'production',
+          targetId: orderId,
+          actor: currentUser,
+          purity: order.purity,
+          weightGrams: recWeight,
+          details: `Usta ishni yakunladi va topshirdi. Tayyor: ${recWeight} gr, Qirindi: ${retScrap} gr, Ugar: ${calc.lossWeight} gr (${calc.lossPercentage}%). Alert: ${calc.isOverThreshold ? 'HA' : "YO'Q"}.`,
+          metadata: {
+            loss_percentage: calc.lossPercentage,
+            excess_loss: calc.excessLossWeight,
+            alert_triggered: calc.isOverThreshold,
+          },
+        });
       } catch (err) {
         console.error("Firestore submitCraftsmanWork error:", err);
       }
@@ -310,7 +351,7 @@ export const useProductionStore = create((set, get) => ({
     return { success: true, order: updatedOrder, calc };
   },
 
-  // 4. Ustaga ish borganda: 3-bosqich — Menejer tekshirib (QC) omborga qo'shishi (completed)
+  // 4. Ustaga ish borganda: 3-bosqich — Menejer tekshirib (QC) omborga qo'shishi (Atomik Tranzaksiya)
   reviewAndApproveOrder: async ({
     orderId,
     approvedWeight,
@@ -324,19 +365,41 @@ export const useProductionStore = create((set, get) => ({
   }) => {
     const factoryId = get().currentFactoryId || useAuthStore.getState().currentUser?.factoryId;
     const currentUser = useAuthStore.getState().currentUser;
-    const now = new Date().toISOString();
+    const settings = useSettingsStore.getState().settings;
 
     const order = get().orders.find((o) => o.order_id === orderId);
     if (!order) return { success: false, error: 'Buyurtma topilmadi' };
 
-    const recWeight = parseFloat(approvedWeight) || order.craftsman_received_weight || order.received_weight || 0;
-    const retScrap = parseFloat(approvedScrap) || order.craftsman_returned_scrap || order.returned_scrap || 0;
-
-    const settings = useSettingsStore.getState().settings;
+    const recWeight = roundWeight(approvedWeight) || order.craftsman_received_weight || order.received_weight || 0;
+    const retScrap = roundWeight(approvedScrap) || order.craftsman_returned_scrap || order.returned_scrap || 0;
     const goldPricePerGram = settings[`gold_rate_${order.purity}`] || 75;
 
-    // Yakuniy milligramm ugar hisobi
-    const calculation = calculateUgar({
+    let transactionResult = null;
+
+    // A) Execute Firestore Atomic Transaction
+    if (factoryId && db) {
+      try {
+        transactionResult = await atomicApproveQCAndFinishOrder({
+          factoryId,
+          actor: currentUser,
+          orderId,
+          approvedWeight: recWeight,
+          approvedScrap: retScrap,
+          productName,
+          category,
+          sellingPrice,
+          qcChecklist,
+          managerNotes,
+          goldPricePerGram,
+        });
+      } catch (err) {
+        console.error("atomicApproveQCAndFinishOrder error:", err);
+        throw err;
+      }
+    }
+
+    // B) Calculate or extract result
+    const calculation = transactionResult?.calculation || calculateUgar({
       givenWeight: order.given_weight,
       receivedWeight: recWeight,
       returnedScrap: retScrap,
@@ -345,43 +408,7 @@ export const useProductionStore = create((set, get) => ({
     });
 
     const isAlert = calculation.isOverThreshold;
-    const barcode = `FP-${order.purity}-${Date.now().toString().slice(-5)}`;
-    const finalSellingPrice = parseFloat(sellingPrice) || (recWeight * (goldPricePerGram + 30));
-
-    // A) Omborni yangilash: Tayyor mahsulot omboriga qo'shish
-    const finishedProduct = await useInventoryStore.getState().addFinishedProduct({
-      name: productName || order.title,
-      purity: order.purity,
-      weight: calculation.receivedWeight,
-      sellingPrice: finalSellingPrice,
-      craftsmanId: order.craftsman_id,
-      category,
-      barcode,
-    });
-
-    // B) Qaytarilgan qirindi va changni xomashyo omboriga qaytarish
-    if (calculation.returnedScrap > 0) {
-      useInventoryStore.getState().addReturnedScrap(order.purity, calculation.returnedScrap);
-    }
-
-    // C) Ustaning balansini yopish (berilgan vazn ayiriladi)
-    useAuthStore.getState().updateCraftsmanBalance(
-      order.craftsman_id,
-      -order.given_weight,
-      true, // order completed
-      calculation.lossPercentage
-    );
-
-    const newTimelineItem = {
-      stage: 'completed',
-      action: "Menejer tekshirdi (QC tasdiqlandi) va mahsulot omborga qabul qilindi",
-      timestamp: now,
-      user_name: currentUser?.name || 'Menejer',
-      user_role: currentUser?.role || 'manager',
-      details: `QC Muvaffaqiyatli. Mahsulot: "${productName || order.title}". Shtrix-kod: ${barcode}. Tayyor og'irlik: ${recWeight.toFixed(3)} gr. Omborga kiritildi.`,
-    };
-
-    const updatedOrder = {
+    const updatedOrder = transactionResult?.order || {
       ...order,
       status: 'completed',
       received_weight: calculation.receivedWeight,
@@ -391,37 +418,11 @@ export const useProductionStore = create((set, get) => ({
       excess_loss: calculation.excessLossWeight,
       financial_damage: calculation.financialLoss,
       alert_triggered: isAlert,
-      
-      // Timestamps
-      reviewed_at: now,
-      added_to_inventory_at: now,
-      completed_at: now,
-      reviewed_by: {
-        uid: currentUser?.uid || '',
-        name: currentUser?.name || 'Menejer',
-      },
-
-      qc_checklist: qcChecklist,
-      manager_notes: managerNotes,
-      selling_price: finalSellingPrice,
-      barcode,
-      category,
-      finished_product_id: finishedProduct?.id || null,
-      timeline: [...(order.timeline || []), newTimelineItem],
     };
 
+    // Update local caches
     const updatedOrders = get().orders.map((o) => (o.order_id === orderId ? updatedOrder : o));
     get().save(updatedOrders);
-
-    // Save to Firestore
-    if (factoryId && db) {
-      try {
-        const docRef = doc(db, 'factories', factoryId, 'production_orders', orderId);
-        await setDoc(docRef, updatedOrder, { merge: true });
-      } catch (err) {
-        console.error("Firestore reviewAndApproveOrder error:", err);
-      }
-    }
 
     // Telegram Alert if excess ugar occurred
     let telegramResult = null;
@@ -445,7 +446,7 @@ export const useProductionStore = create((set, get) => ({
       success: true,
       calculation,
       order: updatedOrder,
-      finishedProduct,
+      finishedProduct: transactionResult?.product,
       telegramResult,
       isAlert,
     };

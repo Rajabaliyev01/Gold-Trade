@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useInventoryStore } from '../../store/useInventoryStore';
+import { preventNegativeKey, sanitizeNonNegative } from '../../utils/precisionMath';
 import { X, Boxes, QrCode, Plus } from 'lucide-react';
 
 export const AddProductModal = ({ isOpen, onClose }) => {
@@ -137,10 +138,12 @@ export const AddProductModal = ({ isOpen, onClose }) => {
                 <input
                   type="number"
                   step="0.001"
+                  min="0"
                   required
                   placeholder="0.000"
                   value={formData.weight}
-                  onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
+                  onKeyDown={preventNegativeKey}
+                  onChange={(e) => setFormData({ ...formData, weight: sanitizeNonNegative(e.target.value) })}
                   className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono focus:outline-none focus:border-gold-500"
                 />
                 <span className="absolute right-3 top-2 text-slate-500 font-mono">gr</span>
@@ -155,9 +158,11 @@ export const AddProductModal = ({ isOpen, onClose }) => {
                 <input
                   type="number"
                   step="0.1"
+                  min="0"
                   placeholder="50.00"
                   value={formData.price_per_gram}
-                  onChange={(e) => setFormData({ ...formData, price_per_gram: e.target.value })}
+                  onKeyDown={preventNegativeKey}
+                  onChange={(e) => setFormData({ ...formData, price_per_gram: sanitizeNonNegative(e.target.value) })}
                   className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono focus:outline-none focus:border-gold-500"
                 />
                 <span className="absolute right-3 top-2 text-slate-500 font-mono">$</span>
@@ -171,9 +176,11 @@ export const AddProductModal = ({ isOpen, onClose }) => {
                   <input
                     type="number"
                     step="1"
+                    min="0"
                     placeholder="1500"
                     value={formData.selling_price}
-                    onChange={(e) => setFormData({ ...formData, selling_price: e.target.value })}
+                    onKeyDown={preventNegativeKey}
+                    onChange={(e) => setFormData({ ...formData, selling_price: sanitizeNonNegative(e.target.value) })}
                     className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono focus:outline-none focus:border-gold-500"
                   />
                   <span className="absolute right-3 top-2 text-slate-500 font-mono">$</span>

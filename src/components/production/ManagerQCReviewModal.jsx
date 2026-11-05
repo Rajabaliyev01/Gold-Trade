@@ -4,6 +4,7 @@ import { useProductionStore } from '../../store/useProductionStore';
 import { useSettingsStore } from '../../store/useSettingsStore';
 import { calculateUgar } from '../../utils/ugarCalculator';
 import { formatWeight, formatCurrency, formatPercent } from '../../utils/formatters';
+import { preventNegativeKey, sanitizeNonNegative } from '../../utils/precisionMath';
 import { 
   X, 
   Scale, 
@@ -278,9 +279,11 @@ export const ManagerQCReviewModal = ({ order, isOpen, onClose }) => {
                     <input
                       type="number"
                       step="0.001"
+                      min="0"
                       required
                       value={approvedWeight}
-                      onChange={(e) => setApprovedWeight(e.target.value)}
+                      onKeyDown={preventNegativeKey}
+                      onChange={(e) => setApprovedWeight(sanitizeNonNegative(e.target.value))}
                       className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
                     />
                     <span className="absolute right-3 top-2 text-slate-500 font-mono">gr</span>
@@ -295,8 +298,10 @@ export const ManagerQCReviewModal = ({ order, isOpen, onClose }) => {
                     <input
                       type="number"
                       step="0.001"
+                      min="0"
                       value={approvedScrap}
-                      onChange={(e) => setApprovedScrap(e.target.value)}
+                      onKeyDown={preventNegativeKey}
+                      onChange={(e) => setApprovedScrap(sanitizeNonNegative(e.target.value))}
                       className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
                     />
                     <span className="absolute right-3 top-2 text-slate-500 font-mono">gr</span>
@@ -347,9 +352,11 @@ export const ManagerQCReviewModal = ({ order, isOpen, onClose }) => {
                   <input
                     type="number"
                     step="1"
+                    min="0"
                     placeholder={`Avtomatik: $${Math.round((parseFloat(approvedWeight) || 0) * (goldPricePerGram + 30))}`}
                     value={sellingPrice}
-                    onChange={(e) => setSellingPrice(e.target.value)}
+                    onKeyDown={preventNegativeKey}
+                    onChange={(e) => setSellingPrice(sanitizeNonNegative(e.target.value))}
                     className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-xs focus:outline-none focus:border-gold-500"
                   />
                 </div>

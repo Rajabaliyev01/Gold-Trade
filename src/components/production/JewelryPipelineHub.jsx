@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useInventoryStore } from '../../store/useInventoryStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { formatWeight, formatCurrency } from '../../utils/formatters';
+import { preventNegativeKey, sanitizeNonNegative } from '../../utils/precisionMath';
 import {
   Boxes,
   Flame,
@@ -382,10 +383,12 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                   <input
                     type="number"
                     step="0.001"
+                    min="0"
                     required
                     placeholder="Masalan: 150.000"
                     value={rawWeight}
-                    onChange={(e) => setRawWeight(e.target.value)}
+                    onKeyDown={preventNegativeKey}
+                    onChange={(e) => setRawWeight(sanitizeNonNegative(e.target.value))}
                     className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
                   />
                 </div>
@@ -395,9 +398,11 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                   <input
                     type="number"
                     step="1"
+                    min="0"
                     placeholder="Masalan: 9500"
                     value={usdValuation}
-                    onChange={(e) => setUsdValuation(e.target.value)}
+                    onKeyDown={preventNegativeKey}
+                    onChange={(e) => setUsdValuation(sanitizeNonNegative(e.target.value))}
                     className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
                   />
                 </div>
@@ -479,7 +484,8 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                     type="number"
                     min="1"
                     value={gemPieces}
-                    onChange={(e) => setGemPieces(e.target.value)}
+                    onKeyDown={preventNegativeKey}
+                    onChange={(e) => setGemPieces(sanitizeNonNegative(e.target.value))}
                     className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
                   />
                 </div>
@@ -492,9 +498,11 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                     <input
                       type="number"
                       step="0.01"
+                      min="0"
                       placeholder="Masalan: 1.25"
                       value={gemCarats}
-                      onChange={(e) => setGemCarats(e.target.value)}
+                      onKeyDown={preventNegativeKey}
+                      onChange={(e) => setGemCarats(sanitizeNonNegative(e.target.value))}
                       className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
                     />
                   </div>
@@ -516,9 +524,11 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                 <input
                   type="number"
                   step="1"
+                  min="0"
                   placeholder="$ narxi"
                   value={gemPrice}
-                  onChange={(e) => setGemPrice(e.target.value)}
+                  onKeyDown={preventNegativeKey}
+                  onChange={(e) => setGemPrice(sanitizeNonNegative(e.target.value))}
                   className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
                 />
               </div>
@@ -568,11 +578,13 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                 <input
                   type="number"
                   step="0.001"
+                  min="0"
                   required
                   placeholder="Masalan: 100.000"
                   value={pureGoldInput}
+                  onKeyDown={preventNegativeKey}
                   onChange={(e) => {
-                    const val = e.target.value;
+                    const val = sanitizeNonNegative(e.target.value);
                     setPureGoldInput(val);
                     if (val && parseFloat(val) > 0) {
                       // Auto calculate ligature for 585: 100g 999.9 -> 100 / 0.585 = 170.94g total alloy (70.94g ligature)
@@ -607,8 +619,10 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                   <input
                     type="number"
                     step="0.001"
+                    min="0"
                     value={copperInput}
-                    onChange={(e) => setCopperInput(e.target.value)}
+                    onKeyDown={preventNegativeKey}
+                    onChange={(e) => setCopperInput(sanitizeNonNegative(e.target.value))}
                     className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-xs focus:outline-none focus:border-gold-500"
                   />
                 </div>
@@ -618,8 +632,10 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                   <input
                     type="number"
                     step="0.001"
+                    min="0"
                     value={silverInput}
-                    onChange={(e) => setSilverInput(e.target.value)}
+                    onKeyDown={preventNegativeKey}
+                    onChange={(e) => setSilverInput(sanitizeNonNegative(e.target.value))}
                     className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-xs focus:outline-none focus:border-gold-500"
                   />
                 </div>
@@ -631,9 +647,11 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                   <input
                     type="number"
                     step="0.001"
+                    min="0"
                     required
                     value={outputIngot}
-                    onChange={(e) => setOutputIngot(e.target.value)}
+                    onKeyDown={preventNegativeKey}
+                    onChange={(e) => setOutputIngot(sanitizeNonNegative(e.target.value))}
                     className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
                   />
                 </div>
@@ -643,8 +661,10 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                   <input
                     type="number"
                     step="0.001"
+                    min="0"
                     value={furnaceLoss}
-                    onChange={(e) => setFurnaceLoss(e.target.value)}
+                    onKeyDown={preventNegativeKey}
+                    onChange={(e) => setFurnaceLoss(sanitizeNonNegative(e.target.value))}
                     className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
                   />
                 </div>
@@ -705,7 +725,8 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                     required
                     placeholder="Masalan: 12 dona"
                     value={hallmarkCount}
-                    onChange={(e) => setHallmarkCount(e.target.value)}
+                    onKeyDown={preventNegativeKey}
+                    onChange={(e) => setHallmarkCount(sanitizeNonNegative(e.target.value))}
                     className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
                   />
                 </div>
@@ -715,10 +736,12 @@ export const JewelryPipelineHub = ({ onOpenNewOrder, isOpen = true, onToggle }) 
                   <input
                     type="number"
                     step="0.001"
+                    min="0"
                     required
                     placeholder="Masalan: 84.500"
                     value={hallmarkWeight}
-                    onChange={(e) => setHallmarkWeight(e.target.value)}
+                    onKeyDown={preventNegativeKey}
+                    onChange={(e) => setHallmarkWeight(sanitizeNonNegative(e.target.value))}
                     className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white font-mono text-sm focus:outline-none focus:border-gold-500"
                   />
                 </div>
