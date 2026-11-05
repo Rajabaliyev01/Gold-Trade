@@ -1,5 +1,5 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useProductionStore } from '../../store/useProductionStore';
 import { useUIStore } from '../../store/useUIStore';
@@ -15,10 +15,14 @@ import {
   Flame,
   Radio,
   X,
-  Sparkles
+  Sparkles,
+  ChevronDown,
+  ChevronRight,
+  ClipboardList
 } from 'lucide-react';
 
 export const Sidebar = () => {
+  const location = useLocation();
   const { currentUser, factory } = useAuthStore();
   const { isSidebarOpen, closeSidebar } = useUIStore();
   const orders = useProductionStore((state) => state.orders);
@@ -29,28 +33,25 @@ export const Sidebar = () => {
   const alertsCount = orders.filter((o) => o.alert_triggered).length;
 
   const role = currentUser?.role || 'admin';
+  const isManagerOrAdmin = role === 'admin' || role === 'manager';
+
+  // Toggle production sub-menu (default open if on /production or /pipeline)
+  const isProductionRoute = location.pathname === '/production' || location.pathname === '/pipeline';
+  const [isProductionOpen, setIsProductionOpen] = useState(true);
+
+  useEffect(() => {
+    if (isProductionRoute) {
+      setIsProductionOpen(true);
+    }
+  }, [location.pathname, isProductionRoute]);
+
+  const handleMobileNavClick = () => {
+    if (window.innerWidth < 1024) {
+      closeSidebar();
+    }
+  };
 
   const menuItems = [
-    {
-      title: 'Boshqaruv Paneli',
-      path: '/',
-      icon: LayoutDashboard,
-      roles: ['admin', 'manager'],
-    },
-    {
-      title: 'Ishlab Chiqarish & Ugar',
-      path: '/production',
-      icon: Hammer,
-      badge: activeOrdersCount > 0 ? activeOrdersCount : null,
-      alertBadge: alertsCount > 0 ? alertsCount : null,
-      roles: ['admin', 'manager', 'craftsman'],
-    },
-    {
-      title: '5 Bosqichli Tizim',
-      path: '/pipeline',
-      icon: Sparkles,
-      roles: ['admin', 'manager'],
-    },
     {
       title: 'Ombor (Inventar)',
       path: '/inventory',
@@ -83,19 +84,16 @@ export const Sidebar = () => {
     },
   ];
 
-  const filteredItems = menuItems.filter((item) => item.roles.includes(role));
-
   return (
     <>
       {/* Mobile Backdrop Overlay */}
       {isSidebarOpen && (
-        <div 
+        <div
           onClick={closeSidebar}
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden animate-in fade-in duration-200"
+          className="fixed inset-0 z-40 bg-black/70 backdrop-blur-xs lg:hidden transition-opacity"
         />
       )}
 
-      {/* Sidebar Container */}
       <aside
         className={`fixed lg:static inset-y-0 left-0 z-50 w-72 lg:w-64 bg-[#0f131d] border-r border-luxury-border flex flex-col justify-between shrink-0 min-h-[calc(100vh-4rem)] transition-transform duration-300 ease-in-out ${
           isSidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full lg:translate-x-0'
@@ -120,47 +118,135 @@ export const Sidebar = () => {
           <div className="space-y-1.5">
             <p className="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Asosiy Menyu</p>
             <nav className="space-y-1">
-              {filteredItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <NavLink
-                    key={item.path}
-                    to={item.path}
-                    end={item.path === '/'}
-                    onClick={() => {
-                      if (window.innerWidth < 1024) {
-                        closeSidebar();
-                      }
-                    }}
-                    className={({ isActive }) =>
-                      `flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 ${
-                        isActive
-                          ? 'bg-gradient-to-r from-gold-500/20 to-gold-500/5 text-gold-300 border-l-2 border-gold-500 font-semibold shadow-gold-sm'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-[#141824]'
-                      }`
-                    }
+              {/* 1. Boshqaruv Paneli (Admin / Manager) */}
+              {isManagerOrAdmin && (
+                <NavLink
+                  to="/"
+                  end
+                  onClick={handleMobileNavClick}
+                  className={({ isActive }) =>
+                    `flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 ${
+                      isActive
+                        ? 'bg-gradient-to-r from-gold-500/20 to-gold-500/5 text-gold-300 border-l-2 border-gold-500 font-semibold shadow-gold-sm'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-[#141824]'
+                    }`
+                  }
+                >
+                  <div className="flex items-center space-x-3">
+                    <LayoutDashboard className="w-4 h-4 shrink-0" />
+                    <span>Boshqaruv Paneli</span>
+                  </div>
+                </NavLink>
+              )}
+
+              {/* 2. ISHLAB CHIQARISH (Collapsible Toggle Menu under Main Menu) */}
+              {['admin', 'manager', 'craftsman'].includes(role) && (
+                <div className="space-y-1">
+                  <div
+                    onClick={() => setIsProductionOpen(!isProductionOpen)}
+                    className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium cursor-pointer transition-all duration-150 select-none ${
+                      isProductionRoute
+                        ? 'bg-[#141824] text-gold-300 font-semibold border-l-2 border-gold-500/50'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-[#141824]'
+                    }`}
                   >
                     <div className="flex items-center space-x-3">
-                      <Icon className="w-4 h-4 shrink-0" />
-                      <span>{item.title}</span>
+                      <Hammer className="w-4 h-4 shrink-0 text-gold-400" />
+                      <span>Ishlab Chiqarish &amp; Ugar</span>
                     </div>
 
                     <div className="flex items-center space-x-1.5">
-                      {item.badge && (
+                      {activeOrdersCount > 0 && (
                         <span className="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-gold-500 text-black">
-                          {item.badge}
+                          {activeOrdersCount}
                         </span>
                       )}
-                      {item.alertBadge && (
+                      {alertsCount > 0 && (
                         <span className="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center space-x-0.5">
                           <Flame className="w-2.5 h-2.5" />
-                          <span>{item.alertBadge}</span>
+                          <span>{alertsCount}</span>
                         </span>
                       )}
+                      {isManagerOrAdmin && (
+                        isProductionOpen ? (
+                          <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                        ) : (
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                        )
+                      )}
                     </div>
-                  </NavLink>
-                );
-              })}
+                  </div>
+
+                  {/* Collapsible Sub-menu directly under Ishlab Chiqarish */}
+                  {isProductionOpen && (
+                    <div className="pl-3.5 space-y-1 border-l-2 border-gold-500/20 ml-4 py-1 animate-in fade-in duration-150">
+                      {/* Sub-item A: Buyurtmalar Ro'yxati & QC */}
+                      <NavLink
+                        to="/production"
+                        onClick={handleMobileNavClick}
+                        className={({ isActive }) =>
+                          `flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-medium transition-all duration-150 ${
+                            isActive
+                              ? 'bg-gold-500/15 text-gold-300 font-semibold border border-gold-500/30'
+                              : 'text-slate-400 hover:text-slate-200 hover:bg-[#141824]'
+                          }`
+                        }
+                      >
+                        <div className="flex items-center space-x-2">
+                          <ClipboardList className="w-3.5 h-3.5 shrink-0" />
+                          <span>Buyurtmalar &amp; Nazorat</span>
+                        </div>
+                      </NavLink>
+
+                      {/* Sub-item B: 5 Bosqichli Zargarlik Tizimi (Manager & Admin) */}
+                      {isManagerOrAdmin && (
+                        <NavLink
+                          to="/pipeline"
+                          onClick={handleMobileNavClick}
+                          className={({ isActive }) =>
+                            `flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-medium transition-all duration-150 ${
+                              isActive
+                                ? 'bg-gold-500/15 text-gold-300 font-semibold border border-gold-500/30'
+                                : 'text-slate-400 hover:text-slate-200 hover:bg-[#141824]'
+                            }`
+                          }
+                        >
+                          <div className="flex items-center space-x-2">
+                            <Sparkles className="w-3.5 h-3.5 shrink-0 text-gold-400" />
+                            <span>5 Bosqichli Tizim</span>
+                          </div>
+                        </NavLink>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* 3. Boshqa menyu bandlari */}
+              {menuItems
+                .filter((item) => item.roles.includes(role))
+                .map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <NavLink
+                      key={item.path}
+                      to={item.path}
+                      onClick={handleMobileNavClick}
+                      className={({ isActive }) =>
+                        `flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 ${
+                          isActive
+                            ? 'bg-gradient-to-r from-gold-500/20 to-gold-500/5 text-gold-300 border-l-2 border-gold-500 font-semibold shadow-gold-sm'
+                            : 'text-slate-400 hover:text-slate-200 hover:bg-[#141824]'
+                        }`
+                      }
+                    >
+                      <div className="flex items-center space-x-3">
+                        <Icon className="w-4 h-4 shrink-0" />
+                        <span>{item.title}</span>
+                      </div>
+                    </NavLink>
+                  );
+                })}
             </nav>
           </div>
         </div>

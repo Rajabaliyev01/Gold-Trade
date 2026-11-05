@@ -61,6 +61,32 @@ export const PhoneInput = ({
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Backspace') {
+      const input = e.target;
+      const { selectionStart, selectionEnd } = input;
+      // If cursor is right after a space (e.g. "90 |123"), delete the digit before the space
+      if (selectionStart === selectionEnd && selectionStart > 1) {
+        if (formattedDisplay[selectionStart - 1] === ' ') {
+          e.preventDefault();
+          const before = formattedDisplay.slice(0, selectionStart - 2);
+          const after = formattedDisplay.slice(selectionStart);
+          const newRaw = before + after;
+          const newDigits = newRaw.replace(/\D/g, '').slice(0, 9);
+          const formatted = formatLocalDigits(newDigits);
+          const fullPhone = newDigits.length > 0 ? `+998 ${formatted}` : '';
+          if (onChange) onChange(fullPhone);
+          setTimeout(() => {
+            if (input) {
+              const newPos = Math.max(0, selectionStart - 2);
+              input.setSelectionRange(newPos, newPos);
+            }
+          }, 0);
+        }
+      }
+    }
+  };
+
   return (
     <div
       className={`flex items-center rounded-xl bg-[#141824] border border-luxury-border transition-all overflow-hidden ${
@@ -82,6 +108,7 @@ export const PhoneInput = ({
         autoFocus={autoFocus}
         value={formattedDisplay}
         onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
         placeholder={placeholder}
         maxLength={12} // 9 digits + 3 spaces = 12 characters
         className="w-full px-3.5 py-2.5 bg-transparent text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none disabled:cursor-not-allowed"

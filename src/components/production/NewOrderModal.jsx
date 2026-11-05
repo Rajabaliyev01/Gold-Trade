@@ -32,7 +32,7 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (craftsmen.length > 0 && !formData.craftsmanId) {
-      setFormData((prev) => ({ ...prev, craftsmanId: craftsmen[0].uid }));
+      setFormData((prev) => ({ ...prev, craftsmanId: craftsmen[0].uid || craftsmen[0].id }));
     }
   }, [craftsmen]);
 
@@ -47,7 +47,7 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
     e.preventDefault();
     setError('');
 
-    const targetCraftsmanId = formData.craftsmanId || craftsmen[0]?.uid;
+    const targetCraftsmanId = formData.craftsmanId || craftsmen[0]?.uid || craftsmen[0]?.id;
     if (!targetCraftsmanId) {
       setError("Zavodda birorta ham zargar usta mavjud emas. Avval 'Hodimlar' bo'limidan zargar usta qo'shing.");
       return;
@@ -64,7 +64,7 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
       return;
     }
 
-    const selectedCraftsman = craftsmen.find((c) => c.uid === targetCraftsmanId);
+    const selectedCraftsman = craftsmen.find((c) => (c.uid || c.id) === targetCraftsmanId);
 
     setSubmitting(true);
     try {
@@ -142,7 +142,7 @@ export const NewOrderModal = ({ isOpen, onClose }) => {
                   className="w-full px-3 py-2 rounded-xl bg-[#0d1017] border border-luxury-border text-white focus:outline-none focus:border-gold-500"
                 >
                   {craftsmen.map((c) => (
-                    <option key={c.uid} value={c.uid}>
+                    <option key={c.uid || c.id} value={c.uid || c.id}>
                       {c.name}
                     </option>
                   ))}

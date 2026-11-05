@@ -46,35 +46,53 @@ export const OrderList = () => {
   // Filter orders by permissions
   const relevantOrders = orders.filter((order) => {
     if (!isCraftsman) return true;
-    const uidMatches = order.craftsman_id === currentUser?.uid;
-    const usernameMatches = Boolean(currentUser?.username && order.craftsman_id === currentUser?.username);
-    const nameMatches = Boolean(
-      currentUser?.name &&
-      order.craftsman_name &&
-      order.craftsman_name.trim().toLowerCase() === currentUser.name.trim().toLowerCase()
+    const myUid = currentUser?.uid;
+    const myId = currentUser?.id;
+    const myUsername = currentUser?.username?.toLowerCase();
+    const myName = currentUser?.name?.trim().toLowerCase();
+
+    const orderCraftsmanId = (order.craftsman_id || '').toLowerCase();
+    const orderCraftsmanName = (order.craftsman_name || '').trim().toLowerCase();
+
+    const idMatches = Boolean(
+      (myUid && orderCraftsmanId === myUid.toLowerCase()) ||
+      (myId && orderCraftsmanId === myId.toLowerCase()) ||
+      (myUsername && orderCraftsmanId === myUsername)
     );
-    return uidMatches || usernameMatches || nameMatches;
+
+    const nameMatches = Boolean(
+      myName && orderCraftsmanName && (
+        orderCraftsmanName === myName ||
+        orderCraftsmanName.includes(myName) ||
+        myName.includes(orderCraftsmanName)
+      )
+    );
+
+    return idMatches || nameMatches;
   });
 
+  const trimmedSearch = search.trim().toLowerCase();
   const filteredOrders = relevantOrders.filter((order) => {
-    const matchesSearch =
-      (order.order_id || '').toLowerCase().includes(search.toLowerCase()) ||
-      (order.title || '').toLowerCase().includes(search.toLowerCase()) ||
-      (order.craftsman_name || '').toLowerCase().includes(search.toLowerCase()) ||
-      (order.barcode || '').toLowerCase().includes(search.toLowerCase());
+    if (trimmedSearch) {
+      const matchesSearch =
+        (order.order_id || '').toLowerCase().includes(trimmedSearch) ||
+        (order.title || '').toLowerCase().includes(trimmedSearch) ||
+        (order.craftsman_name || '').toLowerCase().includes(trimmedSearch) ||
+        (order.barcode || '').toLowerCase().includes(trimmedSearch);
 
-    if (!matchesSearch) return false;
+      if (!matchesSearch) return false;
+    }
 
     if (statusFilter === 'all') return true;
-    if (statusFilter === 'alerts') return order.alert_triggered;
+    if (statusFilter === 'alerts') return Boolean(order.alert_triggered);
     return order.status === statusFilter;
   });
 
   const statusConfig = {
-    assigned: { label: '1. Biriktirilgan', bg: 'bg-blue-500/10 text-blue-400 border-blue-500/30', icon: Clock },
-    in_progress: { label: '2. Usta Ishlamoqda', bg: 'bg-amber-500/10 text-amber-400 border-amber-500/30', icon: Hammer },
-    pending_review: { label: '3. Tekshiruv Kutilmoqda (QC)', bg: 'bg-purple-500/10 text-purple-300 border-purple-500/30', icon: ShieldCheck },
-    completed: { label: '4. Omborga Qabul Qilingan', bg: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30', icon: CheckCircle2 },
+    assigned: { label: 'Biriktirilgan', bg: 'bg-blue-500/10 text-blue-400 border-blue-500/30', icon: Clock },
+    in_progress: { label: 'Usta Ishlamoqda', bg: 'bg-amber-500/10 text-amber-400 border-amber-500/30', icon: Hammer },
+    pending_review: { label: 'Tekshiruv Kutilmoqda (QC)', bg: 'bg-purple-500/10 text-purple-300 border-purple-500/30', icon: ShieldCheck },
+    completed: { label: 'Omborga Qabul Qilingan', bg: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30', icon: CheckCircle2 },
   };
 
   return (
@@ -108,10 +126,10 @@ export const OrderList = () => {
         <div className="flex items-center space-x-1 overflow-x-auto pb-1 md:pb-0 text-xs">
           {[
             { id: 'all', label: 'Barchasi', count: relevantOrders.length },
-            { id: 'assigned', label: '1. Biriktirilgan', count: relevantOrders.filter((o) => o.status === 'assigned').length },
-            { id: 'in_progress', label: '2. Jarayonda', count: relevantOrders.filter((o) => o.status === 'in_progress').length },
-            { id: 'pending_review', label: '3. Tekshiruvda (QC)', count: relevantOrders.filter((o) => o.status === 'pending_review').length },
-            { id: 'completed', label: '4. Tugallangan', count: relevantOrders.filter((o) => o.status === 'completed').length },
+            { id: 'assigned', label: 'Biriktirilgan', count: relevantOrders.filter((o) => o.status === 'assigned').length },
+            { id: 'in_progress', label: 'Jarayonda', count: relevantOrders.filter((o) => o.status === 'in_progress').length },
+            { id: 'pending_review', label: 'Tekshiruvda (QC)', count: relevantOrders.filter((o) => o.status === 'pending_review').length },
+            { id: 'completed', label: 'Tugallangan', count: relevantOrders.filter((o) => o.status === 'completed').length },
             { id: 'alerts', label: 'Ugar Alertlari', count: relevantOrders.filter((o) => o.alert_triggered).length, isAlert: true },
           ].map((tab) => {
             const isActive = statusFilter === tab.id;
