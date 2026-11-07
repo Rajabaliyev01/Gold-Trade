@@ -17,6 +17,27 @@ Jahon tajribasidagi zargarlik ERP dasturlari (**PIRO**, **Valigara**) andozasida
 
 ---
 
+## 📸 Skrinshotlar / Screenshots
+
+> Tizimning asosiy modullari va interfeysi quyida ko'rsatilgan.
+
+### 1. 🔐 Login Sahifasi — Zavod Egasi & Hodim Kirishi
+![Login Sahifasi](public/screenshots/Screenshot%202026-11-07%20at%2011.57.12.png)
+
+### 2. 👑 Super Admin Dashboard — Real-vaqt KPI va Oltin Narxlari
+![Super Admin Dashboard](public/screenshots/Screenshot%202026-11-07%20at%2011.55.32.png)
+
+### 3. 📦 Ombor (Inventar) Moduli — Mahsulotlar va Shtrix-kodlar
+![Ombor Moduli](public/screenshots/Screenshot%202026-11-07%20at%2011.55.59.png)
+
+### 4. 🛒 Kassa & POS Terminal — Trade-In va To'lov
+![Kassa POS Terminal](public/screenshots/Screenshot%202026-11-07%20at%2011.56.22.png)
+
+### 5. ⚙️ Zavod Egasi Profil Sozlamalari — Rekvizitlar va Ugar Me'yori
+![Zavod Egasi Profil](public/screenshots/Screenshot%202026-11-07%20at%2011.56.55.png)
+
+---
+
 ## 🌟 Asosiy Imkoniyatlar va Modullar
 
 ### 1. 📊 Super Admin Dashboard (Boshqaruv Paneli)
