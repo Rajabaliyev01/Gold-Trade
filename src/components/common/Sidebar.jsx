@@ -18,7 +18,8 @@ import {
   Sparkles,
   ChevronDown,
   ChevronRight,
-  ClipboardList
+  ClipboardList,
+  TrendingUp
 } from 'lucide-react';
 
 export const Sidebar = () => {
@@ -55,6 +56,14 @@ export const Sidebar = () => {
 
   const menuItems = [
     {
+      title: t('nav', 'rates'),
+      path: '/rates',
+      icon: TrendingUp,
+      roles: ['admin', 'manager', 'cashier', 'seller', 'craftsman'],
+      badge: 'LIVE',
+      badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    },
+    {
       title: t('nav', 'inventory'),
       path: '/inventory',
       icon: Boxes,
@@ -86,11 +95,14 @@ export const Sidebar = () => {
       {isSidebarOpen && (
         <div
           onClick={closeSidebar}
+          aria-hidden="true"
           className="fixed inset-0 z-40 bg-black/70 backdrop-blur-xs lg:hidden transition-opacity"
         />
       )}
 
       <aside
+        id="sidebar-navigation"
+        aria-label="Asosiy navigatsiya"
         className={`fixed lg:static inset-y-0 left-0 z-50 w-72 lg:w-64 bg-[#12141c]/70 backdrop-blur-xl border-r border-white/10 flex flex-col justify-between shrink-0 min-h-[calc(100vh-4rem)] transition-transform duration-300 ease-in-out shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] ${
           isSidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full lg:translate-x-0'
         }`}
@@ -105,7 +117,8 @@ export const Sidebar = () => {
             </div>
             <button
               onClick={closeSidebar}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5"
+              aria-label="Menyuni yopish"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gold-500"
             >
               <X className="w-5 h-5" />
             </button>
@@ -116,7 +129,7 @@ export const Sidebar = () => {
             <p className="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
               {language === 'ru' ? 'Главное меню' : language === 'en' ? 'Main Menu' : 'Asosiy Menyu'}
             </p>
-            <nav className="space-y-1">
+            <nav className="space-y-1" aria-label="Bo'limlar">
               {/* 1. Boshqaruv Paneli (Admin / Manager) */}
               {isManagerOrAdmin && (
                 <NavLink
@@ -124,9 +137,9 @@ export const Sidebar = () => {
                   end
                   onClick={handleMobileNavClick}
                   className={({ isActive }) =>
-                    `flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 ${
+                    `flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-500/50 ${
                       isActive
-                        ? 'bg-gradient-to-r from-gold-500/25 to-gold-500/5 text-gold-300 border-l-2 border-gold-500 font-semibold shadow-[0_4px_20px_0_rgba(212,175,55,0.15)]'
+                        ? 'bg-gradient-to-r from-gold-500/25 to-gold-500/5 text-gold-300 border-l-2 border-gold-500 shadow-[0_4px_20px_0_rgba(212,175,55,0.15)]'
                         : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
                     }`
                   }
@@ -149,9 +162,10 @@ export const Sidebar = () => {
                 <div className="space-y-1">
                   <button
                     onClick={() => setIsProductionOpen(!isProductionOpen)}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 cursor-pointer ${
+                    aria-expanded={isProductionOpen}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gold-500/50 ${
                       isProductionRoute
-                        ? 'bg-gold-500/10 text-gold-300 font-semibold'
+                        ? 'bg-gold-500/10 text-gold-300'
                         : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
                     }`}
                   >
@@ -181,7 +195,7 @@ export const Sidebar = () => {
                         to="/production"
                         onClick={handleMobileNavClick}
                         className={({ isActive }) =>
-                          `flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-medium transition-all duration-150 ${
+                          `flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-gold-500/50 ${
                             isActive
                               ? 'bg-gold-500/15 text-gold-300 font-semibold border border-gold-500/30'
                               : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
@@ -200,25 +214,25 @@ export const Sidebar = () => {
                           to="/pipeline"
                           onClick={handleMobileNavClick}
                           className={({ isActive }) =>
-                            `flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-medium transition-all duration-150 ${
+                            `flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-medium transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-gold-500/50 ${
                               isActive
                                 ? 'bg-gold-500/15 text-gold-300 font-semibold border border-gold-500/30'
                                 : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
-                          }`
-                        }
-                      >
-                        <div className="flex items-center space-x-2">
-                          <Sparkles className="w-3.5 h-3.5 shrink-0 text-gold-400" />
-                          <span>{t('nav', 'pipeline')}</span>
-                        </div>
-                      </NavLink>
+                            }`
+                          }
+                        >
+                          <div className="flex items-center space-x-2">
+                            <Sparkles className="w-3.5 h-3.5 shrink-0 text-gold-400" />
+                            <span>{t('nav', 'pipeline')}</span>
+                          </div>
+                        </NavLink>
                     )}
                     </div>
                   )}
                 </div>
               )}
 
-              {/* 3. Boshqa menyu bandlari */}
+              {/* 3. Boshqa menyu bandlari (Rates, Inventory, POS, Employees, Transactions) */}
               {menuItems
                 .filter((item) => item.roles.includes(role))
                 .map((item) => {
@@ -229,9 +243,9 @@ export const Sidebar = () => {
                       to={item.path}
                       onClick={handleMobileNavClick}
                       className={({ isActive }) =>
-                        `flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 ${
+                        `flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold-500/50 ${
                           isActive
-                            ? 'bg-gradient-to-r from-gold-500/25 to-gold-500/5 text-gold-300 border-l-2 border-gold-500 font-semibold shadow-[0_4px_20px_0_rgba(212,175,55,0.15)]'
+                            ? 'bg-gradient-to-r from-gold-500/25 to-gold-500/5 text-gold-300 border-l-2 border-gold-500 shadow-[0_4px_20px_0_rgba(212,175,55,0.15)]'
                             : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
                         }`
                       }
@@ -240,6 +254,11 @@ export const Sidebar = () => {
                         <Icon className="w-4 h-4 shrink-0" />
                         <span>{item.title}</span>
                       </div>
+                      {item.badge && (
+                        <span className={`px-1.5 py-0.2 rounded text-[9px] font-mono font-extrabold border ${item.badgeColor || 'bg-white/10 text-white'}`}>
+                          {item.badge}
+                        </span>
+                      )}
                     </NavLink>
                   );
                 })}
