@@ -11,7 +11,6 @@ import {
   Store, 
   Users, 
   Receipt, 
-  Settings, 
   ShieldCheck, 
   Flame,
   Radio,
@@ -78,12 +77,6 @@ export const Sidebar = () => {
       path: '/transactions',
       icon: Receipt,
       roles: ['admin', 'manager', 'cashier', 'seller'],
-    },
-    {
-      title: t('nav', 'settings'),
-      path: '/settings',
-      icon: Settings,
-      roles: ['admin'],
     },
   ];
 
