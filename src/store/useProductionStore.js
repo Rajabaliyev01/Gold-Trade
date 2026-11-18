@@ -10,7 +10,6 @@ import {
 } from 'firebase/firestore';
 import { calculateUgar } from '../utils/ugarCalculator';
 import { roundWeight } from '../utils/precisionMath';
-import { sendTelegramMessage, formatUgarAlertMessage } from '../services/telegramService';
 import { logAuditEvent } from '../services/auditService';
 import { atomicCreateProductionOrder, atomicApproveQCAndFinishOrder } from '../services/transactionService';
 import { useInventoryStore } from './useInventoryStore';
@@ -424,30 +423,11 @@ export const useProductionStore = create((set, get) => ({
     const updatedOrders = get().orders.map((o) => (o.order_id === orderId ? updatedOrder : o));
     get().save(updatedOrders);
 
-    // Telegram Alert if excess ugar occurred
-    let telegramResult = null;
-    if (isAlert && settings.notify_on_excess_ugar) {
-      const craftsman = useAuthStore.getState().users.find((u) => u.uid === order.craftsman_id);
-      const message = formatUgarAlertMessage({
-        order: updatedOrder,
-        craftsman,
-        excessLoss: calculation.excessLossWeight,
-        financialDamage: calculation.financialLoss,
-      });
-
-      telegramResult = await sendTelegramMessage({
-        token: settings.telegram_bot_token,
-        chatId: settings.telegram_chat_id,
-        text: message,
-      });
-    }
-
     return {
       success: true,
       calculation,
       order: updatedOrder,
       finishedProduct: transactionResult?.product,
-      telegramResult,
       isAlert,
     };
   },

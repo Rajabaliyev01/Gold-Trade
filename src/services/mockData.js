@@ -18,8 +18,6 @@ export const INITIAL_SETTINGS = {
   gold_rate_375: 0,
   usd_to_uzs: 0,
   max_allowed_loss_percentage: 2.0,
-  telegram_bot_token: '',
-  telegram_chat_id: '',
   notify_on_excess_ugar: true,
   notify_on_daily_close: true,
   notify_on_new_order: false,

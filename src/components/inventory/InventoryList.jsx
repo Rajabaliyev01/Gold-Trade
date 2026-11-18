@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useInventoryStore } from '../../store/useInventoryStore';
 import { useAuthStore } from '../../store/useAuthStore';
+import { useUIStore } from '../../store/useUIStore';
+import { getTranslation } from '../../utils/i18n';
 import { formatWeight, formatCurrency, formatDate, PROBA_COLORS } from '../../utils/formatters';
 import { AddProductModal } from './AddProductModal';
 import { 
@@ -19,6 +21,8 @@ import {
 export const InventoryList = () => {
   const { items } = useInventoryStore();
   const { currentUser } = useAuthStore();
+  const { language } = useUIStore();
+  const t = (section, key) => getTranslation(language, section, key);
 
   const [activeTab, setActiveTab] = useState('all');
   const [search, setSearch] = useState('');

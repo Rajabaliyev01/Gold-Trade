@@ -250,9 +250,9 @@ export const ReturnWorkModal = ({ order, isOpen, onClose }) => {
                       />
                       <span>Zararni (${calculation.financialLoss}) usta hisobidan yechish</span>
                     </label>
-                    <span className="text-[10px] text-blue-400 flex items-center space-x-1">
-                      <Send className="w-3 h-3" />
-                      <span>Telegram Alert</span>
+                    <span className="text-[10px] text-amber-400 flex items-center space-x-1">
+                      <AlertTriangle className="w-3 h-3" />
+                      <span>Ugar Alerti</span>
                     </span>
                   </div>
                 </div>

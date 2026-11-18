@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useProductionStore } from '../../store/useProductionStore';
 import { useAuthStore } from '../../store/useAuthStore';
+import { useUIStore } from '../../store/useUIStore';
+import { getTranslation } from '../../utils/i18n';
 import { formatWeight, formatDate, formatDateTimeDetailed, PROBA_COLORS } from '../../utils/formatters';
 import { NewOrderModal } from './NewOrderModal';
 import { CraftsmanFinishModal } from './CraftsmanFinishModal';
@@ -28,6 +30,8 @@ import {
 export const OrderList = () => {
   const { orders, startOrderWork } = useProductionStore();
   const { currentUser } = useAuthStore();
+  const { language } = useUIStore();
+  const t = (section, key) => getTranslation(language, section, key);
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');

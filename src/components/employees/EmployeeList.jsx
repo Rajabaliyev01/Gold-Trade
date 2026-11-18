@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
+import { useUIStore } from '../../store/useUIStore';
+import { getTranslation } from '../../utils/i18n';
 import { useProductionStore } from '../../store/useProductionStore';
 import { formatWeight } from '../../utils/formatters';
 import { ReturnWorkModal } from '../production/ReturnWorkModal';
@@ -24,6 +26,8 @@ import {
 
 export const EmployeeList = () => {
   const { employees, currentUser, deleteEmployee, updateEmployee } = useAuthStore();
+  const { language } = useUIStore();
+  const t = (section, key) => getTranslation(language, section, key);
   const { orders } = useProductionStore();
 
   const [activeTab, setActiveTab] = useState('all');

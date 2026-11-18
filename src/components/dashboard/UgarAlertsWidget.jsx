@@ -42,7 +42,7 @@ export const UgarAlertsWidget = () => {
                 {alertOrders.length} Alert
               </span>
             </h3>
-            <p className="text-[11px] text-slate-400">Telegram bot orqali rahbariyatga xabarnoma yuborilgan</p>
+            <p className="text-[11px] text-slate-400">Tizim nazorati: me'yordan oshish qayd etildi</p>
           </div>
         </div>
 
@@ -84,9 +84,9 @@ export const UgarAlertsWidget = () => {
                 </span>
               </div>
 
-              <div className="flex items-center space-x-1 px-2 py-1 rounded bg-blue-500/10 text-blue-400 border border-blue-500/30 text-[10px]">
-                <Send className="w-3 h-3" />
-                <span>Yuborildi</span>
+              <div className="flex items-center space-x-1 px-2 py-1 rounded bg-rose-500/10 text-rose-400 border border-rose-500/30 text-[10px]">
+                <AlertTriangle className="w-3 h-3" />
+                <span>Alert</span>
               </div>
             </div>
           </div>

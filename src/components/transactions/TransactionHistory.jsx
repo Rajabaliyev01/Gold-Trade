@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { usePosStore } from '../../store/usePosStore';
+import { useUIStore } from '../../store/useUIStore';
+import { getTranslation } from '../../utils/i18n';
 import { useSettingsStore } from '../../store/useSettingsStore';
 import { formatWeight, formatCurrency, formatDate } from '../../utils/formatters';
 import { ReceiptModal } from '../pos/ReceiptModal';
@@ -18,6 +20,8 @@ import {
 export const TransactionHistory = () => {
   const { transactions } = usePosStore();
   const { settings } = useSettingsStore();
+  const { language } = useUIStore();
+  const t = (section, key) => getTranslation(language, section, key);
 
   const [search, setSearch] = useState('');
   const [methodFilter, setMethodFilter] = useState('all');

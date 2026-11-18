@@ -3,6 +3,8 @@ import confetti from 'canvas-confetti';
 import { useInventoryStore } from '../../store/useInventoryStore';
 import { usePosStore } from '../../store/usePosStore';
 import { useAuthStore } from '../../store/useAuthStore';
+import { useUIStore } from '../../store/useUIStore';
+import { getTranslation } from '../../utils/i18n';
 import { useSettingsStore } from '../../store/useSettingsStore';
 import { formatWeight, formatCurrency, PROBA_COLORS } from '../../utils/formatters';
 import { TradeInCalculator } from './TradeInCalculator';
@@ -25,6 +27,8 @@ export const POSTerminal = () => {
   const { items } = useInventoryStore();
   const { cart, addToCart, removeFromCart, clearCart, discount, setDiscount, getCartTotals, checkout, lastReceipt } = usePosStore();
   const { currentUser } = useAuthStore();
+  const { language } = useUIStore();
+  const t = (section, key) => getTranslation(language, section, key);
   const { settings } = useSettingsStore();
 
   const [search, setSearch] = useState('');

@@ -8,7 +8,7 @@ import { InventoryList } from './components/inventory/InventoryList';
 import { POSTerminal } from './components/pos/POSTerminal';
 import { EmployeeList } from './components/employees/EmployeeList';
 import { TransactionHistory } from './components/transactions/TransactionHistory';
-import { TelegramSettings } from './components/settings/TelegramSettings';
+import { SettingsPage } from './components/settings/SettingsPage';
 import { FactoryProfileModal } from './components/profile/FactoryProfileModal';
 import LoginPage from './pages/LoginPage';
 import JewelryPipelinePage from './pages/JewelryPipelinePage';
@@ -37,7 +37,7 @@ export default function App() {
             <Loader2 className="w-6 h-6 text-gold-400 animate-spin" />
           </div>
         </div>
-        <p className="text-xs font-mono text-gold-400 tracking-wider uppercase">Gold Trade ERP yuklanmoqda...</p>
+        <p className="text-xs font-mono text-gold-400 tracking-wider uppercase">Gold Trade ERP...</p>
       </div>
     );
   }
@@ -80,7 +80,7 @@ export default function App() {
               <Route path="/employees" element={<EmployeeList />} />
               <Route path="/craftsmen" element={<Navigate to="/employees" replace />} />
               <Route path="/transactions" element={<TransactionHistory />} />
-              <Route path="/settings" element={<TelegramSettings />} />
+              <Route path="/settings" element={<SettingsPage />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>

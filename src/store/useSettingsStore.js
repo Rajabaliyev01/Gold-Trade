@@ -6,8 +6,6 @@ const STORAGE_KEY = 'gold_erp_settings';
 export const useSettingsStore = create((set, get) => ({
   settings: JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
     ...INITIAL_SETTINGS,
-    telegram_bot_token: import.meta.env.VITE_TELEGRAM_BOT_TOKEN || '',
-    telegram_chat_id: import.meta.env.VITE_TELEGRAM_CHAT_ID || '',
     gold_api_key: import.meta.env.VITE_GOLD_API_KEY || '',
     metals_api_key: import.meta.env.VITE_METALS_API_KEY || '',
     gold_api_provider: 'auto', // 'auto' | 'goldapi' | 'metals_api'

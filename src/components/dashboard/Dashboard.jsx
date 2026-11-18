@@ -4,6 +4,8 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { useProductionStore } from '../../store/useProductionStore';
 import { usePosStore } from '../../store/usePosStore';
 import { useSettingsStore } from '../../store/useSettingsStore';
+import { useUIStore } from '../../store/useUIStore';
+import { getTranslation } from '../../utils/i18n';
 import { formatWeight, formatCurrency, formatDate } from '../../utils/formatters';
 import { StatCard } from '../common/StatCard';
 import { GoldTicker } from './GoldTicker';
@@ -28,6 +30,8 @@ export const Dashboard = () => {
   const orders = useProductionStore((state) => state.orders);
   const transactions = usePosStore((state) => state.transactions);
   const settings = useSettingsStore((state) => state.settings);
+  const { language } = useUIStore();
+  const t = (section, key) => getTranslation(language, section, key);
 
   const vault = getVaultSummary();
   const craftsmen = users.filter((u) => u.role === 'craftsman');
@@ -75,7 +79,7 @@ export const Dashboard = () => {
       {/* KPI Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          title="Ombordagi Jami Tilla"
+          title={t('dashboard', 'totalInventory')}
           value={formatWeight(vault.totalWeight)}
           subvalue={`Baholanishi: ${formatCurrency(vault.totalValuationUSD)}`}
           icon={Coins}
@@ -94,7 +98,7 @@ export const Dashboard = () => {
         />
 
         <StatCard
-          title="Bugungi Kassa Tushumi"
+          title={t('dashboard', 'todaySales')}
           value={formatCurrency(todaySalesUSD)}
           subvalue={`~ ${Number(todaySalesUSD * (settings.usd_to_uzs || 12850)).toLocaleString()} so'm`}
           icon={Receipt}
@@ -104,7 +108,7 @@ export const Dashboard = () => {
         />
 
         <StatCard
-          title="O'rtacha Ugar (Yo'qotish)"
+          title={t('dashboard', 'ugarAlerts')}
           value={`${avgUgarRate.toFixed(2)}%`}
           subvalue={`Me'yor chegarasi: ${settings.max_allowed_loss_percentage || 2.0}%`}
           icon={Flame}
